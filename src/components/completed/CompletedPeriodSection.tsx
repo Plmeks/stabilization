@@ -23,12 +23,15 @@ export function CompletedPeriodSection({
 	onEdit,
 	onReturnToQA,
 }: CompletedPeriodSectionProps) {
+	const criticalCount = tasks.filter((t) => t.priority === 'Авария').length;
+
 	return (
 		<PeriodAccordion
 			period={period}
 			isExpanded={isExpanded}
 			onToggle={onToggle}
 			taskCount={tasks.length}
+			criticalCount={criticalCount}
 		>
 			<CompletedTasksTable
 				tasks={tasks}

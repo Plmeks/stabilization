@@ -15,6 +15,7 @@ interface CompleteTaskModalProps {
 	onCancel: () => void;
 	taskId: string;
 	pendingTaskUpdate?: UpdateTaskInput;
+	defaultPeriodId?: string;
 }
 
 interface CompleteTaskModalBodyProps {
@@ -22,6 +23,7 @@ interface CompleteTaskModalBodyProps {
 	pendingTaskUpdate?: UpdateTaskInput;
 	onClose: () => void;
 	onCancel: () => void;
+	defaultPeriodId?: string;
 }
 
 function CompleteTaskModalBody({
@@ -29,6 +31,7 @@ function CompleteTaskModalBody({
 	pendingTaskUpdate,
 	onClose,
 	onCancel,
+	defaultPeriodId,
 }: CompleteTaskModalBodyProps) {
 	const periods = useAtomValue(periodsAtom);
 	const completeTask = useSetAtom(completeTaskAtom);
@@ -36,6 +39,15 @@ function CompleteTaskModalBody({
 
 	const [selectedPeriodId, setSelectedPeriodId] = React.useState<string | null>(null);
 	const [loading, setLoading] = React.useState(false);
+	const initialized = React.useRef(false);
+
+	React.useEffect(() => {
+		if (!initialized.current && periods.length > 0) {
+			initialized.current = true;
+			const hasDefault = defaultPeriodId !== undefined && periods.some((p) => p.id === defaultPeriodId);
+			setSelectedPeriodId(hasDefault ? defaultPeriodId : periods[0].id);
+		}
+	}, [periods, defaultPeriodId]);
 
 	const handleConfirm = async () => {
 		if (!selectedPeriodId) return;
@@ -79,7 +91,6 @@ function CompleteTaskModalBody({
 					periods={periods}
 					value={selectedPeriodId}
 					onChange={setSelectedPeriodId}
-					defaultToLatest
 				/>
 			</div>
 		</ModalWrapper>
@@ -92,6 +103,7 @@ export function CompleteTaskModal({
 	onCancel,
 	taskId,
 	pendingTaskUpdate,
+	defaultPeriodId,
 }: CompleteTaskModalProps) {
 	if (!open) {
 		return null;
@@ -104,6 +116,7 @@ export function CompleteTaskModal({
 			pendingTaskUpdate={pendingTaskUpdate}
 			onClose={onClose}
 			onCancel={onCancel}
+			defaultPeriodId={defaultPeriodId}
 		/>
 	);
 }

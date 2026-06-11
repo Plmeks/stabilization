@@ -32,11 +32,15 @@ export default function CurrentPage() {
 		}
 	};
 
+	const criticalCount = tasks.filter((t) => t.priority === 'Авария').length;
+
 	return (
 		<div className="p-6">
 			<div className="mb-4 flex items-center gap-2">
 				<h1 className="text-xl font-semibold">Текущие задачи</h1>
-				<Badge variant="secondary">{tasks.length}</Badge>
+				<div className="bg-muted/80 text-muted-foreground text-xs px-2.5 py-0.5 rounded-full">
+					Всего: {tasks.length}{criticalCount !== undefined && criticalCount > 0 ? <>, Крит: <span className="text-red-500">{criticalCount}</span></> : ''}
+				</div>
 			</div>
 
 			<CurrentTasksTable
