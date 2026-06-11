@@ -9,6 +9,7 @@ interface PeriodAccordionProps {
   isExpanded: boolean;
   onToggle: () => void;
   taskCount: number;
+  criticalCount?: number;
   children: React.ReactNode;
   headerActions?: React.ReactNode;
 }
@@ -18,13 +19,14 @@ export default function PeriodAccordion({
   isExpanded,
   onToggle,
   taskCount,
+  criticalCount,
   children,
   headerActions,
 }: PeriodAccordionProps) {
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="border rounded-xl overflow-hidden shadow-sm">
       <div
-        className="flex items-center gap-2 px-4 py-3 bg-muted/40 cursor-pointer select-none hover:bg-muted/60 transition-colors"
+        className="flex items-center gap-2 px-5 py-4 bg-muted/40 cursor-pointer select-none hover:bg-muted/50 transition-colors"
         onClick={onToggle}
         role="button"
         aria-expanded={isExpanded}
@@ -35,9 +37,9 @@ export default function PeriodAccordion({
             isExpanded && 'rotate-180',
           )}
         />
-        <span className="font-medium text-sm">{formatPeriodLabel(period)}</span>
-        <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-          Всего: {taskCount}
+        <span className="text-sm font-semibold">{formatPeriodLabel(period)}</span>
+        <span className="bg-muted/80 text-muted-foreground text-xs px-2.5 py-0.5 rounded-full">
+          Всего: {taskCount}{criticalCount !== undefined && criticalCount > 0 ? <>, Крит: <span className="text-red-500">{criticalCount}</span></> : ''}
         </span>
         {headerActions && (
           <div className="ml-auto" onClick={(e) => e.stopPropagation()}>

@@ -14,31 +14,32 @@ interface CompletedTasksRowProps {
 	period: Period | undefined;
 	onEdit: () => void;
 	onDelete: () => void;
+	onReturnToQA: () => void;
 }
 
-export function CompletedTasksRow({ task, period, onEdit, onDelete }: CompletedTasksRowProps) {
+export function CompletedTasksRow({ task, period, onEdit, onDelete, onReturnToQA }: CompletedTasksRowProps) {
 	return (
 		<TableRow>
-			<TableCell className="max-w-xs">
+			<TableCell className="max-w-md break-words py-3">
 				<TaskTitle title={task.title} />
 			</TableCell>
-			<TableCell>{task.assignee ?? '—'}</TableCell>
-			<TableCell>
+			<TableCell className="py-3">{task.assignee ?? '—'}</TableCell>
+			<TableCell className="py-3">
 				<PriorityBadge priority={task.priority} />
 			</TableCell>
-			<TableCell>
+			<TableCell className="py-3">
 				<StatusBadge status={task.status} />
 			</TableCell>
-			<TableCell className="hidden md:table-cell">
+			<TableCell className="hidden md:table-cell py-3">
 				{period !== undefined ? <PeriodBadge period={period} /> : '—'}
 			</TableCell>
-			<TableCell className="hidden md:table-cell">
+			<TableCell className="hidden md:table-cell py-3">
 				{task.completed_at !== null
 					? dayjs(task.completed_at).format('DD.MM.YYYY')
 					: '—'}
 			</TableCell>
-			<TableCell>
-				<ActionButtons onEdit={onEdit} onDelete={onDelete} />
+			<TableCell className="py-3">
+				<ActionButtons onEdit={onEdit} onDelete={onDelete} onReturnToQA={onReturnToQA} />
 			</TableCell>
 		</TableRow>
 	);

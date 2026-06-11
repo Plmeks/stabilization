@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge';
 import type { Period } from '@/types';
 import { formatPeriodLabel } from '@/lib/utils';
 
@@ -7,8 +8,8 @@ interface PeriodBadgeProps {
 
 export function PeriodBadge({ period }: PeriodBadgeProps) {
 	return (
-		<span className="text-xs text-muted-foreground">
+		<Badge variant="outline" className="rounded-full px-2.5 py-0.5 font-normal text-muted-foreground">
 			{formatPeriodLabel(period)}
-		</span>
+		</Badge>
 	);
 }

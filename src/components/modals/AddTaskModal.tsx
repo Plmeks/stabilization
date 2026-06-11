@@ -16,23 +16,20 @@ interface AddTaskModalProps {
 	defaultPeriodId?: string;
 }
 
-export function AddTaskModal({ open, onClose, defaultPeriodId }: AddTaskModalProps) {
+interface AddTaskModalContentProps {
+	onClose: () => void;
+	defaultPeriodId?: string;
+}
+
+function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentProps) {
 	const periods = useAtomValue(periodsAtom);
 	const createTask = useSetAtom(createTaskAtom);
 
 	const [title, setTitle] = React.useState('');
 	const [periodId, setPeriodId] = React.useState<string | null>(defaultPeriodId ?? null);
+	const [isCritical, setIsCritical] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);
 	const [loading, setLoading] = React.useState(false);
-
-	React.useEffect(() => {
-		if (!open) {
-			setTitle('');
-			setPeriodId(defaultPeriodId ?? null);
-			setError(null);
-			setLoading(false);
-		}
-	}, [open, defaultPeriodId]);
 
 	const handleSubmit = async () => {
 		if (!title.trim()) {
@@ -49,7 +46,11 @@ export function AddTaskModal({ open, onClose, defaultPeriodId }: AddTaskModalPro
 		setLoading(true);
 
 		try {
-			await createTask({ title: title.trim(), period_id: periodId });
+			await createTask({
+				title: title.trim(),
+				period_id: periodId,
+				...(isCritical ? { priority: 'Авария' } : {}),
+			});
 			onClose();
 		} catch {
 			setError('Не удалось создать задачу');
@@ -71,7 +72,7 @@ export function AddTaskModal({ open, onClose, defaultPeriodId }: AddTaskModalPro
 
 	return (
 		<ModalWrapper
-			open={open}
+			open={true}
 			onClose={onClose}
 			title="Добавить задачу"
 			footer={footer}
@@ -97,10 +98,28 @@ export function AddTaskModal({ open, onClose, defaultPeriodId }: AddTaskModalPro
 						defaultToLatest={!defaultPeriodId}
 					/>
 				</div>
+				<div className="flex items-center gap-2">
+					<input
+						id="task-critical"
+						type="checkbox"
+						checked={isCritical}
+						onChange={(e) => setIsCritical(e.target.checked)}
+						disabled={loading}
+						className="h-4 w-4 cursor-pointer"
+					/>
+					<Label htmlFor="task-critical" className="cursor-pointer">
+						Критическая задача (приоритет «Авария»)
+					</Label>
+				</div>
 				{error && (
 					<p className="text-sm text-destructive">{error}</p>
 				)}
 			</div>
 		</ModalWrapper>
 	);
+}
+
+export function AddTaskModal({ open, onClose, defaultPeriodId }: AddTaskModalProps) {
+	if (!open) return null;
+	return <AddTaskModalContent onClose={onClose} defaultPeriodId={defaultPeriodId} />;
 }

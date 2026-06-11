@@ -16,7 +16,11 @@ export const fetchPeriodsAtom = atom(
 		set(periodsLoadingAtom, true);
 		try {
 			const periods = await fetchPeriods();
-			set(periodsAtom, periods);
+			set(periodsAtom, [...periods].sort((a, b) => {
+				const sd = b.start_date.localeCompare(a.start_date);
+				if (sd !== 0) return sd;
+				return b.end_date.localeCompare(a.end_date);
+			}));
 		} finally {
 			set(periodsLoadingAtom, false);
 		}
@@ -31,16 +35,22 @@ export const createPeriodAtom = atom(
 			id: tempId,
 			start_date: input.start_date,
 			end_date: input.end_date,
-			metrics_snapshot: null,
-			metrics_locked_at: null,
 			created_at: new Date().toISOString(),
 		};
 
-		set(periodsAtom, [tempPeriod, ...get(periodsAtom)]);
+		set(periodsAtom, [tempPeriod, ...get(periodsAtom)].sort((a, b) => {
+			const sd = b.start_date.localeCompare(a.start_date);
+			if (sd !== 0) return sd;
+			return b.end_date.localeCompare(a.end_date);
+		}));
 
 		try {
 			const realPeriod = await createPeriod(input);
-			set(periodsAtom, get(periodsAtom).map((p) => (p.id === tempId ? realPeriod : p)));
+			set(periodsAtom, get(periodsAtom).map((p) => (p.id === tempId ? realPeriod : p)).sort((a, b) => {
+				const sd = b.start_date.localeCompare(a.start_date);
+				if (sd !== 0) return sd;
+				return b.end_date.localeCompare(a.end_date);
+			}));
 		} catch (error) {
 			set(periodsAtom, get(periodsAtom).filter((p) => p.id !== tempId));
 			throw error;

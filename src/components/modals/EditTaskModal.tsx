@@ -25,27 +25,22 @@ interface EditTaskModalProps {
 	context: 'current' | 'completed';
 }
 
-export function EditTaskModal({ open, onClose, task, context }: EditTaskModalProps) {
+interface EditTaskModalContentProps {
+	onClose: () => void;
+	task: Task;
+	context: 'current' | 'completed';
+}
+
+function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentProps) {
 	const updateTask = useSetAtom(updateTaskAtom);
 	const returnTaskToWork = useSetAtom(returnTaskToWorkAtom);
 
-	const [assignee, setAssignee] = React.useState('');
-	const [priority, setPriority] = React.useState<Priority | ''>('');
-	const [status, setStatus] = React.useState<TaskStatus>('Бэклог');
+	const [assignee, setAssignee] = React.useState(task.assignee ?? '');
+	const [priority, setPriority] = React.useState<Priority | ''>(task.priority ?? '');
+	const [status, setStatus] = React.useState<TaskStatus>(task.status ?? 'В работе');
 	const [loading, setLoading] = React.useState(false);
 	const [showCompleteModal, setShowCompleteModal] = React.useState(false);
 	const [pendingUpdate, setPendingUpdate] = React.useState<UpdateTaskInput | undefined>(undefined);
-
-	React.useEffect(() => {
-		if (open) {
-			setAssignee(task.assignee ?? '');
-			setPriority(task.priority ?? '');
-			setStatus(task.status);
-			setLoading(false);
-			setShowCompleteModal(false);
-			setPendingUpdate(undefined);
-		}
-	}, [open, task]);
 
 	const handleSave = async () => {
 		if (context === 'current' && status === 'Завершена') {
@@ -90,7 +85,7 @@ export function EditTaskModal({ open, onClose, task, context }: EditTaskModalPro
 	return (
 		<>
 			<ModalWrapper
-				open={open && !showCompleteModal}
+				open={!showCompleteModal}
 				onClose={onClose}
 				title="Редактировать задачу"
 				footer={footer}
@@ -158,4 +153,9 @@ export function EditTaskModal({ open, onClose, task, context }: EditTaskModalPro
 			/>
 		</>
 	);
+}
+
+export function EditTaskModal({ open, onClose, task, context }: EditTaskModalProps) {
+	if (!open) return null;
+	return <EditTaskModalContent onClose={onClose} task={task} context={context} />;
 }

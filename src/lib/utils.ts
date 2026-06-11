@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPeriodLabel(period: Period): string {
-	const start = dayjs(period.start_date).format('DD.MM');
+	const start = dayjs(period.start_date).format('DD.MM.YYYY');
 	const end = dayjs(period.end_date).format('DD.MM.YYYY');
 	return `${start} - ${end}`;
 }
@@ -35,7 +35,7 @@ export function detectUrls(text: string): Array<{ text: string; url?: string }> 
 }
 
 export function isTaskActive(task: Task): boolean {
-	return task.taken_into_work_at !== null && task.status !== 'Завершена';
+	return task.status === 'В работе' || task.status === 'В тесте' || task.status === 'Блокер';
 }
 
 export function isTaskCompleted(task: Task): boolean {

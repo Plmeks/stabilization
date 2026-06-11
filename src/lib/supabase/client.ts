@@ -13,8 +13,20 @@ export type Database = {
 					id: string;
 					start_date: string;
 					end_date: string;
-					metrics_snapshot: Record<string, number> | null;
-					metrics_locked_at: string | null;
+					created_at: string;
+				};
+			};
+			period_statistics: {
+				Row: {
+					id: string;
+					period_id: string;
+					added_to_backlog: number;
+					added_critical: number;
+					resolved_total: number;
+					resolved_critical: number;
+					in_progress: number;
+					in_testing: number;
+					locked_at: string;
 					created_at: string;
 				};
 			};
@@ -25,7 +37,7 @@ export type Database = {
 					period_id: string;
 					assignee: string | null;
 					priority: string | null;
-					status: string;
+					status: string | null;
 					created_at: string;
 					taken_into_work_at: string | null;
 					completed_at: string | null;

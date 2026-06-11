@@ -15,7 +15,7 @@ export function PriorityBadge({ priority }: PriorityBadgeProps) {
 	return (
 		<Badge
 			variant="outline"
-			className={cn(PRIORITY_COLORS[priority])}
+			className={cn('rounded-full px-2.5 py-0.5', PRIORITY_COLORS[priority])}
 		>
 			{priority}
 		</Badge>

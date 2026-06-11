@@ -9,17 +9,23 @@ export type { TaskStatus, Priority } from './constants';
 
 import type { TaskStatus, Priority } from './constants';
 
-export type MetricsSnapshot = {
-	in_progress: number;
-	in_testing: number;
-};
-
 export type Period = {
 	id: string;
 	start_date: string;
 	end_date: string;
-	metrics_snapshot: MetricsSnapshot | null;
-	metrics_locked_at: string | null;
+	created_at: string;
+};
+
+export type PeriodStatistics = {
+	id: string;
+	period_id: string;
+	added_to_backlog: number;
+	added_critical: number;
+	resolved_total: number;
+	resolved_critical: number;
+	in_progress: number;
+	in_testing: number;
+	locked_at: string;
 	created_at: string;
 };
 
@@ -29,7 +35,7 @@ export type Task = {
 	period_id: string;
 	assignee: string | null;
 	priority: Priority | null;
-	status: TaskStatus;
+	status: TaskStatus | null;
 	created_at: string;
 	taken_into_work_at: string | null;
 	completed_at: string | null;
@@ -43,12 +49,7 @@ export type CreatePeriodInput = {
 export type CreateTaskInput = {
 	title: string;
 	period_id: string;
-};
-
-export type TakeIntoWorkInput = {
-	assignee?: string;
 	priority?: Priority;
-	status?: TaskStatus;
 };
 
 export type UpdateTaskInput = {

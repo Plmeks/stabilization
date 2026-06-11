@@ -1,27 +1,39 @@
--- Migration 001: Initial Schema
--- Creates periods and tasks tables with indexes and constraints
-
+-- Create periods table
 CREATE TABLE periods (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   start_date DATE NOT NULL,
   end_date DATE NOT NULL,
-  metrics_snapshot JSONB,
-  metrics_locked_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Create tasks table
 CREATE TABLE tasks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   period_id UUID NOT NULL REFERENCES periods(id) ON DELETE CASCADE,
   assignee TEXT,
   priority TEXT CHECK (priority IN ('Авария', 'Нормальный', 'Некритичный')),
-  status TEXT NOT NULL DEFAULT 'Бэклог' CHECK (status IN ('Бэклог', 'В работе', 'В тесте', 'Завершена', 'Блокер')),
+  status TEXT CHECK (status IN ('В работе', 'В тесте', 'Завершена', 'Блокер')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   taken_into_work_at TIMESTAMPTZ,
   completed_at TIMESTAMPTZ
 );
 
+-- Create period_statistics table
+CREATE TABLE period_statistics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  period_id UUID NOT NULL UNIQUE REFERENCES periods(id) ON DELETE CASCADE,
+  added_to_backlog INTEGER NOT NULL,
+  added_critical INTEGER NOT NULL,
+  resolved_total INTEGER NOT NULL,
+  resolved_critical INTEGER NOT NULL,
+  in_progress INTEGER NOT NULL,
+  in_testing INTEGER NOT NULL,
+  locked_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Create indexes
 CREATE INDEX idx_tasks_period_id ON tasks(period_id);
 CREATE INDEX idx_tasks_status ON tasks(status);
 CREATE INDEX idx_tasks_priority ON tasks(priority);

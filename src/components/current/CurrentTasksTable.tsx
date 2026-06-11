@@ -38,9 +38,10 @@ interface CurrentTasksTableProps {
 	periods: Period[];
 	onEdit: (task: Task) => void;
 	onDelete: (taskId: string) => void;
+	onReturnToQA: (taskId: string) => void;
 }
 
-export function CurrentTasksTable({ tasks, periods, onEdit, onDelete }: CurrentTasksTableProps) {
+export function CurrentTasksTable({ tasks, periods, onEdit, onDelete, onReturnToQA }: CurrentTasksTableProps) {
 	const sorted = sortTasks(tasks);
 
 	const getPeriod = (periodId: string): Period | undefined =>
@@ -58,13 +59,13 @@ export function CurrentTasksTable({ tasks, periods, onEdit, onDelete }: CurrentT
 		<Table>
 			<TableHeader>
 				<tr>
-					<TableHead>Задача</TableHead>
-					<TableHead>Исполнитель</TableHead>
-					<TableHead>Приоритет</TableHead>
-					<TableHead>Статус</TableHead>
-					<TableHead className="hidden md:table-cell">Период</TableHead>
-					<TableHead className="hidden md:table-cell">Дата взятия</TableHead>
-					<TableHead>Действия</TableHead>
+					<TableHead className="px-4">Задача</TableHead>
+					<TableHead className="px-4">Исполнитель</TableHead>
+					<TableHead className="px-4">Приоритет</TableHead>
+					<TableHead className="px-4">Статус</TableHead>
+					<TableHead className="hidden md:table-cell px-4">Период</TableHead>
+					<TableHead className="hidden md:table-cell px-4">Дата взятия</TableHead>
+					<TableHead className="px-4">Действия</TableHead>
 				</tr>
 			</TableHeader>
 			<TableBody>
@@ -75,6 +76,7 @@ export function CurrentTasksTable({ tasks, periods, onEdit, onDelete }: CurrentT
 						period={getPeriod(task.period_id)}
 						onEdit={() => onEdit(task)}
 						onDelete={() => onDelete(task.id)}
+						onReturnToQA={() => onReturnToQA(task.id)}
 					/>
 				))}
 			</TableBody>

@@ -14,7 +14,11 @@ interface CreatePeriodModalProps {
 	onClose: () => void;
 }
 
-export function CreatePeriodModal({ open, onClose }: CreatePeriodModalProps) {
+interface CreatePeriodModalContentProps {
+	onClose: () => void;
+}
+
+function CreatePeriodModalContent({ onClose }: CreatePeriodModalContentProps) {
 	const [startDate, setStartDate] = React.useState<string | null>(null);
 	const [endDate, setEndDate] = React.useState<string | null>(null);
 	const [error, setError] = React.useState<string | null>(null);
@@ -23,15 +27,6 @@ export function CreatePeriodModal({ open, onClose }: CreatePeriodModalProps) {
 	const createPeriod = useSetAtom(createPeriodAtom);
 	const initExpandedPeriods = useSetAtom(initExpandedPeriodsAtom);
 	const store = useStore();
-
-	React.useEffect(() => {
-		if (!open) {
-			setStartDate(null);
-			setEndDate(null);
-			setError(null);
-			setLoading(false);
-		}
-	}, [open]);
 
 	const handleSubmit = async () => {
 		if (!startDate || !endDate) {
@@ -72,7 +67,7 @@ export function CreatePeriodModal({ open, onClose }: CreatePeriodModalProps) {
 
 	return (
 		<ModalWrapper
-			open={open}
+			open={true}
 			onClose={onClose}
 			title="Добавить период"
 			size="sm"
@@ -87,4 +82,9 @@ export function CreatePeriodModal({ open, onClose }: CreatePeriodModalProps) {
 			/>
 		</ModalWrapper>
 	);
+}
+
+export function CreatePeriodModal({ open, onClose }: CreatePeriodModalProps) {
+	if (!open) return null;
+	return <CreatePeriodModalContent onClose={onClose} />;
 }

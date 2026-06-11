@@ -4,7 +4,7 @@ import * as React from 'react';
 import { Loader2 } from 'lucide-react';
 import { useSetAtom } from 'jotai';
 import { Button } from '@/components/ui/button';
-import { lockMetricsAtom } from '@/atoms/tasksAtom';
+import { lockPeriodMetricsAtom } from '@/atoms/statsAtom';
 
 interface LockMetricsButtonProps {
 	periodId: string;
@@ -13,7 +13,7 @@ interface LockMetricsButtonProps {
 
 export default function LockMetricsButton({ periodId, loading: externalLoading }: LockMetricsButtonProps) {
 	const [internalLoading, setInternalLoading] = React.useState(false);
-	const lockMetrics = useSetAtom(lockMetricsAtom);
+	const lockMetrics = useSetAtom(lockPeriodMetricsAtom);
 
 	const isLoading = internalLoading || externalLoading;
 

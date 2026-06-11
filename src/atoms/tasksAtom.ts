@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import type { Task, CreateTaskInput, TakeIntoWorkInput, UpdateTaskInput, CompletionInput, MetricsSnapshot } from '@/types';
+import type { Task, CreateTaskInput, UpdateTaskInput, CompletionInput } from '@/types';
 import {
 	fetchTasks,
 	createTask,
@@ -8,10 +8,9 @@ import {
 	completeTask,
 	returnTaskToWork,
 	deleteTask,
-	lockMetrics,
+	returnTaskToQA,
 } from '@/lib/supabase/dal';
 import { isTaskActive, isTaskCompleted } from '@/lib/utils';
-import { periodsAtom } from './periodsAtom';
 
 export const tasksAtom = atom<Task[]>([]);
 
@@ -32,8 +31,8 @@ export const createTaskAtom = atom(
 			title: input.title,
 			period_id: input.period_id,
 			assignee: null,
-			priority: null,
-			status: 'Бэклог',
+			priority: input.priority ?? null,
+			status: null,
 			created_at: new Date().toISOString(),
 			taken_into_work_at: null,
 			completed_at: null,
@@ -53,12 +52,21 @@ export const createTaskAtom = atom(
 
 export const takeIntoWorkAtom = atom(
 	null,
-	async (get, set, { id, input }: { id: string; input: TakeIntoWorkInput }) => {
+	async (get, set, id: string) => {
 		const previous = get(tasksAtom);
-		set(tasksAtom, previous.map((t) => (t.id === id ? { ...t, ...input } : t)));
+		set(tasksAtom, previous.map((t) =>
+			t.id === id
+				? {
+					...t,
+					status: 'В работе' as const,
+					taken_into_work_at: new Date().toISOString(),
+					priority: t.priority ?? 'Нормальный' as const,
+				}
+				: t,
+		));
 
 		try {
-			const updated = await takeIntoWork(id, input);
+			const updated = await takeIntoWork(id);
 			set(tasksAtom, get(tasksAtom).map((t) => (t.id === id ? updated : t)));
 		} catch (error) {
 			set(tasksAtom, previous);
@@ -123,6 +131,26 @@ export const returnTaskToWorkAtom = atom(
 	},
 );
 
+export const returnToQAAtom = atom(
+	null,
+	async (get, set, id: string) => {
+		const previous = get(tasksAtom);
+		set(tasksAtom, previous.map((t) =>
+			t.id === id
+				? { ...t, status: null, taken_into_work_at: null, completed_at: null, assignee: null }
+				: t,
+		));
+
+		try {
+			const updated = await returnTaskToQA(id);
+			set(tasksAtom, get(tasksAtom).map((t) => (t.id === id ? updated : t)));
+		} catch (error) {
+			set(tasksAtom, previous);
+			throw error;
+		}
+	},
+);
+
 export const deleteTaskAtom = atom(
 	null,
 	async (get, set, id: string) => {
@@ -138,24 +166,10 @@ export const deleteTaskAtom = atom(
 	},
 );
 
-export const lockMetricsAtom = atom(
-	null,
-	async (get, set, periodId: string) => {
-		const tasks = get(tasksAtom);
-		const snapshot: MetricsSnapshot = {
-			in_progress: tasks.filter((t) => isTaskActive(t) && t.status === 'В работе').length,
-			in_testing: tasks.filter((t) => isTaskActive(t) && t.status === 'В тесте').length,
-		};
-
-		const updatedPeriod = await lockMetrics(periodId, snapshot);
-		set(periodsAtom, get(periodsAtom).map((p) => (p.id === periodId ? updatedPeriod : p)));
-	},
-);
-
 // Derived read atoms
 
 export const qaTasksAtom = atom((get) =>
-	get(tasksAtom).filter((t) => t.status !== 'Завершена'),
+	get(tasksAtom),
 );
 
 export const currentTasksAtom = atom((get) =>

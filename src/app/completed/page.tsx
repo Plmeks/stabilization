@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { periodsAtom } from '@/atoms/periodsAtom';
-import { completedTasksAtom, deleteTaskAtom } from '@/atoms/tasksAtom';
+import { completedTasksAtom, returnToQAAtom, deleteTaskAtom } from '@/atoms/tasksAtom';
 import { expandedPeriodsAtom, togglePeriodExpansionAtom } from '@/atoms/uiAtom';
 import { EditTaskModal } from '@/components/modals/EditTaskModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
@@ -15,9 +15,12 @@ export default function CompletedPage() {
 	const completedTasks = useAtomValue(completedTasksAtom);
 	const [expandedPeriods] = useAtom(expandedPeriodsAtom);
 	const togglePeriod = useSetAtom(togglePeriodExpansionAtom);
+	const returnToQA = useSetAtom(returnToQAAtom);
 	const deleteTask = useSetAtom(deleteTaskAtom);
 
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
+	const [returningTaskId, setReturningTaskId] = React.useState<string | null>(null);
+	const [returnLoading, setReturnLoading] = React.useState(false);
 	const [deletingTaskId, setDeletingTaskId] = React.useState<string | null>(null);
 	const [deleteLoading, setDeleteLoading] = React.useState(false);
 
@@ -37,6 +40,17 @@ export default function CompletedPage() {
 		[periods, completedTasksByPeriod],
 	);
 
+	const handleConfirmReturn = async () => {
+		if (returningTaskId === null) return;
+		setReturnLoading(true);
+		try {
+			await returnToQA(returningTaskId);
+			setReturningTaskId(null);
+		} finally {
+			setReturnLoading(false);
+		}
+	};
+
 	const handleConfirmDelete = async () => {
 		if (deletingTaskId === null) return;
 		setDeleteLoading(true);
@@ -49,7 +63,7 @@ export default function CompletedPage() {
 	};
 
 	return (
-		<div className="flex flex-col gap-4 p-4">
+		<div className="flex flex-col gap-5 p-6">
 			{periodsWithTasks.length === 0 ? (
 				<p className="text-sm text-muted-foreground text-center py-8">
 					Нет выполненных задач
@@ -65,6 +79,7 @@ export default function CompletedPage() {
 						onToggle={() => togglePeriod(period.id)}
 						onEdit={setEditingTask}
 						onDelete={setDeletingTaskId}
+						onReturnToQA={setReturningTaskId}
 					/>
 				))
 			)}
@@ -79,11 +94,20 @@ export default function CompletedPage() {
 			)}
 
 			<ConfirmDialog
+				open={returningTaskId !== null}
+				onClose={() => setReturningTaskId(null)}
+				onConfirm={handleConfirmReturn}
+				title="Вернуть в QA"
+				message="Задача будет возвращена в очередь QA. Статус и дата завершения будут сброшены."
+				loading={returnLoading}
+			/>
+
+			<ConfirmDialog
 				open={deletingTaskId !== null}
 				onClose={() => setDeletingTaskId(null)}
 				onConfirm={handleConfirmDelete}
 				title="Удалить задачу"
-				message="Вы уверены, что хотите удалить эту задачу? Это действие нельзя отменить."
+				message="Задача будет удалена без возможности восстановления."
 				loading={deleteLoading}
 			/>
 		</div>

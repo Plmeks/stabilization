@@ -1,53 +1,45 @@
 'use client';
 
 import dayjs from 'dayjs';
-import isBetween from 'dayjs/plugin/isBetween';
 import { useAtomValue } from 'jotai';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { tasksAtom } from '@/atoms/tasksAtom';
+import { periodStatisticsAtom } from '@/atoms/statsAtom';
 import StatsPeriodCard from '@/components/stats/StatsPeriodCard';
-
-dayjs.extend(isBetween);
 
 export default function StatsPage() {
 	const periods = useAtomValue(periodsAtom);
 	const tasks = useAtomValue(tasksAtom);
+	const periodStatistics = useAtomValue(periodStatisticsAtom);
 
 	const sortedPeriods = [...periods].sort((a, b) =>
 		dayjs(b.start_date).diff(dayjs(a.start_date)),
 	);
 
 	return (
-		<div className="p-4 space-y-4">
+		<div className="p-6 space-y-5">
 			{sortedPeriods.map((period) => {
-				const addedToBacklog = tasks.filter((t) =>
-					dayjs(t.created_at).isBetween(period.start_date, period.end_date, 'day', '[]'),
-				).length;
+				const periodTasks = tasks.filter((t) => t.period_id === period.id);
+				const statistics = periodStatistics.find((s) => s.period_id === period.id) ?? null;
 
-				const addedCritical = tasks.filter((t) =>
-					t.priority === 'Авария' &&
-					dayjs(t.created_at).isBetween(period.start_date, period.end_date, 'day', '[]'),
-				).length;
-
-				const resolvedTotal = tasks.filter((t) =>
-					t.completed_at !== null &&
-					dayjs(t.completed_at).isBetween(period.start_date, period.end_date, 'day', '[]'),
-				).length;
-
-				const resolvedCritical = tasks.filter((t) =>
-					t.completed_at !== null &&
-					t.priority === 'Авария' &&
-					dayjs(t.completed_at).isBetween(period.start_date, period.end_date, 'day', '[]'),
-				).length;
+				const dynamicAddedToBacklog = periodTasks.filter((t) => t.status !== null).length;
+				const dynamicAddedCritical = periodTasks.filter((t) => t.status !== null && t.priority === 'Авария').length;
+				const dynamicResolvedTotal = periodTasks.filter((t) => t.status === 'Завершена').length;
+				const dynamicResolvedCritical = periodTasks.filter((t) => t.status === 'Завершена' && t.priority === 'Авария').length;
+				const dynamicInProgress = periodTasks.filter((t) => t.status === 'В работе').length;
+				const dynamicInTesting = periodTasks.filter((t) => t.status === 'В тесте').length;
 
 				return (
 					<StatsPeriodCard
 						key={period.id}
 						period={period}
-						addedToBacklog={addedToBacklog}
-						addedCritical={addedCritical}
-						resolvedTotal={resolvedTotal}
-						resolvedCritical={resolvedCritical}
+						statistics={statistics}
+						dynamicAddedToBacklog={dynamicAddedToBacklog}
+						dynamicAddedCritical={dynamicAddedCritical}
+						dynamicResolvedTotal={dynamicResolvedTotal}
+						dynamicResolvedCritical={dynamicResolvedCritical}
+						dynamicInProgress={dynamicInProgress}
+						dynamicInTesting={dynamicInTesting}
 					/>
 				);
 			})}

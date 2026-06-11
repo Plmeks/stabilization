@@ -1,38 +1,30 @@
 'use client';
 
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { ActionButtons } from '@/components/shared/ActionButtons';
 import { TaskTitle } from '@/components/shared/TaskTitle';
 import { PriorityBadge } from '@/components/shared/PriorityBadge';
-import { StatusBadge } from '@/components/shared/StatusBadge';
 import type { Task } from '@/types';
 
 interface QATaskListItemProps {
 	task: Task;
-	onTakeIntoWork: (task: Task) => void;
+	onTakeIntoWork: (taskId: string) => void;
 	onDelete: (taskId: string) => void;
 }
 
 export function QATaskListItem({ task, onTakeIntoWork, onDelete }: QATaskListItemProps) {
-	const isTaken = task.taken_into_work_at !== null;
+	const canTakeIntoWork = task.status === null;
 
 	return (
-		<div
-			className={cn(
-				'flex items-center gap-2 px-4 py-2.5 border-t',
-				isTaken && 'bg-blue-50',
-			)}
-		>
+		<div className="flex items-center gap-2 px-4 py-2.5 border-t">
 			<TaskTitle title={task.title} className="flex-1 text-sm" />
-			<PriorityBadge priority={task.priority} />
-			<StatusBadge status={task.status} />
+			{task.priority === 'Авария' && <PriorityBadge priority={task.priority} />}
 			<div className="flex items-center gap-1 ml-auto shrink-0">
-				{!isTaken && (
+				{canTakeIntoWork && (
 					<Button
 						variant="outline"
 						size="sm"
-						onClick={() => onTakeIntoWork(task)}
+						onClick={() => onTakeIntoWork(task.id)}
 					>
 						Взять в работу
 					</Button>

@@ -13,9 +13,10 @@ interface QAPeriodSectionProps {
 	onToggle: () => void;
 	onAddTask: (periodId: string) => void;
 	onDeletePeriod: (periodId: string) => void;
-	onTakeIntoWork: (task: Task) => void;
+	onTakeIntoWork: (taskId: string) => void;
 	onDeleteTask: (taskId: string) => void;
 	totalTaskCount: number;
+	criticalCount: number;
 }
 
 export function QAPeriodSection({
@@ -28,6 +29,7 @@ export function QAPeriodSection({
 	onTakeIntoWork,
 	onDeleteTask,
 	totalTaskCount,
+	criticalCount,
 }: QAPeriodSectionProps) {
 	const headerActions = (
 		<div className="flex items-center gap-1">
@@ -57,6 +59,7 @@ export function QAPeriodSection({
 			isExpanded={isExpanded}
 			onToggle={onToggle}
 			taskCount={totalTaskCount}
+			criticalCount={criticalCount}
 			headerActions={headerActions}
 		>
 			{tasks.length === 0 ? (

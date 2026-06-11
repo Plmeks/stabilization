@@ -2,12 +2,11 @@ import { supabase } from './client';
 import type {
 	Period,
 	Task,
+	PeriodStatistics,
 	CreatePeriodInput,
 	CreateTaskInput,
-	TakeIntoWorkInput,
 	UpdateTaskInput,
 	CompletionInput,
-	MetricsSnapshot,
 } from '@/types';
 
 // Period functions
@@ -16,7 +15,8 @@ export async function fetchPeriods(): Promise<Period[]> {
 	const { data, error } = await supabase
 		.from('periods')
 		.select('*')
-		.order('start_date', { ascending: false });
+		.order('start_date', { ascending: false })
+		.order('end_date', { ascending: false });
 
 	if (error) throw error;
 	return data as Period[];
@@ -56,7 +56,7 @@ export async function fetchTasks(): Promise<Task[]> {
 export async function createTask(input: CreateTaskInput): Promise<Task> {
 	const { data, error } = await supabase
 		.from('tasks')
-		.insert({ ...input, status: 'Бэклог' })
+		.insert(input)
 		.select()
 		.single();
 
@@ -64,10 +64,24 @@ export async function createTask(input: CreateTaskInput): Promise<Task> {
 	return data as Task;
 }
 
-export async function takeIntoWork(id: string, input: TakeIntoWorkInput): Promise<Task> {
+export async function takeIntoWork(id: string): Promise<Task> {
+	const { data: existing, error: fetchError } = await supabase
+		.from('tasks')
+		.select('priority')
+		.eq('id', id)
+		.single();
+
+	if (fetchError) throw fetchError;
+
+	const priority = existing.priority ?? 'Нормальный';
+
 	const { data, error } = await supabase
 		.from('tasks')
-		.update({ taken_into_work_at: new Date().toISOString(), ...input })
+		.update({
+			status: 'В работе',
+			taken_into_work_at: new Date().toISOString(),
+			priority,
+		})
 		.eq('id', id)
 		.select()
 		.single();
@@ -116,6 +130,18 @@ export async function returnTaskToWork(id: string, input: UpdateTaskInput): Prom
 	return data as Task;
 }
 
+export async function returnTaskToQA(id: string): Promise<Task> {
+	const { data, error } = await supabase
+		.from('tasks')
+		.update({ status: null, taken_into_work_at: null, completed_at: null, assignee: null })
+		.eq('id', id)
+		.select()
+		.single();
+
+	if (error) throw error;
+	return data as Task;
+}
+
 export async function deleteTask(id: string): Promise<void> {
 	const { error } = await supabase
 		.from('tasks')
@@ -125,19 +151,43 @@ export async function deleteTask(id: string): Promise<void> {
 	if (error) throw error;
 }
 
-// Stats function
+// PeriodStatistics functions
 
-export async function lockMetrics(periodId: string, snapshot: MetricsSnapshot): Promise<Period> {
+export async function fetchAllPeriodStatistics(): Promise<PeriodStatistics[]> {
 	const { data, error } = await supabase
-		.from('periods')
-		.update({
-			metrics_snapshot: snapshot,
-			metrics_locked_at: new Date().toISOString(),
-		})
-		.eq('id', periodId)
+		.from('period_statistics')
+		.select('*')
+		.order('created_at', { ascending: false });
+
+	if (error) throw error;
+	return data as PeriodStatistics[];
+}
+
+export async function createPeriodStatistics(
+	periodId: string,
+	metrics: Omit<PeriodStatistics, 'id' | 'period_id' | 'locked_at' | 'created_at'>,
+): Promise<PeriodStatistics> {
+	const { data, error } = await supabase
+		.from('period_statistics')
+		.insert({ period_id: periodId, ...metrics })
 		.select()
 		.single();
 
 	if (error) throw error;
-	return data as Period;
+	return data as PeriodStatistics;
+}
+
+export async function updatePeriodStatistics(
+	id: string,
+	metrics: Omit<PeriodStatistics, 'id' | 'period_id' | 'locked_at' | 'created_at'>,
+): Promise<PeriodStatistics> {
+	const { data, error } = await supabase
+		.from('period_statistics')
+		.update(metrics)
+		.eq('id', id)
+		.select()
+		.single();
+
+	if (error) throw error;
+	return data as PeriodStatistics;
 }

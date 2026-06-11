@@ -1,68 +1,97 @@
+'use client';
+
+import * as React from 'react';
 import dayjs from 'dayjs';
-import { Lock } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import { formatPeriodLabel } from '@/lib/utils';
-import type { Period } from '@/types';
+import type { Period, PeriodStatistics } from '@/types';
+import { Button } from '@/components/ui/button';
 import StatsMetricItem from './StatsMetricItem';
 import LockMetricsButton from './LockMetricsButton';
+import { EditMetricsModal } from '@/components/modals/EditMetricsModal';
 
 interface StatsPeriodCardProps {
 	period: Period;
-	addedToBacklog: number;
-	addedCritical: number;
-	resolvedTotal: number;
-	resolvedCritical: number;
+	statistics: PeriodStatistics | null;
+	dynamicAddedToBacklog: number;
+	dynamicAddedCritical: number;
+	dynamicResolvedTotal: number;
+	dynamicResolvedCritical: number;
+	dynamicInProgress: number;
+	dynamicInTesting: number;
 }
 
 export default function StatsPeriodCard({
 	period,
-	addedToBacklog,
-	addedCritical,
-	resolvedTotal,
-	resolvedCritical,
+	statistics,
+	dynamicAddedToBacklog,
+	dynamicAddedCritical,
+	dynamicResolvedTotal,
+	dynamicResolvedCritical,
+	dynamicInProgress,
+	dynamicInTesting,
 }: StatsPeriodCardProps) {
-	const isLocked = period.metrics_snapshot !== null;
+	const [editOpen, setEditOpen] = React.useState(false);
+	const isLocked = statistics !== null;
 
 	return (
-		<div className="border rounded-lg overflow-hidden">
-			<div className="flex items-center justify-between px-4 py-3 bg-muted/40">
+		<div className="border rounded-xl shadow-sm overflow-hidden">
+			<div className="flex items-center justify-between px-5 py-4 bg-muted/40">
 				<span className="font-medium text-sm">{formatPeriodLabel(period)}</span>
 				{isLocked && (
-					<div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-						<Lock className="h-3 w-3" />
-						<span>
-							Зафиксировано {dayjs(period.metrics_locked_at).format('DD.MM.YYYY HH:mm')}
-						</span>
-					</div>
+					<Button variant="ghost" size="icon" onClick={() => setEditOpen(true)}>
+						<Pencil className="h-4 w-4" />
+					</Button>
 				)}
 			</div>
 
-			<div className="px-4 py-4 space-y-4">
-				<div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-					<StatsMetricItem label="Добавлено в беклог" value={addedToBacklog} />
-					<StatsMetricItem label="Из них критических" value={addedCritical} />
-					<StatsMetricItem label="Решено всего" value={resolvedTotal} />
-					<StatsMetricItem label="Решено критических" value={resolvedCritical} />
+			<div className="px-5 py-5 space-y-4">
+				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+					<StatsMetricItem
+						label="Добавлено в беклог"
+						value={isLocked ? statistics.added_to_backlog : dynamicAddedToBacklog}
+					/>
+					<StatsMetricItem
+						label="Из них критических"
+						value={isLocked ? statistics.added_critical : dynamicAddedCritical}
+					/>
+					<StatsMetricItem
+						label="Решено всего"
+						value={isLocked ? statistics.resolved_total : dynamicResolvedTotal}
+					/>
+					<StatsMetricItem
+						label="Решено критических"
+						value={isLocked ? statistics.resolved_critical : dynamicResolvedCritical}
+					/>
+					<StatsMetricItem
+						label="В работе"
+						value={isLocked ? statistics.in_progress : dynamicInProgress}
+					/>
+					<StatsMetricItem
+						label="В тесте"
+						value={isLocked ? statistics.in_testing : dynamicInTesting}
+					/>
 				</div>
 
-				{isLocked && (
-					<div className="border-t pt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-						<StatsMetricItem
-							label="В работе"
-							value={period.metrics_snapshot!.in_progress}
-						/>
-						<StatsMetricItem
-							label="В тесте"
-							value={period.metrics_snapshot!.in_testing}
-						/>
-					</div>
-				)}
-
-				{!isLocked && (
+				{isLocked ? (
+					<p className="text-xs text-muted-foreground">
+						Зафиксировано: {dayjs(statistics.locked_at).format('DD.MM.YYYY HH:mm')}
+					</p>
+				) : (
 					<div className="flex justify-end">
 						<LockMetricsButton periodId={period.id} />
 					</div>
 				)}
 			</div>
+
+			{statistics !== null && editOpen && (
+				<EditMetricsModal
+					key={statistics.id}
+					open={editOpen}
+					onClose={() => setEditOpen(false)}
+					statistics={statistics}
+				/>
+			)}
 		</div>
 	);
 }

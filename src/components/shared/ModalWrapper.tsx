@@ -38,13 +38,13 @@ export function ModalWrapper({
 		<Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
 			<DialogContent
 				showCloseButton
-				className={cn(sizeClasses[size])}
+				className={cn('p-6', sizeClasses[size])}
 			>
 				<DialogHeader>
 					<DialogTitle>{title}</DialogTitle>
 				</DialogHeader>
 				{children}
-				<DialogFooter>
+				<DialogFooter className="-mx-6 -mb-6 gap-3 p-6">
 					{footer ?? (
 						<Button variant="outline" onClick={onClose}>
 							Закрыть

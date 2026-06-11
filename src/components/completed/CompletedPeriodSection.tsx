@@ -12,6 +12,7 @@ interface CompletedPeriodSectionProps {
 	onToggle: () => void;
 	onEdit: (task: Task) => void;
 	onDelete: (taskId: string) => void;
+	onReturnToQA: (taskId: string) => void;
 }
 
 export function CompletedPeriodSection({
@@ -22,6 +23,7 @@ export function CompletedPeriodSection({
 	onToggle,
 	onEdit,
 	onDelete,
+	onReturnToQA,
 }: CompletedPeriodSectionProps) {
 	return (
 		<PeriodAccordion
@@ -35,6 +37,7 @@ export function CompletedPeriodSection({
 				periods={periods}
 				onEdit={onEdit}
 				onDelete={onDelete}
+				onReturnToQA={onReturnToQA}
 			/>
 		</PeriodAccordion>
 	);

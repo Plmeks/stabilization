@@ -1,4 +1,4 @@
-export const TASK_STATUSES = ['Бэклог', 'В работе', 'В тесте', 'Завершена', 'Блокер'] as const;
+export const TASK_STATUSES = ['В работе', 'В тесте', 'Завершена', 'Блокер'] as const;
 
 export const PRIORITIES = ['Авария', 'Нормальный', 'Некритичный'] as const;
 
@@ -19,7 +19,6 @@ export const PRIORITY_COLORS: Record<Priority, string> = {
 };
 
 export const STATUS_COLORS: Record<TaskStatus, string> = {
-	'Бэклог': 'bg-slate-100 text-slate-700 border-slate-200',
 	'В работе': 'bg-yellow-100 text-yellow-800 border-yellow-200',
 	'В тесте': 'bg-purple-100 text-purple-800 border-purple-200',
 	'Завершена': 'bg-green-100 text-green-800 border-green-200',
