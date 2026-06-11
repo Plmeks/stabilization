@@ -39,6 +39,7 @@ export type Task = {
 	created_at: string;
 	taken_into_work_at: string | null;
 	completed_at: string | null;
+	link: string | null;
 };
 
 export type CreatePeriodInput = {
@@ -50,12 +51,15 @@ export type CreateTaskInput = {
 	title: string;
 	period_id: string;
 	priority?: Priority;
+	link?: string | null;
 };
 
 export type UpdateTaskInput = {
+	title?: string;
 	assignee?: string;
 	priority?: Priority | null;
 	status?: TaskStatus;
+	link?: string | null;
 };
 
 export type CompletionInput = {

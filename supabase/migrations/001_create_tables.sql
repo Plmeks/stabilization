@@ -16,7 +16,8 @@ CREATE TABLE tasks (
   status TEXT CHECK (status IN ('В работе', 'В тесте', 'Завершена', 'Блокер')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   taken_into_work_at TIMESTAMPTZ,
-  completed_at TIMESTAMPTZ
+  completed_at TIMESTAMPTZ,
+  link TEXT
 );
 
 -- Create period_statistics table

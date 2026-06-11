@@ -1,7 +1,6 @@
 import * as React from 'react';
 import dayjs from 'dayjs';
 import { TableRow, TableCell } from '@/components/ui/table';
-import { TaskTitle } from '@/components/shared/TaskTitle';
 import { PriorityBadge } from '@/components/shared/PriorityBadge';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { PeriodBadge } from '@/components/shared/PeriodBadge';
@@ -18,8 +17,19 @@ interface CurrentTasksRowProps {
 export function CurrentTasksRow({ task, period, onEdit, onReturnToQA }: CurrentTasksRowProps) {
 	return (
 		<TableRow>
-			<TableCell className="max-w-md break-words py-3">
-				<TaskTitle title={task.title} />
+			<TableCell className="max-w-xs break-all py-3">
+				{task.link ? (
+					<a
+						href={task.link}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-blue-600 hover:underline"
+					>
+						{task.title}
+					</a>
+				) : (
+					task.title
+				)}
 			</TableCell>
 			<TableCell className="text-muted-foreground py-3">
 				{task.assignee ?? '—'}

@@ -24,6 +24,12 @@ function CreatePeriodModalContent({ onClose }: CreatePeriodModalContentProps) {
 	const [error, setError] = React.useState<string | null>(null);
 	const [loading, setLoading] = React.useState(false);
 
+	const handleStartDateChange = (date: string) => {
+		setStartDate(date);
+		const end = dayjs(date).add(6, 'day').format('YYYY-MM-DD');
+		setEndDate(end);
+	};
+
 	const createPeriod = useSetAtom(createPeriodAtom);
 	const initExpandedPeriods = useSetAtom(initExpandedPeriodsAtom);
 	const store = useStore();
@@ -76,7 +82,7 @@ function CreatePeriodModalContent({ onClose }: CreatePeriodModalContentProps) {
 			<DateRangePicker
 				startDate={startDate}
 				endDate={endDate}
-				onStartDateChange={setStartDate}
+				onStartDateChange={handleStartDateChange}
 				onEndDateChange={setEndDate}
 				error={error ?? undefined}
 			/>

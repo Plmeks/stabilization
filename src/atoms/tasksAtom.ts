@@ -36,6 +36,7 @@ export const createTaskAtom = atom(
 			created_at: new Date().toISOString(),
 			taken_into_work_at: null,
 			completed_at: null,
+			link: input.link ?? null,
 		};
 
 		set(tasksAtom, [...get(tasksAtom), tempTask]);

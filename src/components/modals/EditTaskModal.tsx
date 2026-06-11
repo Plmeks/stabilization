@@ -35,9 +35,11 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 	const updateTask = useSetAtom(updateTaskAtom);
 	const returnTaskToWork = useSetAtom(returnTaskToWorkAtom);
 
+	const [title, setTitle] = React.useState(task.title);
 	const [assignee, setAssignee] = React.useState(task.assignee ?? '');
 	const [priority, setPriority] = React.useState<Priority | ''>(task.priority ?? '');
 	const [status, setStatus] = React.useState<TaskStatus>(task.status ?? 'В работе');
+	const [link, setLink] = React.useState(task.link ?? '');
 	const [loading, setLoading] = React.useState(false);
 	const [showCompleteModal, setShowCompleteModal] = React.useState(false);
 	const [pendingUpdate, setPendingUpdate] = React.useState<UpdateTaskInput | undefined>(undefined);
@@ -45,17 +47,21 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 	const handleSave = async () => {
 		if (context === 'current' && status === 'Завершена') {
 			setPendingUpdate({
+				title: title.trim() || task.title,
 				assignee: assignee.trim() || undefined,
 				priority: priority || null,
+				link: link.trim() || null,
 			});
 			setShowCompleteModal(true);
 			return;
 		}
 
 		const input: UpdateTaskInput = {
+			title: title.trim() || task.title,
 			assignee: assignee.trim() || undefined,
 			priority: priority || null,
 			status,
+			link: link.trim() || null,
 		};
 
 		setLoading(true);
@@ -91,6 +97,16 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 				footer={footer}
 			>
 				<div className="flex flex-col gap-4">
+					<div className="flex flex-col gap-1.5">
+						<Label htmlFor="edit-title">Название</Label>
+						<Input
+							id="edit-title"
+							value={title}
+							onChange={(e) => setTitle(e.target.value)}
+							placeholder="Название задачи"
+							disabled={loading}
+						/>
+					</div>
 					<div className="flex flex-col gap-1.5">
 						<Label htmlFor="edit-assignee">Исполнитель</Label>
 						<Input
@@ -137,6 +153,16 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 								))}
 							</SelectContent>
 						</Select>
+					</div>
+					<div className="flex flex-col gap-1.5">
+						<Label htmlFor="edit-link">Ссылка (необязательно)</Label>
+						<Input
+							id="edit-link"
+							value={link}
+							onChange={(e) => setLink(e.target.value)}
+							placeholder="https://..."
+							disabled={loading}
+						/>
 					</div>
 				</div>
 			</ModalWrapper>

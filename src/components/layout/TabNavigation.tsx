@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const tabs = [
@@ -19,8 +18,7 @@ export default function TabNavigation() {
     <nav className="border-b bg-background shadow-sm">
       <div className="max-w-screen-2xl mx-auto flex overflow-x-auto px-6 py-3 gap-1 scrollbar-none items-center">
         <div className="flex items-center gap-2 mr-8 shrink-0 text-2xl font-bold text-foreground">
-          <LayoutDashboard className="h-5 w-5" />
-          <span>CallsStab</span>
+          <span>Stability</span>
         </div>
         {tabs.map((tab) => {
           const isActive = pathname === tab.href;

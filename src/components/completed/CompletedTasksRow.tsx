@@ -6,7 +6,6 @@ import { ActionButtons } from '@/components/shared/ActionButtons';
 import { PriorityBadge } from '@/components/shared/PriorityBadge';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { PeriodBadge } from '@/components/shared/PeriodBadge';
-import { TaskTitle } from '@/components/shared/TaskTitle';
 import type { Task, Period } from '@/types';
 
 interface CompletedTasksRowProps {
@@ -19,8 +18,19 @@ interface CompletedTasksRowProps {
 export function CompletedTasksRow({ task, period, onEdit, onReturnToQA }: CompletedTasksRowProps) {
 	return (
 		<TableRow>
-			<TableCell className="max-w-md break-words py-3">
-				<TaskTitle title={task.title} />
+			<TableCell className="max-w-xs break-all py-3">
+				{task.link ? (
+					<a
+						href={task.link}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-blue-600 hover:underline"
+					>
+						{task.title}
+					</a>
+				) : (
+					task.title
+				)}
 			</TableCell>
 			<TableCell className="py-3">{task.assignee ?? '—'}</TableCell>
 			<TableCell className="py-3">

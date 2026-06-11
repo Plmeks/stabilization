@@ -1,10 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { completedTasksAtom, returnToQAAtom } from '@/atoms/tasksAtom';
-import { expandedPeriodsAtom, togglePeriodExpansionAtom } from '@/atoms/uiAtom';
+
 import { EditTaskModal } from '@/components/modals/EditTaskModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { CompletedPeriodSection } from '@/components/completed/CompletedPeriodSection';
@@ -13,8 +13,8 @@ import type { Task } from '@/types';
 export default function CompletedPage() {
 	const periods = useAtomValue(periodsAtom);
 	const completedTasks = useAtomValue(completedTasksAtom);
-	const [expandedPeriods] = useAtom(expandedPeriodsAtom);
-	const togglePeriod = useSetAtom(togglePeriodExpansionAtom);
+	const [expandedPeriods, setExpandedPeriods] = React.useState<Set<string>>(new Set());
+	const expandedInitialized = React.useRef(false);
 	const returnToQA = useSetAtom(returnToQAAtom);
 
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
@@ -36,6 +36,25 @@ export default function CompletedPage() {
 			.sort((a, b) => b.start_date.localeCompare(a.start_date)),
 		[periods, completedTasksByPeriod],
 	);
+
+	React.useEffect(() => {
+		if (!expandedInitialized.current && periodsWithTasks.length > 0) {
+			expandedInitialized.current = true;
+			setExpandedPeriods(new Set([periodsWithTasks[0].id]));
+		}
+	}, [periodsWithTasks]);
+
+	const togglePeriod = (id: string) => {
+		setExpandedPeriods((prev) => {
+			const next = new Set(prev);
+			if (next.has(id)) {
+				next.delete(id);
+			} else {
+				next.add(id);
+			}
+			return next;
+		});
+	};
 
 	const handleConfirmReturn = async () => {
 		if (returningTaskId === null) return;

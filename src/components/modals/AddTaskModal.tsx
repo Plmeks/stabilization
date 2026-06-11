@@ -28,6 +28,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 	const [title, setTitle] = React.useState('');
 	const [periodId, setPeriodId] = React.useState<string | null>(defaultPeriodId ?? null);
 	const [isCritical, setIsCritical] = React.useState(false);
+	const [link, setLink] = React.useState('');
 	const [error, setError] = React.useState<string | null>(null);
 	const [loading, setLoading] = React.useState(false);
 
@@ -50,6 +51,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 				title: title.trim(),
 				period_id: periodId,
 				...(isCritical ? { priority: 'Авария' } : {}),
+				...(link.trim() ? { link: link.trim() } : {}),
 			});
 			onClose();
 		} catch {
@@ -100,6 +102,16 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 						/>
 					</div>
 				)}
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor="task-link">Ссылка (необязательно)</Label>
+					<Input
+						id="task-link"
+						value={link}
+						onChange={(e) => setLink(e.target.value)}
+						placeholder="https://..."
+						disabled={loading}
+					/>
+				</div>
 				<div className="flex items-center gap-2">
 					<input
 						id="task-critical"
