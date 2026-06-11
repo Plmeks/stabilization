@@ -14,11 +14,10 @@ interface CompletedTasksTableProps {
 	tasks: Task[];
 	periods: Period[];
 	onEdit: (task: Task) => void;
-	onDelete: (taskId: string) => void;
 	onReturnToQA: (taskId: string) => void;
 }
 
-export function CompletedTasksTable({ tasks, periods, onEdit, onDelete, onReturnToQA }: CompletedTasksTableProps) {
+export function CompletedTasksTable({ tasks, periods, onEdit, onReturnToQA }: CompletedTasksTableProps) {
 	const periodMap = new Map(periods.map((p) => [p.id, p]));
 
 	return (
@@ -41,7 +40,6 @@ export function CompletedTasksTable({ tasks, periods, onEdit, onDelete, onReturn
 						task={task}
 						period={periodMap.get(task.period_id)}
 						onEdit={() => onEdit(task)}
-						onDelete={() => onDelete(task.id)}
 						onReturnToQA={() => onReturnToQA(task.id)}
 					/>
 				))}

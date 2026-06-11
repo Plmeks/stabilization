@@ -89,15 +89,17 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 						aria-invalid={error === 'Введите название задачи' ? true : undefined}
 					/>
 				</div>
-				<div className="flex flex-col gap-1.5">
-					<Label>Период</Label>
-					<PeriodSelector
-						periods={periods}
-						value={periodId}
-						onChange={setPeriodId}
-						defaultToLatest={!defaultPeriodId}
-					/>
-				</div>
+				{!defaultPeriodId && (
+					<div className="flex flex-col gap-1.5">
+						<Label>Период</Label>
+						<PeriodSelector
+							periods={periods}
+							value={periodId}
+							onChange={setPeriodId}
+							defaultToLatest={true}
+						/>
+					</div>
+				)}
 				<div className="flex items-center gap-2">
 					<input
 						id="task-critical"

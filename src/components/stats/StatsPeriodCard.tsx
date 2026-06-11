@@ -2,13 +2,16 @@
 
 import * as React from 'react';
 import dayjs from 'dayjs';
-import { Pencil } from 'lucide-react';
+import { Pencil, Trash2 } from 'lucide-react';
+import { useSetAtom } from 'jotai';
 import { formatPeriodLabel } from '@/lib/utils';
 import type { Period, PeriodStatistics } from '@/types';
 import { Button } from '@/components/ui/button';
+import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import StatsMetricItem from './StatsMetricItem';
 import LockMetricsButton from './LockMetricsButton';
 import { EditMetricsModal } from '@/components/modals/EditMetricsModal';
+import { deletePeriodStatisticsAtom } from '@/atoms/statsAtom';
 
 interface StatsPeriodCardProps {
 	period: Period;
@@ -32,16 +35,39 @@ export default function StatsPeriodCard({
 	dynamicInTesting,
 }: StatsPeriodCardProps) {
 	const [editOpen, setEditOpen] = React.useState(false);
+	const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
+	const [deleteLoading, setDeleteLoading] = React.useState(false);
+	const deleteStatistics = useSetAtom(deletePeriodStatisticsAtom);
 	const isLocked = statistics !== null;
+
+	const handleDeleteConfirm = async () => {
+		setDeleteLoading(true);
+		try {
+			await deleteStatistics(period.id);
+			setDeleteConfirmOpen(false);
+		} finally {
+			setDeleteLoading(false);
+		}
+	};
 
 	return (
 		<div className="border rounded-xl shadow-sm overflow-hidden">
 			<div className="flex items-center justify-between px-5 py-4 bg-muted/40">
 				<span className="font-medium text-sm">{formatPeriodLabel(period)}</span>
 				{isLocked && (
-					<Button variant="ghost" size="icon" onClick={() => setEditOpen(true)}>
-						<Pencil className="h-4 w-4" />
-					</Button>
+					<div className="flex items-center gap-1">
+						<Button variant="ghost" size="icon" onClick={() => setEditOpen(true)}>
+							<Pencil className="h-4 w-4" />
+						</Button>
+						<Button
+							variant="ghost"
+							size="icon"
+							className="text-destructive hover:text-destructive"
+							onClick={() => setDeleteConfirmOpen(true)}
+						>
+							<Trash2 className="h-4 w-4" />
+						</Button>
+					</div>
 				)}
 			</div>
 
@@ -92,6 +118,15 @@ export default function StatsPeriodCard({
 					statistics={statistics}
 				/>
 			)}
+
+			<ConfirmDialog
+				open={deleteConfirmOpen}
+				onClose={() => setDeleteConfirmOpen(false)}
+				onConfirm={handleDeleteConfirm}
+				title="Удалить зафиксированную статистику"
+				message="Зафиксированные данные будут удалены. Статистика снова станет динамической."
+				loading={deleteLoading}
+			/>
 		</div>
 	);
 }

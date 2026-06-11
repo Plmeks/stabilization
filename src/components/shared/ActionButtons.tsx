@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 
 interface ActionButtonsProps {
 	onEdit?: () => void;
-	onDelete: () => void;
+	onDelete?: () => void;
 	onReturnToQA?: () => void;
 	disabled?: boolean;
 }
@@ -38,16 +38,18 @@ export function ActionButtons({ onEdit, onDelete, onReturnToQA, disabled = false
 					<Undo2 className="h-4 w-4" />
 				</Button>
 			)}
-			<Button
-				variant="ghost"
-				size="icon"
-				className="h-8 w-8 text-destructive hover:text-destructive"
-				onClick={onDelete}
-				disabled={disabled}
-				aria-label="Удалить"
-			>
-				<Trash2 className="h-4 w-4" />
-			</Button>
+			{onDelete !== undefined && (
+				<Button
+					variant="ghost"
+					size="icon"
+					className="h-8 w-8 text-destructive hover:text-destructive"
+					onClick={onDelete}
+					disabled={disabled}
+					aria-label="Удалить"
+				>
+					<Trash2 className="h-4 w-4" />
+				</Button>
+			)}
 		</div>
 	);
 }

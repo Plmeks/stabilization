@@ -12,11 +12,10 @@ interface CurrentTasksRowProps {
 	task: Task;
 	period: Period | undefined;
 	onEdit: () => void;
-	onDelete: () => void;
 	onReturnToQA: () => void;
 }
 
-export function CurrentTasksRow({ task, period, onEdit, onDelete, onReturnToQA }: CurrentTasksRowProps) {
+export function CurrentTasksRow({ task, period, onEdit, onReturnToQA }: CurrentTasksRowProps) {
 	return (
 		<TableRow>
 			<TableCell className="max-w-md break-words py-3">
@@ -40,7 +39,7 @@ export function CurrentTasksRow({ task, period, onEdit, onDelete, onReturnToQA }
 					: '—'}
 			</TableCell>
 			<TableCell className="py-3">
-				<ActionButtons onEdit={onEdit} onDelete={onDelete} onReturnToQA={onReturnToQA} />
+				<ActionButtons onEdit={onEdit} onReturnToQA={onReturnToQA} />
 			</TableCell>
 		</TableRow>
 	);

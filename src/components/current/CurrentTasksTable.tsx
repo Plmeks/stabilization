@@ -37,11 +37,10 @@ interface CurrentTasksTableProps {
 	tasks: Task[];
 	periods: Period[];
 	onEdit: (task: Task) => void;
-	onDelete: (taskId: string) => void;
 	onReturnToQA: (taskId: string) => void;
 }
 
-export function CurrentTasksTable({ tasks, periods, onEdit, onDelete, onReturnToQA }: CurrentTasksTableProps) {
+export function CurrentTasksTable({ tasks, periods, onEdit, onReturnToQA }: CurrentTasksTableProps) {
 	const sorted = sortTasks(tasks);
 
 	const getPeriod = (periodId: string): Period | undefined =>
@@ -75,7 +74,6 @@ export function CurrentTasksTable({ tasks, periods, onEdit, onDelete, onReturnTo
 						task={task}
 						period={getPeriod(task.period_id)}
 						onEdit={() => onEdit(task)}
-						onDelete={() => onDelete(task.id)}
 						onReturnToQA={() => onReturnToQA(task.id)}
 					/>
 				))}

@@ -4,6 +4,7 @@ import {
 	fetchAllPeriodStatistics,
 	createPeriodStatistics,
 	updatePeriodStatistics,
+	deletePeriodStatistics,
 } from '@/lib/supabase/dal';
 import { tasksAtom } from '@/atoms/tasksAtom';
 
@@ -50,6 +51,21 @@ export const updatePeriodStatisticsAtom = atom(
 		try {
 			const updated = await updatePeriodStatistics(id, metrics);
 			set(periodStatisticsAtom, get(periodStatisticsAtom).map((s) => (s.id === id ? updated : s)));
+		} catch (error) {
+			set(periodStatisticsAtom, previous);
+			throw error;
+		}
+	},
+);
+
+export const deletePeriodStatisticsAtom = atom(
+	null,
+	async (get, set, periodId: string) => {
+		const previous = get(periodStatisticsAtom);
+		set(periodStatisticsAtom, previous.filter((s) => s.period_id !== periodId));
+
+		try {
+			await deletePeriodStatistics(periodId);
 		} catch (error) {
 			set(periodStatisticsAtom, previous);
 			throw error;

@@ -6,7 +6,7 @@ import { LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const tabs = [
-  { href: "/qa", label: "Новые задачи / QA" },
+  { href: "/qa", label: "Новые задачи" },
   { href: "/current", label: "Текущие задачи" },
   { href: "/completed", label: "Выполненные" },
   { href: "/stats", label: "Статистика" },

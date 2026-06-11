@@ -13,11 +13,10 @@ interface CompletedTasksRowProps {
 	task: Task;
 	period: Period | undefined;
 	onEdit: () => void;
-	onDelete: () => void;
 	onReturnToQA: () => void;
 }
 
-export function CompletedTasksRow({ task, period, onEdit, onDelete, onReturnToQA }: CompletedTasksRowProps) {
+export function CompletedTasksRow({ task, period, onEdit, onReturnToQA }: CompletedTasksRowProps) {
 	return (
 		<TableRow>
 			<TableCell className="max-w-md break-words py-3">
@@ -39,7 +38,7 @@ export function CompletedTasksRow({ task, period, onEdit, onDelete, onReturnToQA
 					: '—'}
 			</TableCell>
 			<TableCell className="py-3">
-				<ActionButtons onEdit={onEdit} onDelete={onDelete} onReturnToQA={onReturnToQA} />
+				<ActionButtons onEdit={onEdit} onReturnToQA={onReturnToQA} />
 			</TableCell>
 		</TableRow>
 	);
