@@ -4,14 +4,14 @@ import {
 	fetchAllPeriodStatistics,
 	createPeriodStatistics,
 	updatePeriodStatistics,
+	updatePeriodStatisticsComment,
 	deletePeriodStatistics,
 } from '@/lib/supabase/dal';
 import { tasksAtom } from '@/atoms/tasksAtom';
+import { periodsAtom } from '@/atoms/periodsAtom';
+import { calculateDynamicMetrics } from '@/lib/stats-utils';
 
-type MetricsPayload = Pick<
-	PeriodStatistics,
-	'added_to_backlog' | 'added_critical' | 'resolved_total' | 'resolved_critical' | 'in_progress' | 'in_testing'
->;
+type MetricsPayload = Omit<PeriodStatistics, 'id' | 'period_id' | 'comment' | 'locked_at' | 'created_at'>;
 
 export const periodStatisticsAtom = atom<PeriodStatistics[]>([]);
 
@@ -26,18 +26,17 @@ export const fetchPeriodStatisticsAtom = atom(
 export const lockPeriodMetricsAtom = atom(
 	null,
 	async (get, set, periodId: string) => {
-		const tasks = get(tasksAtom).filter((t) => t.period_id === periodId);
+		const allTasks = get(tasksAtom);
+		const allPeriods = get(periodsAtom);
+		const period = allPeriods.find((p) => p.id === periodId);
 
-		const metrics: MetricsPayload = {
-			added_to_backlog: tasks.filter((t) => t.status !== null).length,
-			added_critical: tasks.filter((t) => t.status !== null && t.priority === 'Авария').length,
-			resolved_total: tasks.filter((t) => t.status === 'Завершена').length,
-			resolved_critical: tasks.filter((t) => t.status === 'Завершена' && t.priority === 'Авария').length,
-			in_progress: tasks.filter((t) => t.status === 'В работе').length,
-			in_testing: tasks.filter((t) => t.status === 'В тесте').length,
-		};
+		if (!period) {
+			throw new Error(`Period not found: ${periodId}`);
+		}
 
-		const created = await createPeriodStatistics(periodId, metrics);
+		const metrics = calculateDynamicMetrics(period, allPeriods, allTasks);
+
+		const created = await createPeriodStatistics(periodId, { ...metrics, comment: null });
 		set(periodStatisticsAtom, [...get(periodStatisticsAtom), created]);
 	},
 );
@@ -49,8 +48,39 @@ export const updatePeriodStatisticsAtom = atom(
 		set(periodStatisticsAtom, previous.map((s) => (s.id === id ? { ...s, ...metrics } : s)));
 
 		try {
-			const updated = await updatePeriodStatistics(id, metrics);
+			const existingComment = previous.find((s) => s.id === id)?.comment ?? null;
+			const updated = await updatePeriodStatistics(id, { ...metrics, comment: existingComment });
 			set(periodStatisticsAtom, get(periodStatisticsAtom).map((s) => (s.id === id ? updated : s)));
+		} catch (error) {
+			set(periodStatisticsAtom, previous);
+			throw error;
+		}
+	},
+);
+
+export const updatePeriodStatisticsCommentAtom = atom(
+	null,
+	async (get, set, { id, comment }: { id: string; comment: string | null }) => {
+		const previous = get(periodStatisticsAtom);
+		set(periodStatisticsAtom, previous.map((s) => (s.id === id ? { ...s, comment } : s)));
+
+		try {
+			await updatePeriodStatisticsComment(id, comment);
+		} catch (error) {
+			set(periodStatisticsAtom, previous);
+			throw error;
+		}
+	},
+);
+
+export const updatePeriodCommentAtom = atom(
+	null,
+	async (get, set, { statisticsId, comment }: { statisticsId: string; comment: string | null }) => {
+		const previous = get(periodStatisticsAtom);
+		set(periodStatisticsAtom, previous.map((s) => (s.id === statisticsId ? { ...s, comment } : s)));
+
+		try {
+			await updatePeriodStatisticsComment(statisticsId, comment);
 		} catch (error) {
 			set(periodStatisticsAtom, previous);
 			throw error;

@@ -19,12 +19,34 @@ export type Period = {
 export type PeriodStatistics = {
 	id: string;
 	period_id: string;
+
+	// Period-specific: Added
 	added_to_backlog: number;
 	added_critical: number;
+	added_non_critical: number;
+
+	// Period-specific: Resolved
 	resolved_total: number;
 	resolved_critical: number;
+	resolved_non_critical: number;
+
+	// WIP snapshot
 	in_progress: number;
 	in_testing: number;
+	in_block: number;
+	wip_total: number;
+
+	// Cumulative
+	total_problems_cumulative: number;
+	completed_cumulative: number;
+	uncompleted: number;
+	uncompleted_critical: number;
+	uncompleted_non_critical: number;
+
+	// Comment
+	comment: string | null;
+
+	// Timestamps
 	locked_at: string;
 	created_at: string;
 };

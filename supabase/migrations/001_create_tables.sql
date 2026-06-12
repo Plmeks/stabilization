@@ -24,12 +24,34 @@ CREATE TABLE tasks (
 CREATE TABLE period_statistics (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   period_id UUID NOT NULL UNIQUE REFERENCES periods(id) ON DELETE CASCADE,
+
+  -- Period-specific: Added
   added_to_backlog INTEGER NOT NULL,
   added_critical INTEGER NOT NULL,
+  added_non_critical INTEGER NOT NULL,
+
+  -- Period-specific: Resolved
   resolved_total INTEGER NOT NULL,
   resolved_critical INTEGER NOT NULL,
+  resolved_non_critical INTEGER NOT NULL,
+
+  -- WIP snapshot
   in_progress INTEGER NOT NULL,
   in_testing INTEGER NOT NULL,
+  in_block INTEGER NOT NULL DEFAULT 0,
+  wip_total INTEGER NOT NULL,
+
+  -- Cumulative
+  total_problems_cumulative INTEGER NOT NULL,
+  completed_cumulative INTEGER NOT NULL,
+  uncompleted INTEGER NOT NULL,
+  uncompleted_critical INTEGER NOT NULL,
+  uncompleted_non_critical INTEGER NOT NULL,
+
+  -- Comment
+  comment TEXT,
+
+  -- Timestamps
   locked_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

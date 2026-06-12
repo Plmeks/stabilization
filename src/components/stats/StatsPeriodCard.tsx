@@ -6,9 +6,12 @@ import { Pencil, Trash2 } from 'lucide-react';
 import { useSetAtom } from 'jotai';
 import { formatPeriodLabel } from '@/lib/utils';
 import type { Period, PeriodStatistics } from '@/types';
+import type { DynamicMetrics } from '@/lib/stats-utils';
 import { Button } from '@/components/ui/button';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import StatsMetricItem from './StatsMetricItem';
+import StatsMetricGroup from './StatsMetricGroup';
+import StatsComment from './StatsComment';
 import LockMetricsButton from './LockMetricsButton';
 import { EditMetricsModal } from '@/components/modals/EditMetricsModal';
 import { deletePeriodStatisticsAtom } from '@/atoms/statsAtom';
@@ -16,29 +19,20 @@ import { deletePeriodStatisticsAtom } from '@/atoms/statsAtom';
 interface StatsPeriodCardProps {
 	period: Period;
 	statistics: PeriodStatistics | null;
-	dynamicAddedToBacklog: number;
-	dynamicAddedCritical: number;
-	dynamicResolvedTotal: number;
-	dynamicResolvedCritical: number;
-	dynamicInProgress: number;
-	dynamicInTesting: number;
+	dynamicMetrics: DynamicMetrics;
 }
 
 export default function StatsPeriodCard({
 	period,
 	statistics,
-	dynamicAddedToBacklog,
-	dynamicAddedCritical,
-	dynamicResolvedTotal,
-	dynamicResolvedCritical,
-	dynamicInProgress,
-	dynamicInTesting,
+	dynamicMetrics,
 }: StatsPeriodCardProps) {
 	const [editOpen, setEditOpen] = React.useState(false);
 	const [deleteConfirmOpen, setDeleteConfirmOpen] = React.useState(false);
 	const [deleteLoading, setDeleteLoading] = React.useState(false);
 	const deleteStatistics = useSetAtom(deletePeriodStatisticsAtom);
-	const isLocked = statistics !== null;
+
+	const metrics = statistics ?? dynamicMetrics;
 
 	const handleDeleteConfirm = async () => {
 		setDeleteLoading(true);
@@ -54,7 +48,7 @@ export default function StatsPeriodCard({
 		<div className="border rounded-xl shadow-sm overflow-hidden">
 			<div className="flex items-center justify-between px-5 py-4 bg-muted/40">
 				<span className="font-medium text-sm">{formatPeriodLabel(period)}</span>
-				{isLocked && (
+				{statistics !== null && (
 					<div className="flex items-center gap-1">
 						<Button variant="ghost" size="icon" onClick={() => setEditOpen(true)}>
 							<Pencil className="h-4 w-4" />
@@ -72,34 +66,59 @@ export default function StatsPeriodCard({
 			</div>
 
 			<div className="px-5 py-5 space-y-4">
-				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-					<StatsMetricItem
-						label="Добавлено в беклог"
-						value={isLocked ? statistics.added_to_backlog : dynamicAddedToBacklog}
-					/>
-					<StatsMetricItem
-						label="Из них критических"
-						value={isLocked ? statistics.added_critical : dynamicAddedCritical}
-					/>
-					<StatsMetricItem
-						label="Решено всего"
-						value={isLocked ? statistics.resolved_total : dynamicResolvedTotal}
-					/>
-					<StatsMetricItem
-						label="Решено критических"
-						value={isLocked ? statistics.resolved_critical : dynamicResolvedCritical}
-					/>
-					<StatsMetricItem
-						label="В работе"
-						value={isLocked ? statistics.in_progress : dynamicInProgress}
-					/>
-					<StatsMetricItem
-						label="В тесте"
-						value={isLocked ? statistics.in_testing : dynamicInTesting}
-					/>
-				</div>
+				<StatsMetricGroup title="Краткая статистика">
+					<StatsMetricItem label="Добавлено в бэклог" value={metrics.added_to_backlog} />
+					<StatsMetricItem label="Из них критических" value={metrics.added_critical} isSubMetric />
+					<StatsMetricItem label="Решено всего" value={metrics.resolved_total} />
+					<StatsMetricItem label="Решено критических" value={metrics.resolved_critical} isSubMetric />
+					<StatsMetricItem label="В работе" value={metrics.in_progress} />
+					<StatsMetricItem label="В тесте" value={metrics.in_testing} />
+					<StatsMetricItem label="В блоке" value={metrics.in_block} />
+				</StatsMetricGroup>
 
-				{isLocked ? (
+				<StatsMetricGroup title="Накопительные">
+					<StatsMetricItem label="Всего проблем" value={metrics.total_problems_cumulative} />
+					<StatsMetricItem label="Выполнено" value={metrics.completed_cumulative} />
+				</StatsMetricGroup>
+
+				<StatsMetricGroup title="Незавершенные">
+					<StatsMetricItem label="Всего" value={metrics.uncompleted} />
+					<StatsMetricItem label="Критические" value={metrics.uncompleted_critical} isSubMetric />
+					<StatsMetricItem label="Некритические" value={metrics.uncompleted_non_critical} isSubMetric />
+				</StatsMetricGroup>
+
+				<StatsMetricGroup title="WIP">
+					<StatsMetricItem label="Всего" value={metrics.wip_total} />
+					<StatsMetricItem label="В работе" value={metrics.in_progress} isSubMetric />
+					<StatsMetricItem label="В тесте" value={metrics.in_testing} isSubMetric />
+					<StatsMetricItem label="В блоке" value={metrics.in_block} isSubMetric />
+				</StatsMetricGroup>
+
+				<StatsMetricGroup title="Выполнено за период">
+					<StatsMetricItem label="Всего" value={metrics.resolved_total} />
+					<StatsMetricItem label="Критические" value={metrics.resolved_critical} isSubMetric />
+					<StatsMetricItem label="Некритические" value={metrics.resolved_non_critical} isSubMetric />
+				</StatsMetricGroup>
+
+				<StatsMetricGroup title="Добавлено за период">
+					<StatsMetricItem label="Всего" value={metrics.added_to_backlog} />
+					<StatsMetricItem label="Критические" value={metrics.added_critical} isSubMetric />
+					<StatsMetricItem label="Некритические" value={metrics.added_non_critical} isSubMetric />
+				</StatsMetricGroup>
+
+				{statistics !== null && (
+					<div className="border-t pt-4">
+						<p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-3">
+							Комментарий
+						</p>
+						<StatsComment
+							statisticsId={statistics.id}
+							initialComment={statistics.comment}
+						/>
+					</div>
+				)}
+
+				{statistics !== null ? (
 					<p className="text-xs text-muted-foreground">
 						Зафиксировано: {dayjs(statistics.locked_at).format('DD.MM.YYYY HH:mm')}
 					</p>

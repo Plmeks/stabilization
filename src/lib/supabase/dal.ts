@@ -192,6 +192,18 @@ export async function updatePeriodStatistics(
 	return data as PeriodStatistics;
 }
 
+export async function updatePeriodStatisticsComment(
+	id: string,
+	comment: string | null,
+): Promise<void> {
+	const { error } = await supabase
+		.from('period_statistics')
+		.update({ comment })
+		.eq('id', id);
+
+	if (error) throw error;
+}
+
 export async function deletePeriodStatistics(periodId: string): Promise<void> {
 	const { error } = await supabase
 		.from('period_statistics')
