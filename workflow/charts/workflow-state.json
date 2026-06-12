@@ -3,22 +3,65 @@
   "output_dir": "workflow/charts",
   "docs_dir": null,
   "task_description": "Add 3 charts to Statistics tab: CFD with WIP line, cumulative critical tickets backlog, cumulative non-critical tickets backlog",
-  "phase": 1,
-  "step": "1.1",
-  "status": "in_progress",
+  "phase": 4,
+  "step": "complete",
+  "status": "completed",
   "review_counts": {
     "analysis": 0,
     "architecture": 0,
-    "planning": 0
+    "planning": 1
   },
   "artifacts": {
     "ts_file": "workflow/charts/technical-specification.md",
     "ts_review": null,
     "architecture_file": null,
     "architecture_review": null,
-    "plan_file": null,
-    "plan_review": null,
-    "preflight_report": null
+    "plan_file": "workflow/charts/plan.md",
+    "plan_review": "workflow/charts/plan-review.md",
+    "preflight_report": "workflow/charts/preflight-report.md"
   },
-  "completed_tasks": []
+  "completed_tasks": [
+    {
+      "id": "1-1",
+      "description": "Install Recharts dependency",
+      "files_created": [],
+      "files_modified": ["package.json", "pnpm-lock.yaml"],
+      "status": "completed"
+    },
+    {
+      "id": "1-2",
+      "description": "Create chart-utils.ts with data calculation",
+      "files_created": ["src/lib/chart-utils.ts"],
+      "files_modified": [],
+      "status": "completed"
+    },
+    {
+      "id": "2-1",
+      "description": "Create CFDChart component",
+      "files_created": ["src/components/stats/charts/CFDChart.tsx"],
+      "files_modified": [],
+      "status": "completed"
+    },
+    {
+      "id": "2-2",
+      "description": "Create BacklogChart component",
+      "files_created": ["src/components/stats/charts/BacklogChart.tsx"],
+      "files_modified": [],
+      "status": "completed"
+    },
+    {
+      "id": "3-1",
+      "description": "Create ChartsSection container",
+      "files_created": ["src/components/stats/charts/ChartsSection.tsx"],
+      "files_modified": [],
+      "status": "completed"
+    },
+    {
+      "id": "4-1",
+      "description": "Integrate ChartsSection into stats page",
+      "files_created": [],
+      "files_modified": ["src/app/stats/page.tsx"],
+      "status": "completed"
+    }
+  ]
 }

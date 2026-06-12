@@ -9,6 +9,7 @@ const tabs = [
   { href: "/current", label: "Текущие задачи" },
   { href: "/completed", label: "Выполненные" },
   { href: "/stats", label: "Статистика" },
+  { href: "/charts", label: "Графики" },
 ];
 
 export default function TabNavigation() {

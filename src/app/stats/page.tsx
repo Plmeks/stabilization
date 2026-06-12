@@ -63,7 +63,7 @@ export default function StatsPage() {
 					</Button>
 				</div>
 			)}
-			{sortedPeriods.map((period) => {
+				{sortedPeriods.map((period) => {
 				const statistics = periodStatistics.find((s) => s.period_id === period.id) ?? null;
 				const dynamicMetrics = calculateDynamicMetrics(period, periods, tasks);
 
