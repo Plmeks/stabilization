@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom, useAtom } from 'jotai';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { QAPeriodSection } from '@/components/qa/QAPeriodSection';
@@ -17,11 +17,14 @@ export default function QAPage() {
 	const periods = useAtomValue(periodsAtom);
 	const qaTasks = useAtomValue(qaTasksAtom);
 	const tasksByPeriod = useAtomValue(tasksByPeriodAtom);
-	const expandedPeriods = useAtomValue(expandedPeriodsAtom);
+	const [expandedPeriods, setExpandedPeriods] = useAtom(expandedPeriodsAtom);
 	const toggleExpansion = useSetAtom(togglePeriodExpansionAtom);
 	const deletePeriod = useSetAtom(deletePeriodAtom);
 	const deleteTask = useSetAtom(deleteTaskAtom);
 	const takeIntoWork = useSetAtom(takeIntoWorkAtom);
+
+	const [isAllExpanded, setIsAllExpanded] = React.useState(false);
+	const expandedInitialized = React.useRef(false);
 
 	const [showCreatePeriodModal, setShowCreatePeriodModal] = React.useState(false);
 	const [showAddTaskModal, setShowAddTaskModal] = React.useState(false);
@@ -29,15 +32,28 @@ export default function QAPage() {
 	const [showDeletePeriodConfirm, setShowDeletePeriodConfirm] = React.useState<string | null>(null);
 	const [showDeleteTaskConfirm, setShowDeleteTaskConfirm] = React.useState<string | null>(null);
 
+	React.useEffect(() => {
+		if (!expandedInitialized.current && periods.length > 0) {
+			expandedInitialized.current = true;
+			setExpandedPeriods(new Set([periods[0].id]));
+		}
+	}, [periods, setExpandedPeriods]);
+
+	const toggleAll = () => {
+		if (isAllExpanded) {
+			setExpandedPeriods(new Set());
+			setIsAllExpanded(false);
+		} else {
+			setExpandedPeriods(new Set(periods.map((p) => p.id)));
+			setIsAllExpanded(true);
+		}
+	};
+
 	const handleAddTaskForPeriod = (periodId: string) => {
 		setAddTaskDefaultPeriodId(periodId);
 		setShowAddTaskModal(true);
 	};
 
-	const handleAddTaskGeneral = () => {
-		setAddTaskDefaultPeriodId(null);
-		setShowAddTaskModal(true);
-	};
 
 	const handleAddTaskModalClose = () => {
 		setShowAddTaskModal(false);
@@ -66,11 +82,16 @@ export default function QAPage() {
 
 	return (
 		<div className="flex flex-col gap-5 p-6">
-			<div className="flex items-center gap-2">
+			<div className="flex items-center justify-between gap-2">
 				<Button variant="outline" onClick={() => setShowCreatePeriodModal(true)}>
 					<Plus className="h-4 w-4 mr-1" />
 					Добавить период
 				</Button>
+				{periods.length > 0 && (
+					<Button variant="outline" size="sm" onClick={toggleAll}>
+						{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
+					</Button>
+				)}
 			</div>
 
 			<div className="flex flex-col gap-4">

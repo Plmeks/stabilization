@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { completedTasksAtom, returnToQAAtom } from '@/atoms/tasksAtom';
-
+import { Button } from '@/components/ui/button';
 import { EditTaskModal } from '@/components/modals/EditTaskModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { CompletedPeriodSection } from '@/components/completed/CompletedPeriodSection';
@@ -15,6 +15,7 @@ export default function CompletedPage() {
 	const completedTasks = useAtomValue(completedTasksAtom);
 	const [expandedPeriods, setExpandedPeriods] = React.useState<Set<string>>(new Set());
 	const expandedInitialized = React.useRef(false);
+	const [isAllExpanded, setIsAllExpanded] = React.useState(false);
 	const returnToQA = useSetAtom(returnToQAAtom);
 
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
@@ -56,6 +57,16 @@ export default function CompletedPage() {
 		});
 	};
 
+	const toggleAll = () => {
+		if (isAllExpanded) {
+			setExpandedPeriods(new Set());
+			setIsAllExpanded(false);
+		} else {
+			setExpandedPeriods(new Set(periodsWithTasks.map((p) => p.id)));
+			setIsAllExpanded(true);
+		}
+	};
+
 	const handleConfirmReturn = async () => {
 		if (returningTaskId === null) return;
 		setReturnLoading(true);
@@ -74,18 +85,25 @@ export default function CompletedPage() {
 					Нет выполненных задач
 				</p>
 			) : (
-				periodsWithTasks.map((period) => (
-					<CompletedPeriodSection
-						key={period.id}
-						period={period}
-						tasks={completedTasksByPeriod.get(period.id) ?? []}
-						periods={periods}
-						isExpanded={expandedPeriods.has(period.id)}
-						onToggle={() => togglePeriod(period.id)}
-						onEdit={setEditingTask}
-						onReturnToQA={setReturningTaskId}
-					/>
-				))
+				<>
+					<div className="flex justify-end">
+						<Button variant="outline" size="sm" onClick={toggleAll}>
+							{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
+						</Button>
+					</div>
+					{periodsWithTasks.map((period) => (
+						<CompletedPeriodSection
+							key={period.id}
+							period={period}
+							tasks={completedTasksByPeriod.get(period.id) ?? []}
+							periods={periods}
+							isExpanded={expandedPeriods.has(period.id)}
+							onToggle={() => togglePeriod(period.id)}
+							onEdit={setEditingTask}
+							onReturnToQA={setReturningTaskId}
+						/>
+					))}
+				</>
 			)}
 
 			{editingTask !== null && (
