@@ -176,7 +176,6 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 				onCancel={() => setShowCompleteModal(false)}
 				taskId={task.id}
 				pendingTaskUpdate={pendingUpdate}
-				defaultPeriodId={task.period_id}
 			/>
 		</>
 	);

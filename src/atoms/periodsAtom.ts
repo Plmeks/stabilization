@@ -4,6 +4,8 @@ import {
 	fetchPeriods,
 	createPeriod,
 	deletePeriod,
+	transferWipTasks,
+	resetActivePeriodForDeletion,
 } from '@/lib/supabase/dal';
 
 export const periodsAtom = atom<Period[]>([]);
@@ -51,6 +53,24 @@ export const createPeriodAtom = atom(
 				if (sd !== 0) return sd;
 				return b.end_date.localeCompare(a.end_date);
 			}));
+
+			const updatedPeriods = get(periodsAtom);
+			const isLatest = updatedPeriods.length > 0 && updatedPeriods[0].id === realPeriod.id;
+
+			if (isLatest) {
+				try {
+					const updatedTasks = await transferWipTasks(realPeriod.id);
+					if (updatedTasks.length > 0) {
+						const { tasksAtom } = await import('@/atoms/tasksAtom');
+						const updatedMap = new Map(updatedTasks.map((t) => [t.id, t]));
+						set(tasksAtom, get(tasksAtom).map((t) => updatedMap.get(t.id) ?? t));
+					}
+				} catch (transferError) {
+					console.error('WIP transfer failed after period creation:', transferError);
+					// Period was created successfully. Transfer failure is non-fatal per TS §4.2 assumption 9.
+					// The error is logged; the user sees the period but WIP tasks are not yet reassigned.
+				}
+			}
 		} catch (error) {
 			set(periodsAtom, get(periodsAtom).filter((p) => p.id !== tempId));
 			throw error;
@@ -61,13 +81,32 @@ export const createPeriodAtom = atom(
 export const deletePeriodAtom = atom(
 	null,
 	async (get, set, id: string) => {
-		const previous = get(periodsAtom);
-		set(periodsAtom, previous.filter((p) => p.id !== id));
+		const previousPeriods = get(periodsAtom);
+		const { tasksAtom } = await import('@/atoms/tasksAtom');
+		const previousTasks = get(tasksAtom);
+
+		// Optimistic: remove period from UI immediately
+		set(periodsAtom, previousPeriods.filter((p) => p.id !== id));
 
 		try {
+			// Step 1: reset active_period_id for cross-period tasks BEFORE deletion
+			const resetTasks = await resetActivePeriodForDeletion(id);
+
+			// Step 2: update tasksAtom — apply resets and remove cascade-deleted tasks
+			const resetMap = new Map(resetTasks.map((t) => [t.id, t]));
+			set(
+				tasksAtom,
+				previousTasks
+					.filter((t) => t.creation_period_id !== id)
+					.map((t) => resetMap.get(t.id) ?? t),
+			);
+
+			// Step 3: delete the period (cascade-deletes tasks with creation_period_id = id in DB)
 			await deletePeriod(id);
 		} catch (error) {
-			set(periodsAtom, previous);
+			// Rollback both atoms
+			set(periodsAtom, previousPeriods);
+			set(tasksAtom, previousTasks);
 			throw error;
 		}
 	},

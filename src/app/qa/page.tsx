@@ -10,13 +10,14 @@ import { AddTaskModal } from '@/components/modals/AddTaskModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { deletePeriodAtom } from '@/atoms/periodsAtom';
-import { qaTasksAtom, tasksByPeriodAtom, deleteTaskAtom, takeIntoWorkAtom } from '@/atoms/tasksAtom';
+import { qaTasksAtom, tasksByCreationPeriodAtom, tasksByActivePeriodAtom, deleteTaskAtom, takeIntoWorkAtom } from '@/atoms/tasksAtom';
 import { expandedPeriodsAtom, togglePeriodExpansionAtom } from '@/atoms/uiAtom';
 
 export default function QAPage() {
 	const periods = useAtomValue(periodsAtom);
 	const qaTasks = useAtomValue(qaTasksAtom);
-	const tasksByPeriod = useAtomValue(tasksByPeriodAtom);
+	const tasksByCreationPeriod = useAtomValue(tasksByCreationPeriodAtom);
+	const tasksByActivePeriod = useAtomValue(tasksByActivePeriodAtom);
 	const [expandedPeriods, setExpandedPeriods] = useAtom(expandedPeriodsAtom);
 	const toggleExpansion = useSetAtom(togglePeriodExpansionAtom);
 	const deletePeriod = useSetAtom(deletePeriodAtom);
@@ -77,7 +78,12 @@ export default function QAPage() {
 	};
 
 	const deletePeriodTaskCount = showDeletePeriodConfirm
-		? (tasksByPeriod[showDeletePeriodConfirm]?.length ?? 0)
+		? (tasksByCreationPeriod[showDeletePeriodConfirm]?.length ?? 0)
+		: 0;
+
+	const affectedActivePeriodTaskCount = showDeletePeriodConfirm
+		? (tasksByActivePeriod[showDeletePeriodConfirm] ?? [])
+				.filter((t) => t.creation_period_id !== showDeletePeriodConfirm).length
 		: 0;
 
 	return (
@@ -96,8 +102,8 @@ export default function QAPage() {
 
 			<div className="flex flex-col gap-4">
 				{periods.map((period) => {
-					const periodQATasks = qaTasks.filter((t) => t.period_id === period.id);
-					const totalCount = tasksByPeriod[period.id]?.length ?? 0;
+					const periodQATasks = qaTasks.filter((t) => t.creation_period_id === period.id);
+					const totalCount = tasksByCreationPeriod[period.id]?.length ?? 0;
 
 					return (
 						<QAPeriodSection
@@ -111,7 +117,7 @@ export default function QAPage() {
 							onTakeIntoWork={handleTakeIntoWork}
 							onDeleteTask={setShowDeleteTaskConfirm}
 							totalTaskCount={totalCount}
-							criticalCount={(tasksByPeriod[period.id] ?? []).filter((t) => t.priority === 'Авария').length}
+							criticalCount={(tasksByCreationPeriod[period.id] ?? []).filter((t) => t.priority === 'Авария').length}
 						/>
 					);
 				})}
@@ -133,7 +139,11 @@ export default function QAPage() {
 				onClose={() => setShowDeletePeriodConfirm(null)}
 				onConfirm={handleDeletePeriodConfirm}
 				title="Удалить период"
-				message={`Будут удалены все задачи периода (${deletePeriodTaskCount} шт.)`}
+				message={
+					affectedActivePeriodTaskCount > 0
+						? `Будут удалены все задачи периода (${deletePeriodTaskCount} шт.). Также у ${affectedActivePeriodTaskCount} задач из других периодов будет сброшен активный период.`
+						: `Будут удалены все задачи периода (${deletePeriodTaskCount} шт.).`
+				}
 			/>
 
 			<ConfirmDialog

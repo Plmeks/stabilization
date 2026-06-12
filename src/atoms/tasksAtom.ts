@@ -11,6 +11,7 @@ import {
 	returnTaskToQA,
 } from '@/lib/supabase/dal';
 import { isTaskActive, isTaskCompleted } from '@/lib/utils';
+import { periodsAtom } from '@/atoms/periodsAtom';
 
 export const tasksAtom = atom<Task[]>([]);
 
@@ -29,7 +30,8 @@ export const createTaskAtom = atom(
 		const tempTask: Task = {
 			id: tempId,
 			title: input.title,
-			period_id: input.period_id,
+			creation_period_id: input.creation_period_id,
+			active_period_id: input.creation_period_id,
 			assignee: null,
 			priority: input.priority ?? null,
 			status: null,
@@ -54,6 +56,8 @@ export const createTaskAtom = atom(
 export const takeIntoWorkAtom = atom(
 	null,
 	async (get, set, id: string) => {
+		const periods = get(periodsAtom);
+		const latestPeriodId = periods[0]?.id ?? '';
 		const previous = get(tasksAtom);
 		set(tasksAtom, previous.map((t) =>
 			t.id === id
@@ -62,12 +66,13 @@ export const takeIntoWorkAtom = atom(
 					status: 'В работе' as const,
 					taken_into_work_at: new Date().toISOString(),
 					priority: t.priority ?? 'Нормальный' as const,
+					active_period_id: latestPeriodId,
 				}
 				: t,
 		));
 
 		try {
-			const updated = await takeIntoWork(id);
+			const updated = await takeIntoWork(id, latestPeriodId);
 			set(tasksAtom, get(tasksAtom).map((t) => (t.id === id ? updated : t)));
 		} catch (error) {
 			set(tasksAtom, previous);
@@ -98,7 +103,7 @@ export const completeTaskAtom = atom(
 		const previous = get(tasksAtom);
 		set(tasksAtom, previous.map((t) =>
 			t.id === id
-				? { ...t, status: 'Завершена' as const, completed_at: new Date().toISOString(), period_id: input.period_id }
+				? { ...t, status: 'Завершена' as const, completed_at: new Date().toISOString(), active_period_id: input.active_period_id }
 				: t,
 		));
 
@@ -115,15 +120,17 @@ export const completeTaskAtom = atom(
 export const returnTaskToWorkAtom = atom(
 	null,
 	async (get, set, { id, input }: { id: string; input: UpdateTaskInput }) => {
+		const periods = get(periodsAtom);
+		const latestPeriodId = periods[0]?.id ?? '';
 		const previous = get(tasksAtom);
 		set(tasksAtom, previous.map((t) =>
 			t.id === id
-				? { ...t, completed_at: null, ...input }
+				? { ...t, completed_at: null, active_period_id: latestPeriodId, ...input }
 				: t,
 		));
 
 		try {
-			const updated = await returnTaskToWork(id, input);
+			const updated = await returnTaskToWork(id, input, latestPeriodId);
 			set(tasksAtom, get(tasksAtom).map((t) => (t.id === id ? updated : t)));
 		} catch (error) {
 			set(tasksAtom, previous);
@@ -136,9 +143,17 @@ export const returnToQAAtom = atom(
 	null,
 	async (get, set, id: string) => {
 		const previous = get(tasksAtom);
+		const taskToReturn = previous.find((t) => t.id === id);
 		set(tasksAtom, previous.map((t) =>
 			t.id === id
-				? { ...t, status: null, taken_into_work_at: null, completed_at: null, assignee: null }
+				? {
+					...t,
+					status: null,
+					taken_into_work_at: null,
+					completed_at: null,
+					assignee: null,
+					active_period_id: taskToReturn?.creation_period_id ?? t.active_period_id,
+				}
 				: t,
 		));
 
@@ -181,9 +196,20 @@ export const completedTasksAtom = atom((get) =>
 	get(tasksAtom).filter((t) => isTaskCompleted(t)),
 );
 
-export const tasksByPeriodAtom = atom((get) =>
+export const tasksByCreationPeriodAtom = atom((get) =>
 	get(tasksAtom).reduce<Record<string, Task[]>>((acc, task) => {
-		const key = task.period_id;
+		const key = task.creation_period_id;
+		if (!acc[key]) {
+			acc[key] = [];
+		}
+		acc[key].push(task);
+		return acc;
+	}, {}),
+);
+
+export const tasksByActivePeriodAtom = atom((get) =>
+	get(tasksAtom).reduce<Record<string, Task[]>>((acc, task) => {
+		const key = task.active_period_id;
 		if (!acc[key]) {
 			acc[key] = [];
 		}

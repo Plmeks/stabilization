@@ -1,0 +1,85 @@
+{
+  "pipeline": "medium",
+  "output_dir": "workflow/period-statistics-fix",
+  "docs_dir": null,
+  "task_description": "Fix critical architectural bug: tasks are hard-anchored to creation period, preventing accurate statistics for work spanning multiple periods. Implement dual period tracking (creation_period_id + active_period_id).",
+  "phase": 4,
+  "step": "4.2-3-4",
+  "status": "in_progress",
+  "review_counts": {
+    "analysis": 1,
+    "architecture": 0,
+    "planning": 2
+  },
+  "artifacts": {
+    "ts_file": "workflow/period-statistics-fix/technical-specification.md",
+    "ts_review": "workflow/period-statistics-fix/ts-review.md",
+    "architecture_file": null,
+    "architecture_review": null,
+    "plan_file": "workflow/period-statistics-fix/plan.md",
+    "plan_review": "workflow/period-statistics-fix/plan-review.md",
+    "preflight_report": "workflow/period-statistics-fix/preflight-report.md"
+  },
+  "completed_tasks": [
+    {
+      "id": "1-1",
+      "description": "Update database migration schema",
+      "files_modified": ["supabase/migrations/001_create_tables.sql"],
+      "status": "completed"
+    },
+    {
+      "id": "1-2",
+      "description": "Update TypeScript types",
+      "files_modified": ["src/types/index.ts", "src/lib/supabase/client.ts"],
+      "status": "completed"
+    },
+    {
+      "id": "1-3",
+      "description": "Update DAL functions",
+      "files_modified": ["src/lib/supabase/dal.ts"],
+      "status": "completed"
+    },
+    {
+      "id": "2-1",
+      "description": "Update statistics calculation logic",
+      "files_modified": ["src/lib/stats-utils.ts"],
+      "status": "completed"
+    },
+    {
+      "id": "2-2",
+      "description": "Update tasks Jotai atom",
+      "files_modified": ["src/atoms/tasksAtom.ts"],
+      "status": "completed"
+    },
+    {
+      "id": "2-3",
+      "description": "Update periods Jotai atom",
+      "files_modified": ["src/atoms/periodsAtom.ts"],
+      "status": "completed"
+    },
+    {
+      "id": "3-1",
+      "description": "Update QA page",
+      "files_modified": ["src/app/qa/page.tsx"],
+      "status": "in_review"
+    },
+    {
+      "id": "3-2",
+      "description": "Update Completed page",
+      "files_modified": ["src/app/completed/page.tsx", "src/components/completed/CompletedTasksTable.tsx"],
+      "status": "completed"
+    },
+    {
+      "id": "3-3",
+      "description": "Update modals",
+      "files_modified": ["src/components/modals/AddTaskModal.tsx", "src/components/modals/EditTaskModal.tsx", "src/components/modals/CompleteTaskModal.tsx"],
+      "status": "in_review"
+    },
+    {
+      "id": "3-4",
+      "description": "Add creation period column to Current Tasks",
+      "files_modified": ["src/components/current/CurrentTasksTable.tsx", "src/components/current/CurrentTasksRow.tsx"],
+      "status": "in_review"
+    }
+  ]
+}

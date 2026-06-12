@@ -54,9 +54,11 @@ export async function fetchTasks(): Promise<Task[]> {
 }
 
 export async function createTask(input: CreateTaskInput): Promise<Task> {
+	const payload = { ...input, active_period_id: input.creation_period_id };
+
 	const { data, error } = await supabase
 		.from('tasks')
-		.insert(input)
+		.insert(payload)
 		.select()
 		.single();
 
@@ -64,7 +66,7 @@ export async function createTask(input: CreateTaskInput): Promise<Task> {
 	return data as Task;
 }
 
-export async function takeIntoWork(id: string): Promise<Task> {
+export async function takeIntoWork(id: string, latestPeriodId: string): Promise<Task> {
 	const { data: existing, error: fetchError } = await supabase
 		.from('tasks')
 		.select('priority')
@@ -81,6 +83,7 @@ export async function takeIntoWork(id: string): Promise<Task> {
 			status: 'В работе',
 			taken_into_work_at: new Date().toISOString(),
 			priority,
+			active_period_id: latestPeriodId,
 		})
 		.eq('id', id)
 		.select()
@@ -108,7 +111,7 @@ export async function completeTask(id: string, input: CompletionInput): Promise<
 		.update({
 			status: 'Завершена',
 			completed_at: new Date().toISOString(),
-			period_id: input.period_id,
+			active_period_id: input.active_period_id,
 		})
 		.eq('id', id)
 		.select()
@@ -118,10 +121,10 @@ export async function completeTask(id: string, input: CompletionInput): Promise<
 	return data as Task;
 }
 
-export async function returnTaskToWork(id: string, input: UpdateTaskInput): Promise<Task> {
+export async function returnTaskToWork(id: string, input: UpdateTaskInput, latestPeriodId: string): Promise<Task> {
 	const { data, error } = await supabase
 		.from('tasks')
-		.update({ completed_at: null, ...input })
+		.update({ completed_at: null, ...input, active_period_id: latestPeriodId })
 		.eq('id', id)
 		.select()
 		.single();
@@ -131,9 +134,23 @@ export async function returnTaskToWork(id: string, input: UpdateTaskInput): Prom
 }
 
 export async function returnTaskToQA(id: string): Promise<Task> {
+	const { data: existing, error: fetchError } = await supabase
+		.from('tasks')
+		.select('creation_period_id')
+		.eq('id', id)
+		.single();
+
+	if (fetchError) throw fetchError;
+
 	const { data, error } = await supabase
 		.from('tasks')
-		.update({ status: null, taken_into_work_at: null, completed_at: null, assignee: null })
+		.update({
+			status: null,
+			taken_into_work_at: null,
+			completed_at: null,
+			assignee: null,
+			active_period_id: existing.creation_period_id,
+		})
 		.eq('id', id)
 		.select()
 		.single();
@@ -149,6 +166,44 @@ export async function deleteTask(id: string): Promise<void> {
 		.eq('id', id);
 
 	if (error) throw error;
+}
+
+export async function transferWipTasks(newPeriodId: string): Promise<Task[]> {
+	const { data, error } = await supabase
+		.from('tasks')
+		.update({ active_period_id: newPeriodId })
+		.in('status', ['В работе', 'В тесте', 'Блокер'])
+		.select();
+
+	if (error) throw error;
+	return data as Task[];
+}
+
+export async function resetActivePeriodForDeletion(periodId: string): Promise<Task[]> {
+	const { data: affected, error: fetchError } = await supabase
+		.from('tasks')
+		.select('*')
+		.eq('active_period_id', periodId)
+		.neq('creation_period_id', periodId);
+
+	if (fetchError) throw fetchError;
+	if (!affected || affected.length === 0) return [];
+
+	const results = await Promise.all(
+		(affected as Task[]).map(async (task) => {
+			const { data, error } = await supabase
+				.from('tasks')
+				.update({ active_period_id: task.creation_period_id })
+				.eq('id', task.id)
+				.select()
+				.single();
+
+			if (error) throw error;
+			return data as Task;
+		}),
+	);
+
+	return results;
 }
 
 // PeriodStatistics functions

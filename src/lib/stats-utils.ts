@@ -27,23 +27,24 @@ export function calculateDynamicMetrics(
 	allPeriods: Period[],
 	allTasks: Task[],
 ): DynamicMetrics {
-	const periodTasks = allTasks.filter((t) => t.period_id === period.id);
+	const creationPeriodTasks = allTasks.filter((t) => t.creation_period_id === period.id);
+	const activePeriodTasks = allTasks.filter((t) => t.active_period_id === period.id);
 
-	const added_to_backlog = periodTasks.length;
-	const added_critical = periodTasks.filter((t) => t.priority === 'Авария').length;
-	const added_non_critical = periodTasks.filter((t) => t.priority !== 'Авария').length;
+	const added_to_backlog = creationPeriodTasks.length;
+	const added_critical = creationPeriodTasks.filter((t) => t.priority === 'Авария').length;
+	const added_non_critical = creationPeriodTasks.filter((t) => t.priority !== 'Авария').length;
 
-	const resolved_total = periodTasks.filter((t) => t.status === 'Завершена').length;
-	const resolved_critical = periodTasks.filter(
+	const resolved_total = activePeriodTasks.filter((t) => t.status === 'Завершена').length;
+	const resolved_critical = activePeriodTasks.filter(
 		(t) => t.status === 'Завершена' && t.priority === 'Авария',
 	).length;
-	const resolved_non_critical = periodTasks.filter(
+	const resolved_non_critical = activePeriodTasks.filter(
 		(t) => t.status === 'Завершена' && t.priority !== 'Авария',
 	).length;
 
-	const in_progress = periodTasks.filter((t) => t.status === 'В работе').length;
-	const in_testing = periodTasks.filter((t) => t.status === 'В тесте').length;
-	const in_block = periodTasks.filter((t) => t.status === 'Блокер').length;
+	const in_progress = activePeriodTasks.filter((t) => t.status === 'В работе').length;
+	const in_testing = activePeriodTasks.filter((t) => t.status === 'В тесте').length;
+	const in_block = activePeriodTasks.filter((t) => t.status === 'Блокер').length;
 	const wip_total = in_progress + in_testing;
 
 	const sortedPeriods = [...allPeriods].sort((a, b) =>
@@ -55,7 +56,7 @@ export function calculateDynamicMetrics(
 	);
 
 	const tasksUpToThis = allTasks.filter((t) =>
-		periodsUpToThis.some((p) => p.id === t.period_id),
+		periodsUpToThis.some((p) => p.id === t.creation_period_id),
 	);
 
 	const total_problems_cumulative = tasksUpToThis.length;

@@ -25,8 +25,8 @@ export default function CompletedPage() {
 	const completedTasksByPeriod = React.useMemo(() => {
 		const map = new Map<string, Task[]>();
 		for (const task of completedTasks) {
-			const existing = map.get(task.period_id) ?? [];
-			map.set(task.period_id, [...existing, task]);
+			const existing = map.get(task.active_period_id) ?? [];
+			map.set(task.active_period_id, [...existing, task]);
 		}
 		return map;
 	}, [completedTasks]);

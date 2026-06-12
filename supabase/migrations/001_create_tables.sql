@@ -10,7 +10,8 @@ CREATE TABLE periods (
 CREATE TABLE tasks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
-  period_id UUID NOT NULL REFERENCES periods(id) ON DELETE CASCADE,
+  creation_period_id UUID NOT NULL REFERENCES periods(id) ON DELETE CASCADE,
+  active_period_id UUID NOT NULL,
   assignee TEXT,
   priority TEXT CHECK (priority IN ('Авария', 'Нормальный', 'Некритичный')),
   status TEXT CHECK (status IN ('В работе', 'В тесте', 'Завершена', 'Блокер')),
@@ -57,7 +58,8 @@ CREATE TABLE period_statistics (
 );
 
 -- Create indexes
-CREATE INDEX idx_tasks_period_id ON tasks(period_id);
+CREATE INDEX idx_tasks_creation_period_id ON tasks(creation_period_id);
+CREATE INDEX idx_tasks_active_period_id ON tasks(active_period_id);
 CREATE INDEX idx_tasks_status ON tasks(status);
 CREATE INDEX idx_tasks_priority ON tasks(priority);
 CREATE INDEX idx_tasks_taken_into_work_at ON tasks(taken_into_work_at);

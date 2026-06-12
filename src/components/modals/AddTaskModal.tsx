@@ -49,7 +49,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 		try {
 			await createTask({
 				title: title.trim(),
-				period_id: periodId,
+				creation_period_id: periodId,
 				...(isCritical ? { priority: 'Авария' } : {}),
 				...(link.trim() ? { link: link.trim() } : {}),
 			});

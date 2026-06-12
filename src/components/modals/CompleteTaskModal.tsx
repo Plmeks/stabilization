@@ -54,7 +54,7 @@ function CompleteTaskModalBody({
 
 		setLoading(true);
 		try {
-			await completeTask({ id: taskId, input: { period_id: selectedPeriodId } });
+			await completeTask({ id: taskId, input: { active_period_id: selectedPeriodId } });
 
 			if (pendingTaskUpdate && Object.keys(pendingTaskUpdate).length > 0) {
 				await updateTask({ id: taskId, input: pendingTaskUpdate });

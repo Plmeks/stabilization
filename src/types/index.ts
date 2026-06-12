@@ -54,7 +54,8 @@ export type PeriodStatistics = {
 export type Task = {
 	id: string;
 	title: string;
-	period_id: string;
+	creation_period_id: string;
+	active_period_id: string;
 	assignee: string | null;
 	priority: Priority | null;
 	status: TaskStatus | null;
@@ -71,7 +72,7 @@ export type CreatePeriodInput = {
 
 export type CreateTaskInput = {
 	title: string;
-	period_id: string;
+	creation_period_id: string;
 	priority?: Priority;
 	link?: string | null;
 };
@@ -85,5 +86,5 @@ export type UpdateTaskInput = {
 };
 
 export type CompletionInput = {
-	period_id: string;
+	active_period_id: string;
 };

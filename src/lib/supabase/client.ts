@@ -34,7 +34,8 @@ export type Database = {
 				Row: {
 					id: string;
 					title: string;
-					period_id: string;
+					creation_period_id: string;
+					active_period_id: string;
 					assignee: string | null;
 					priority: string | null;
 					status: string | null;

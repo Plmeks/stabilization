@@ -37,7 +37,7 @@ export function CompletedTasksTable({ tasks, periods, onEdit, onReturnToQA }: Co
 					<CompletedTasksRow
 						key={task.id}
 						task={task}
-						period={periodMap.get(task.period_id)}
+						period={periodMap.get(task.active_period_id)}
 						onEdit={() => onEdit(task)}
 						onReturnToQA={() => onReturnToQA(task.id)}
 					/>
