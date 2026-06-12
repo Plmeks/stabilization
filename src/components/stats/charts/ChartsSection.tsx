@@ -28,21 +28,27 @@ export function ChartsSection() {
 		}
 	}, [periods, selectedPeriodId]);
 
-	const filteredPeriods = useMemo(() => {
-		if (!selectedPeriodId) return periods;
-
-		const selectedIndex = periods.findIndex((p) => p.id === selectedPeriodId);
-		if (selectedIndex === -1) return periods;
-
-		return periods.slice(selectedIndex).reverse();
-	}, [periods, selectedPeriodId]);
-
-	const chartData = useMemo(
-		() => calculateChartData(filteredPeriods, tasks, periodStatistics),
-		[filteredPeriods, tasks, periodStatistics],
+	const sortedPeriods = useMemo(
+		() => [...periods].sort((a, b) => dayjs(a.start_date).diff(dayjs(b.start_date))),
+		[periods],
 	);
 
-	const backlogData = chartData.slice(1);
+	const selectedSortedIndex = useMemo(() => {
+		const idx = sortedPeriods.findIndex((p) => p.id === selectedPeriodId);
+		return idx === -1 ? 0 : idx;
+	}, [sortedPeriods, selectedPeriodId]);
+
+	const allChartData = useMemo(
+		() => calculateChartData(periods, tasks, periodStatistics),
+		[periods, tasks, periodStatistics],
+	);
+
+	const chartData = useMemo(
+		() => allChartData.slice(0, selectedSortedIndex + 1),
+		[allChartData, selectedSortedIndex],
+	);
+
+	const backlogData = chartData;
 
 	if (periods.length === 0) {
 		return null;

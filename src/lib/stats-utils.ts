@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
-import type { Period, Task } from '@/types';
+import type { Period, PeriodStatistics, Task } from '@/types';
 
 dayjs.extend(isSameOrBefore);
 
@@ -26,6 +26,7 @@ export function calculateDynamicMetrics(
 	period: Period,
 	allPeriods: Period[],
 	allTasks: Task[],
+	periodStatistics?: PeriodStatistics[],
 ): DynamicMetrics {
 	const creationPeriodTasks = allTasks.filter((t) => t.creation_period_id === period.id);
 	const activePeriodTasks = allTasks.filter((t) => t.active_period_id === period.id);
@@ -55,19 +56,50 @@ export function calculateDynamicMetrics(
 		dayjs(p.start_date).isSameOrBefore(dayjs(period.start_date), 'day'),
 	);
 
-	const tasksUpToThis = allTasks.filter((t) =>
-		periodsUpToThis.some((p) => p.id === t.creation_period_id),
-	);
+	// Iterative accumulation: walk through all periods up to this one in order.
+	// When a period has fixed statistics, reset running totals to those values.
+	// When a period has no fixed stats, accumulate task-based deltas on top.
+	let runningTotal = 0;
+	let runningCompleted = 0;
+	let runningUncompletedCritical = 0;
+	let runningUncompletedNonCritical = 0;
 
-	const total_problems_cumulative = tasksUpToThis.length;
-	const completed_cumulative = tasksUpToThis.filter((t) => t.status === 'Завершена').length;
+	for (const p of periodsUpToThis) {
+		const fixedStats = (periodStatistics ?? []).find((ps) => ps.period_id === p.id);
+
+		if (fixedStats) {
+			runningTotal = fixedStats.total_problems_cumulative;
+			runningCompleted = fixedStats.completed_cumulative;
+			runningUncompletedCritical = fixedStats.uncompleted_critical;
+			runningUncompletedNonCritical = fixedStats.uncompleted_non_critical;
+		} else {
+			const periodCreatedTasks = allTasks.filter((t) => t.creation_period_id === p.id);
+			const periodActiveTasks = allTasks.filter((t) => t.active_period_id === p.id);
+
+			const deltaAdded = periodCreatedTasks.length;
+			const deltaAddedCritical = periodCreatedTasks.filter((t) => t.priority === 'Критический').length;
+			const deltaAddedNonCritical = periodCreatedTasks.filter((t) => t.priority !== 'Критический').length;
+
+			const deltaResolved = periodActiveTasks.filter((t) => t.status === 'Завершена').length;
+			const deltaResolvedCritical = periodActiveTasks.filter(
+				(t) => t.status === 'Завершена' && t.priority === 'Критический',
+			).length;
+			const deltaResolvedNonCritical = periodActiveTasks.filter(
+				(t) => t.status === 'Завершена' && t.priority !== 'Критический',
+			).length;
+
+			runningTotal += deltaAdded;
+			runningCompleted += deltaResolved;
+			runningUncompletedCritical += deltaAddedCritical - deltaResolvedCritical;
+			runningUncompletedNonCritical += deltaAddedNonCritical - deltaResolvedNonCritical;
+		}
+	}
+
+	const total_problems_cumulative = runningTotal;
+	const completed_cumulative = runningCompleted;
 	const uncompleted = total_problems_cumulative - completed_cumulative;
-	const uncompleted_critical = tasksUpToThis.filter(
-		(t) => t.status !== 'Завершена' && t.priority === 'Критический',
-	).length;
-	const uncompleted_non_critical = tasksUpToThis.filter(
-		(t) => t.status !== 'Завершена' && t.priority !== 'Критический',
-	).length;
+	const uncompleted_critical = runningUncompletedCritical;
+	const uncompleted_non_critical = runningUncompletedNonCritical;
 
 	return {
 		added_to_backlog,

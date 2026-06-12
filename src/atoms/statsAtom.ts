@@ -34,7 +34,8 @@ export const lockPeriodMetricsAtom = atom(
 			throw new Error(`Period not found: ${periodId}`);
 		}
 
-		const metrics = calculateDynamicMetrics(period, allPeriods, allTasks);
+		const allStats = get(periodStatisticsAtom);
+		const metrics = calculateDynamicMetrics(period, allPeriods, allTasks, allStats);
 
 		const created = await createPeriodStatistics(periodId, { ...metrics, comment: null });
 		set(periodStatisticsAtom, [...get(periodStatisticsAtom), created]);

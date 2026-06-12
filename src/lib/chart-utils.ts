@@ -25,21 +25,6 @@ export function calculateChartData(
 		dayjs(a.start_date).diff(dayjs(b.start_date)),
 	);
 
-	const firstPeriod = sortedPeriods[0];
-	const firstPeriodTasks = tasks.filter((t) => t.creation_period_id === firstPeriod.id);
-	const initialCritical = firstPeriodTasks.filter((t) => t.priority === 'Критический').length;
-	const initialNonCritical = firstPeriodTasks.filter((t) => t.priority !== 'Критический').length;
-
-	const anchorPoint: ChartDataPoint = {
-		label: dayjs(firstPeriod.start_date).subtract(1, 'day').format('DD.MM'),
-		periodLabel: '',
-		completed_cumulative: 0,
-		uncompleted_critical: initialCritical,
-		uncompleted_non_critical: initialNonCritical,
-		wip_total: 0,
-		total_problems_cumulative: firstPeriodTasks.length,
-	};
-
 	const periodPoints: ChartDataPoint[] = sortedPeriods.map((period) => {
 		const fixedStats = periodStatistics.find((s) => s.period_id === period.id);
 
@@ -55,7 +40,7 @@ export function calculateChartData(
 			};
 		}
 
-		const dynamic = calculateDynamicMetrics(period, periods, tasks);
+		const dynamic = calculateDynamicMetrics(period, periods, tasks, periodStatistics);
 
 		return {
 			label: dayjs(period.end_date).format('DD.MM'),
@@ -68,5 +53,5 @@ export function calculateChartData(
 		};
 	});
 
-	return [anchorPoint, ...periodPoints];
+	return periodPoints;
 }
