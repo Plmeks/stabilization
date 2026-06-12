@@ -23,7 +23,7 @@ export function CompletedPeriodSection({
 	onEdit,
 	onReturnToQA,
 }: CompletedPeriodSectionProps) {
-	const criticalCount = tasks.filter((t) => t.priority === 'Авария').length;
+	const criticalCount = tasks.filter((t) => t.priority === 'Критический').length;
 
 	return (
 		<PeriodAccordion

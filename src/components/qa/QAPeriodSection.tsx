@@ -15,6 +15,7 @@ interface QAPeriodSectionProps {
 	onDeletePeriod: (periodId: string) => void;
 	onTakeIntoWork: (taskId: string) => void;
 	onDeleteTask: (taskId: string) => void;
+	onEdit: (task: Task) => void;
 	totalTaskCount: number;
 	criticalCount: number;
 }
@@ -28,6 +29,7 @@ export function QAPeriodSection({
 	onDeletePeriod,
 	onTakeIntoWork,
 	onDeleteTask,
+	onEdit,
 	totalTaskCount,
 	criticalCount,
 }: QAPeriodSectionProps) {
@@ -71,6 +73,7 @@ export function QAPeriodSection({
 						task={task}
 						onTakeIntoWork={onTakeIntoWork}
 						onDelete={onDeleteTask}
+						onEdit={onEdit}
 					/>
 				))
 			)}

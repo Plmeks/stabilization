@@ -1,0 +1,24 @@
+{
+  "pipeline": "medium",
+  "output_dir": "workflow/charts",
+  "docs_dir": null,
+  "task_description": "Add 3 charts to Statistics tab: CFD with WIP line, cumulative critical tickets backlog, cumulative non-critical tickets backlog",
+  "phase": 1,
+  "step": "1.1",
+  "status": "in_progress",
+  "review_counts": {
+    "analysis": 0,
+    "architecture": 0,
+    "planning": 0
+  },
+  "artifacts": {
+    "ts_file": "workflow/charts/technical-specification.md",
+    "ts_review": null,
+    "architecture_file": null,
+    "architecture_review": null,
+    "plan_file": null,
+    "plan_review": null,
+    "preflight_report": null
+  },
+  "completed_tasks": []
+}

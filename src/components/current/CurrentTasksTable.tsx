@@ -9,7 +9,7 @@ import { CurrentTasksRow } from './CurrentTasksRow';
 import type { Task, Period } from '@/types';
 
 const PRIORITY_ORDER: Record<string, number> = {
-	'Авария': 0,
+	'Критический': 0,
 	'Нормальный': 1,
 	'Некритичный': 2,
 };
@@ -37,10 +37,11 @@ interface CurrentTasksTableProps {
 	tasks: Task[];
 	periods: Period[];
 	onEdit: (task: Task) => void;
+	onComplete: (task: Task) => void;
 	onReturnToQA: (taskId: string) => void;
 }
 
-export function CurrentTasksTable({ tasks, periods, onEdit, onReturnToQA }: CurrentTasksTableProps) {
+export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onReturnToQA }: CurrentTasksTableProps) {
 	const sorted = sortTasks(tasks);
 
 	const getPeriod = (periodId: string): Period | undefined =>
@@ -75,6 +76,7 @@ export function CurrentTasksTable({ tasks, periods, onEdit, onReturnToQA }: Curr
 						period={getPeriod(task.creation_period_id)}
 						creationPeriod={getPeriod(task.creation_period_id)}
 						onEdit={() => onEdit(task)}
+						onComplete={() => onComplete(task)}
 						onReturnToQA={() => onReturnToQA(task.id)}
 					/>
 				))}

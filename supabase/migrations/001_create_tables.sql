@@ -13,7 +13,7 @@ CREATE TABLE tasks (
   creation_period_id UUID NOT NULL REFERENCES periods(id) ON DELETE CASCADE,
   active_period_id UUID NOT NULL,
   assignee TEXT,
-  priority TEXT CHECK (priority IN ('Авария', 'Нормальный', 'Некритичный')),
+  priority TEXT CHECK (priority IN ('Критический', 'Нормальный', 'Некритичный')),
   status TEXT CHECK (status IN ('В работе', 'В тесте', 'Завершена', 'Блокер')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   taken_into_work_at TIMESTAMPTZ,

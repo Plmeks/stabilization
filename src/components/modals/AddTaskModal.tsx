@@ -50,7 +50,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 			await createTask({
 				title: title.trim(),
 				creation_period_id: periodId,
-				...(isCritical ? { priority: 'Авария' } : {}),
+				...(isCritical ? { priority: 'Критический' } : {}),
 				...(link.trim() ? { link: link.trim() } : {}),
 			});
 			onClose();
@@ -122,7 +122,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 						className="h-4 w-4 cursor-pointer"
 					/>
 					<Label htmlFor="task-critical" className="cursor-pointer">
-						Критическая задача (приоритет «Авария»)
+						Критическая задача (приоритет «Критический»)
 					</Label>
 				</div>
 				{error && (

@@ -27,6 +27,7 @@ export function CompletedTasksTable({ tasks, periods, onEdit, onReturnToQA }: Co
 					<TableHead className="w-1/3 px-4">Задача</TableHead>
 					<TableHead className="px-4">Исполнитель</TableHead>
 					<TableHead className="px-4">Приоритет</TableHead>
+					<TableHead className="px-4 w-[110px]">Создана в периоде</TableHead>
 					<TableHead className="px-4">Статус</TableHead>
 					<TableHead className="hidden md:table-cell px-4">Дата завершения</TableHead>
 					<TableHead className="sticky right-0 bg-background z-10 px-4">Действия</TableHead>
@@ -38,6 +39,7 @@ export function CompletedTasksTable({ tasks, periods, onEdit, onReturnToQA }: Co
 						key={task.id}
 						task={task}
 						period={periodMap.get(task.active_period_id)}
+						creationPeriod={periodMap.get(task.creation_period_id)}
 						onEdit={() => onEdit(task)}
 						onReturnToQA={() => onReturnToQA(task.id)}
 					/>

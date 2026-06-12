@@ -7,11 +7,13 @@ import { Button } from '@/components/ui/button';
 import { QAPeriodSection } from '@/components/qa/QAPeriodSection';
 import { CreatePeriodModal } from '@/components/modals/CreatePeriodModal';
 import { AddTaskModal } from '@/components/modals/AddTaskModal';
+import { EditQATaskModal } from '@/components/modals/EditQATaskModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { deletePeriodAtom } from '@/atoms/periodsAtom';
 import { qaTasksAtom, tasksByCreationPeriodAtom, tasksByActivePeriodAtom, deleteTaskAtom, takeIntoWorkAtom } from '@/atoms/tasksAtom';
 import { expandedPeriodsAtom, togglePeriodExpansionAtom } from '@/atoms/uiAtom';
+import type { Task } from '@/types';
 
 export default function QAPage() {
 	const periods = useAtomValue(periodsAtom);
@@ -32,6 +34,7 @@ export default function QAPage() {
 	const [addTaskDefaultPeriodId, setAddTaskDefaultPeriodId] = React.useState<string | null>(null);
 	const [showDeletePeriodConfirm, setShowDeletePeriodConfirm] = React.useState<string | null>(null);
 	const [showDeleteTaskConfirm, setShowDeleteTaskConfirm] = React.useState<string | null>(null);
+	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
 
 	React.useEffect(() => {
 		if (!expandedInitialized.current && periods.length > 0) {
@@ -116,8 +119,9 @@ export default function QAPage() {
 							onDeletePeriod={setShowDeletePeriodConfirm}
 							onTakeIntoWork={handleTakeIntoWork}
 							onDeleteTask={setShowDeleteTaskConfirm}
+							onEdit={setEditingTask}
 							totalTaskCount={totalCount}
-							criticalCount={(tasksByCreationPeriod[period.id] ?? []).filter((t) => t.priority === 'Авария').length}
+							criticalCount={(tasksByCreationPeriod[period.id] ?? []).filter((t) => t.priority === 'Критический').length}
 						/>
 					);
 				})}
@@ -133,6 +137,14 @@ export default function QAPage() {
 				onClose={handleAddTaskModalClose}
 				defaultPeriodId={addTaskDefaultPeriodId ?? undefined}
 			/>
+
+			{editingTask !== null && (
+				<EditQATaskModal
+					open={true}
+					onClose={() => setEditingTask(null)}
+					task={editingTask}
+				/>
+			)}
 
 			<ConfirmDialog
 				open={showDeletePeriodConfirm !== null}

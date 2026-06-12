@@ -1,6 +1,6 @@
 export const TASK_STATUSES = ['В работе', 'В тесте', 'Завершена', 'Блокер'] as const;
 
-export const PRIORITIES = ['Авария', 'Нормальный', 'Некритичный'] as const;
+export const PRIORITIES = ['Критический', 'Нормальный', 'Некритичный'] as const;
 
 export const TAB_ROUTES = {
 	qa: '/qa',
@@ -13,7 +13,7 @@ export type TaskStatus = typeof TASK_STATUSES[number];
 export type Priority = typeof PRIORITIES[number];
 
 export const PRIORITY_COLORS: Record<Priority, string> = {
-	'Авария': 'bg-red-100 text-red-800 border-red-200',
+	'Критический': 'bg-red-100 text-red-800 border-red-200',
 	'Нормальный': 'bg-blue-100 text-blue-800 border-blue-200',
 	'Некритичный': 'bg-gray-100 text-gray-700 border-gray-200',
 };

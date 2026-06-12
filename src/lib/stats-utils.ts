@@ -31,15 +31,15 @@ export function calculateDynamicMetrics(
 	const activePeriodTasks = allTasks.filter((t) => t.active_period_id === period.id);
 
 	const added_to_backlog = creationPeriodTasks.length;
-	const added_critical = creationPeriodTasks.filter((t) => t.priority === 'Авария').length;
-	const added_non_critical = creationPeriodTasks.filter((t) => t.priority !== 'Авария').length;
+	const added_critical = creationPeriodTasks.filter((t) => t.priority === 'Критический').length;
+	const added_non_critical = creationPeriodTasks.filter((t) => t.priority !== 'Критический').length;
 
 	const resolved_total = activePeriodTasks.filter((t) => t.status === 'Завершена').length;
 	const resolved_critical = activePeriodTasks.filter(
-		(t) => t.status === 'Завершена' && t.priority === 'Авария',
+		(t) => t.status === 'Завершена' && t.priority === 'Критический',
 	).length;
 	const resolved_non_critical = activePeriodTasks.filter(
-		(t) => t.status === 'Завершена' && t.priority !== 'Авария',
+		(t) => t.status === 'Завершена' && t.priority !== 'Критический',
 	).length;
 
 	const in_progress = activePeriodTasks.filter((t) => t.status === 'В работе').length;
@@ -63,10 +63,10 @@ export function calculateDynamicMetrics(
 	const completed_cumulative = tasksUpToThis.filter((t) => t.status === 'Завершена').length;
 	const uncompleted = total_problems_cumulative - completed_cumulative;
 	const uncompleted_critical = tasksUpToThis.filter(
-		(t) => t.status !== 'Завершена' && t.priority === 'Авария',
+		(t) => t.status !== 'Завершена' && t.priority === 'Критический',
 	).length;
 	const uncompleted_non_critical = tasksUpToThis.filter(
-		(t) => t.status !== 'Завершена' && t.priority !== 'Авария',
+		(t) => t.status !== 'Завершена' && t.priority !== 'Критический',
 	).length;
 
 	return {

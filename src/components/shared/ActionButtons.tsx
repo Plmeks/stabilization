@@ -1,19 +1,32 @@
 'use client';
 
 import * as React from 'react';
-import { Pencil, Trash2, Undo2 } from 'lucide-react';
+import { Pencil, Trash2, Undo2, CircleCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface ActionButtonsProps {
 	onEdit?: () => void;
+	onComplete?: () => void;
 	onDelete?: () => void;
 	onReturnToQA?: () => void;
 	disabled?: boolean;
 }
 
-export function ActionButtons({ onEdit, onDelete, onReturnToQA, disabled = false }: ActionButtonsProps) {
+export function ActionButtons({ onEdit, onComplete, onDelete, onReturnToQA, disabled = false }: ActionButtonsProps) {
 	return (
 		<div className="flex items-center gap-1">
+			{onComplete !== undefined && (
+				<Button
+					variant="ghost"
+					size="icon"
+					className="h-8 w-8 text-green-600 hover:text-green-700"
+					onClick={onComplete}
+					disabled={disabled}
+					aria-label="Завершить задачу"
+				>
+					<CircleCheck className="h-4 w-4" />
+				</Button>
+			)}
 			{onEdit !== undefined && (
 				<Button
 					variant="ghost"

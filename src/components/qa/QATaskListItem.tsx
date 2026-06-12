@@ -1,5 +1,6 @@
 'use client';
 
+import { Pencil } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ActionButtons } from '@/components/shared/ActionButtons';
 import { TaskTitle } from '@/components/shared/TaskTitle';
@@ -10,9 +11,10 @@ interface QATaskListItemProps {
 	task: Task;
 	onTakeIntoWork: (taskId: string) => void;
 	onDelete: (taskId: string) => void;
+	onEdit: (task: Task) => void;
 }
 
-export function QATaskListItem({ task, onTakeIntoWork, onDelete }: QATaskListItemProps) {
+export function QATaskListItem({ task, onTakeIntoWork, onDelete, onEdit }: QATaskListItemProps) {
 	const canTakeIntoWork = task.status === null;
 
 	return (
@@ -24,7 +26,7 @@ export function QATaskListItem({ task, onTakeIntoWork, onDelete }: QATaskListIte
 		) : (
 			<TaskTitle title={task.title} className="flex-1 text-sm" />
 		)}
-			{task.priority === 'Авария' && <PriorityBadge priority={task.priority} />}
+			{task.priority === 'Критический' && <PriorityBadge priority={task.priority} />}
 			<div className="flex items-center gap-1 ml-auto shrink-0">
 				{canTakeIntoWork && (
 					<Button
@@ -35,6 +37,15 @@ export function QATaskListItem({ task, onTakeIntoWork, onDelete }: QATaskListIte
 						Взять в работу
 					</Button>
 				)}
+				<Button
+					variant="ghost"
+					size="icon"
+					className="h-8 w-8"
+					onClick={() => onEdit(task)}
+					aria-label="Редактировать"
+				>
+					<Pencil className="h-4 w-4" />
+				</Button>
 				<ActionButtons onDelete={() => onDelete(task.id)} />
 			</div>
 		</div>

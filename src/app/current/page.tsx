@@ -6,8 +6,8 @@ import { currentTasksAtom, returnToQAAtom } from '@/atoms/tasksAtom';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { CurrentTasksTable } from '@/components/current/CurrentTasksTable';
 import { EditTaskModal } from '@/components/modals/EditTaskModal';
+import { CompleteTaskModal } from '@/components/modals/CompleteTaskModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
-import { Badge } from '@/components/ui/badge';
 import type { Task } from '@/types';
 
 export default function CurrentPage() {
@@ -16,6 +16,7 @@ export default function CurrentPage() {
 	const returnToQA = useSetAtom(returnToQAAtom);
 
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
+	const [completingTask, setCompletingTask] = React.useState<Task | null>(null);
 	const [returningTaskId, setReturningTaskId] = React.useState<string | null>(null);
 	const [returnLoading, setReturnLoading] = React.useState(false);
 
@@ -32,7 +33,7 @@ export default function CurrentPage() {
 		}
 	};
 
-	const criticalCount = tasks.filter((t) => t.priority === 'Авария').length;
+	const criticalCount = tasks.filter((t) => t.priority === 'Критический').length;
 
 	return (
 		<div className="p-6">
@@ -47,6 +48,7 @@ export default function CurrentPage() {
 				tasks={tasks}
 				periods={periods}
 				onEdit={setEditingTask}
+				onComplete={setCompletingTask}
 				onReturnToQA={setReturningTaskId}
 			/>
 
@@ -56,6 +58,15 @@ export default function CurrentPage() {
 					onClose={() => setEditingTask(null)}
 					task={editingTask}
 					context="current"
+				/>
+			)}
+
+			{completingTask !== null && (
+				<CompleteTaskModal
+					open={true}
+					onClose={() => setCompletingTask(null)}
+					onCancel={() => setCompletingTask(null)}
+					taskId={completingTask.id}
 				/>
 			)}
 

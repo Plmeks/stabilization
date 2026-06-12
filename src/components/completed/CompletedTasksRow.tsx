@@ -10,11 +10,12 @@ import type { Task, Period } from '@/types';
 interface CompletedTasksRowProps {
 	task: Task;
 	period: Period | undefined;
+	creationPeriod: Period | undefined;
 	onEdit: () => void;
 	onReturnToQA: () => void;
 }
 
-export function CompletedTasksRow({ task, onEdit, onReturnToQA }: CompletedTasksRowProps) {
+export function CompletedTasksRow({ task, creationPeriod, onEdit, onReturnToQA }: CompletedTasksRowProps) {
 	return (
 		<TableRow>
 			<TableCell className="whitespace-normal px-4 py-3">
@@ -36,6 +37,15 @@ export function CompletedTasksRow({ task, onEdit, onReturnToQA }: CompletedTasks
 			<TableCell className="px-4 py-3">{task.assignee ?? '—'}</TableCell>
 			<TableCell className="px-4 py-3">
 				<PriorityBadge priority={task.priority} />
+			</TableCell>
+			<TableCell className="px-4 py-3 w-[110px] text-xs text-muted-foreground leading-tight">
+				{creationPeriod ? (
+					<>
+						{dayjs(creationPeriod.start_date).format('DD.MM.YYYY')} -
+						<br />
+						{dayjs(creationPeriod.end_date).format('DD.MM.YYYY')}
+					</>
+				) : '—'}
 			</TableCell>
 			<TableCell className="px-4 py-3">
 				<StatusBadge status={task.status} />
