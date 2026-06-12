@@ -1,6 +1,6 @@
 'use client';
 
-import { Pencil } from 'lucide-react';
+import { Pencil, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ActionButtons } from '@/components/shared/ActionButtons';
 import { TaskTitle } from '@/components/shared/TaskTitle';
@@ -30,11 +30,13 @@ export function QATaskListItem({ task, onTakeIntoWork, onDelete, onEdit }: QATas
 			<div className="flex items-center gap-1 ml-auto shrink-0">
 				{canTakeIntoWork && (
 					<Button
-						variant="outline"
-						size="sm"
+						variant="ghost"
+						size="icon"
+						className="h-8 w-8"
+						aria-label="Взять в работу"
 						onClick={() => onTakeIntoWork(task.id)}
 					>
-						Взять в работу
+						<Play className="h-4 w-4" />
 					</Button>
 				)}
 				<Button
