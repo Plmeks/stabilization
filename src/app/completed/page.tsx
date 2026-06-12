@@ -119,9 +119,10 @@ export default function CompletedPage() {
 				open={returningTaskId !== null}
 				onClose={() => setReturningTaskId(null)}
 				onConfirm={handleConfirmReturn}
-				title="Вернуть в QA"
+				title="Вернуть в список новых задач?"
 				message="Задача будет возвращена в очередь QA. Статус и дата завершения будут сброшены."
 				loading={returnLoading}
+				confirmLabel="Вернуть"
 			/>
 		</div>
 	);
