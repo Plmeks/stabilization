@@ -6,6 +6,7 @@ import { ModalWrapper } from '@/components/shared/ModalWrapper';
 import { PeriodSelector } from '@/components/shared/PeriodSelector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { createTaskAtom } from '@/atoms/tasksAtom';
@@ -30,6 +31,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 	const [isCritical, setIsCritical] = React.useState(false);
 	const [link, setLink] = React.useState('');
 	const [error, setError] = React.useState<string | null>(null);
+	const [comment, setComment] = React.useState('');
 	const [loading, setLoading] = React.useState(false);
 
 	const handleSubmit = async () => {
@@ -52,6 +54,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 				creation_period_id: periodId,
 				...(isCritical ? { priority: 'Критический' } : {}),
 				...(link.trim() ? { link: link.trim() } : {}),
+				...(comment.trim() ? { comment: comment.trim() } : {}),
 			});
 			onClose();
 		} catch {
@@ -124,6 +127,18 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 					<Label htmlFor="task-critical" className="cursor-pointer">
 						Критическая задача (приоритет «Критический»)
 					</Label>
+				</div>
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor="task-comment">Комментарий (необязательно)</Label>
+					<Textarea
+						id="task-comment"
+						value={comment}
+						onChange={(e) => setComment(e.target.value)}
+						placeholder="Введите комментарий..."
+						disabled={loading}
+						rows={3}
+						className="resize-none"
+					/>
 				</div>
 				{error && (
 					<p className="text-sm text-destructive">{error}</p>

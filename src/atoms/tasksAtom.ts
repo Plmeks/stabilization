@@ -39,6 +39,8 @@ export const createTaskAtom = atom(
 			taken_into_work_at: null,
 			completed_at: null,
 			link: input.link ?? null,
+			version: null,
+			comment: input.comment ?? null,
 		};
 
 		set(tasksAtom, [...get(tasksAtom), tempTask]);
@@ -103,7 +105,7 @@ export const completeTaskAtom = atom(
 		const previous = get(tasksAtom);
 		set(tasksAtom, previous.map((t) =>
 			t.id === id
-				? { ...t, status: 'Завершена' as const, completed_at: new Date().toISOString(), active_period_id: input.active_period_id }
+				? { ...t, status: 'Завершена' as const, completed_at: new Date().toISOString(), active_period_id: input.active_period_id, version: input.version ?? null }
 				: t,
 		));
 

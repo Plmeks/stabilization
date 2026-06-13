@@ -112,6 +112,7 @@ export async function completeTask(id: string, input: CompletionInput): Promise<
 			status: 'Завершена',
 			completed_at: new Date().toISOString(),
 			active_period_id: input.active_period_id,
+			version: input.version ?? null,
 		})
 		.eq('id', id)
 		.select()

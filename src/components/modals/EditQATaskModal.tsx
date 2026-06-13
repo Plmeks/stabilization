@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai';
 import { ModalWrapper } from '@/components/shared/ModalWrapper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { updateTaskAtom } from '@/atoms/tasksAtom';
 import type { Task, Priority } from '@/types';
@@ -25,6 +26,7 @@ function EditQATaskModalContent({ onClose, task }: EditQATaskModalContentProps) 
 
 	const [title, setTitle] = React.useState(task.title);
 	const [link, setLink] = React.useState(task.link ?? '');
+	const [comment, setComment] = React.useState(task.comment ?? '');
 	const [isCritical, setIsCritical] = React.useState(task.priority === 'Критический');
 	const [loading, setLoading] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);
@@ -53,6 +55,7 @@ function EditQATaskModalContent({ onClose, task }: EditQATaskModalContentProps) 
 					title: title.trim(),
 					link: link.trim() || null,
 					priority,
+					comment: comment.trim() || null,
 				},
 			});
 			onClose();
@@ -114,6 +117,18 @@ function EditQATaskModalContent({ onClose, task }: EditQATaskModalContentProps) 
 					<Label htmlFor="qa-edit-critical" className="cursor-pointer">
 						Критическая задача
 					</Label>
+				</div>
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor="qa-edit-comment">Комментарий (необязательно)</Label>
+					<Textarea
+						id="qa-edit-comment"
+						value={comment}
+						onChange={(e) => setComment(e.target.value)}
+						placeholder="Введите комментарий..."
+						disabled={loading}
+						rows={3}
+						className="resize-none"
+					/>
 				</div>
 				{error !== null && (
 					<p className="text-sm text-destructive">{error}</p>

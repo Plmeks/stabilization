@@ -1,8 +1,10 @@
 'use client';
 
 import dayjs from 'dayjs';
+import { StickyNote } from 'lucide-react';
 import { TableRow, TableCell } from '@/components/ui/table';
 import { ActionButtons } from '@/components/shared/ActionButtons';
+import { Button } from '@/components/ui/button';
 import { PriorityBadge } from '@/components/shared/PriorityBadge';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import type { Task, Period } from '@/types';
@@ -13,9 +15,10 @@ interface CompletedTasksRowProps {
 	creationPeriod: Period | undefined;
 	onEdit: () => void;
 	onReturnToQA: () => void;
+	onOpenComment: () => void;
 }
 
-export function CompletedTasksRow({ task, creationPeriod, onEdit, onReturnToQA }: CompletedTasksRowProps) {
+export function CompletedTasksRow({ task, creationPeriod, onEdit, onReturnToQA, onOpenComment }: CompletedTasksRowProps) {
 	return (
 		<TableRow>
 			<TableCell className="whitespace-normal px-4 py-3">
@@ -55,8 +58,26 @@ export function CompletedTasksRow({ task, creationPeriod, onEdit, onReturnToQA }
 					? dayjs(task.completed_at).format('DD.MM.YYYY')
 					: '—'}
 			</TableCell>
+			<TableCell className="hidden md:table-cell px-4 py-3 text-sm text-muted-foreground">
+				{task.version ?? '—'}
+			</TableCell>
 			<TableCell className="sticky right-0 bg-background z-10 px-4 py-3">
-				<ActionButtons onEdit={onEdit} onReturnToQA={onReturnToQA} />
+				<div className="flex items-center gap-1">
+					<ActionButtons onEdit={onEdit} onReturnToQA={onReturnToQA} />
+					<Button
+						variant="ghost"
+						size="icon"
+						className={
+							task.comment?.trim()
+								? 'h-8 w-8 text-yellow-500 hover:text-yellow-600'
+								: 'h-8 w-8'
+						}
+						onClick={onOpenComment}
+						aria-label="Комментарий"
+					>
+						<StickyNote className="h-4 w-4" />
+					</Button>
+				</div>
 			</TableCell>
 		</TableRow>
 	);

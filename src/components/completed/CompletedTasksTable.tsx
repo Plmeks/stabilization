@@ -15,9 +15,10 @@ interface CompletedTasksTableProps {
 	periods: Period[];
 	onEdit: (task: Task) => void;
 	onReturnToQA: (taskId: string) => void;
+	onOpenComment: (task: Task) => void;
 }
 
-export function CompletedTasksTable({ tasks, periods, onEdit, onReturnToQA }: CompletedTasksTableProps) {
+export function CompletedTasksTable({ tasks, periods, onEdit, onReturnToQA, onOpenComment }: CompletedTasksTableProps) {
 	const periodMap = new Map(periods.map((p) => [p.id, p]));
 
 	return (
@@ -30,6 +31,7 @@ export function CompletedTasksTable({ tasks, periods, onEdit, onReturnToQA }: Co
 					<TableHead className="px-4 w-[110px]">Создана в периоде</TableHead>
 					<TableHead className="px-4">Статус</TableHead>
 					<TableHead className="hidden md:table-cell px-4">Дата завершения</TableHead>
+					<TableHead className="hidden md:table-cell px-4">Версия</TableHead>
 					<TableHead className="sticky right-0 bg-background z-10 px-4">Действия</TableHead>
 				</TableRow>
 			</TableHeader>
@@ -42,6 +44,7 @@ export function CompletedTasksTable({ tasks, periods, onEdit, onReturnToQA }: Co
 						creationPeriod={periodMap.get(task.creation_period_id)}
 						onEdit={() => onEdit(task)}
 						onReturnToQA={() => onReturnToQA(task.id)}
+						onOpenComment={() => onOpenComment(task)}
 					/>
 				))}
 			</TableBody>

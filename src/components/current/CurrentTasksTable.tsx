@@ -39,9 +39,10 @@ interface CurrentTasksTableProps {
 	onEdit: (task: Task) => void;
 	onComplete: (task: Task) => void;
 	onReturnToQA: (taskId: string) => void;
+	onOpenComment: (task: Task) => void;
 }
 
-export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onReturnToQA }: CurrentTasksTableProps) {
+export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onReturnToQA, onOpenComment }: CurrentTasksTableProps) {
 	const sorted = sortTasks(tasks);
 
 	const getPeriod = (periodId: string): Period | undefined =>
@@ -78,6 +79,7 @@ export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onReturn
 						onEdit={() => onEdit(task)}
 						onComplete={() => onComplete(task)}
 						onReturnToQA={() => onReturnToQA(task.id)}
+						onOpenComment={() => onOpenComment(task)}
 					/>
 				))}
 			</TableBody>

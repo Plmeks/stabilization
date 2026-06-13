@@ -7,6 +7,7 @@ import { completedTasksAtom, returnToQAAtom } from '@/atoms/tasksAtom';
 import { Button } from '@/components/ui/button';
 import { EditTaskModal } from '@/components/modals/EditTaskModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
+import { CommentModal } from '@/components/modals/CommentModal';
 import { CompletedPeriodSection } from '@/components/completed/CompletedPeriodSection';
 import type { Task } from '@/types';
 
@@ -21,6 +22,7 @@ export default function CompletedPage() {
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
 	const [returningTaskId, setReturningTaskId] = React.useState<string | null>(null);
 	const [returnLoading, setReturnLoading] = React.useState(false);
+	const [commentingTask, setCommentingTask] = React.useState<Task | null>(null);
 
 	const completedTasksByPeriod = React.useMemo(() => {
 		const map = new Map<string, Task[]>();
@@ -101,6 +103,7 @@ export default function CompletedPage() {
 							onToggle={() => togglePeriod(period.id)}
 							onEdit={setEditingTask}
 							onReturnToQA={setReturningTaskId}
+							onOpenComment={setCommentingTask}
 						/>
 					))}
 				</>
@@ -124,6 +127,14 @@ export default function CompletedPage() {
 				loading={returnLoading}
 				confirmLabel="Вернуть"
 			/>
+
+			{commentingTask && (
+				<CommentModal
+					open={true}
+					onClose={() => setCommentingTask(null)}
+					task={commentingTask}
+				/>
+			)}
 		</div>
 	);
 }

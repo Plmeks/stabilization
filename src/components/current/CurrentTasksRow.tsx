@@ -1,6 +1,8 @@
 import * as React from 'react';
 import dayjs from 'dayjs';
+import { StickyNote } from 'lucide-react';
 import { TableRow, TableCell } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 import { PriorityBadge } from '@/components/shared/PriorityBadge';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { ActionButtons } from '@/components/shared/ActionButtons';
@@ -13,9 +15,10 @@ interface CurrentTasksRowProps {
 	onEdit: () => void;
 	onComplete: () => void;
 	onReturnToQA: () => void;
+	onOpenComment: () => void;
 }
 
-export function CurrentTasksRow({ task, creationPeriod, onEdit, onComplete, onReturnToQA }: CurrentTasksRowProps) {
+export function CurrentTasksRow({ task, creationPeriod, onEdit, onComplete, onReturnToQA, onOpenComment }: CurrentTasksRowProps) {
 	return (
 		<TableRow>
 			<TableCell className="whitespace-normal px-4 py-3">
@@ -58,7 +61,22 @@ export function CurrentTasksRow({ task, creationPeriod, onEdit, onComplete, onRe
 					: '—'}
 			</TableCell>
 			<TableCell className="sticky right-0 bg-background z-10 px-4 py-3">
-				<ActionButtons onComplete={onComplete} onEdit={onEdit} onReturnToQA={onReturnToQA} />
+				<div className="flex items-center gap-1">
+					<ActionButtons onComplete={onComplete} onEdit={onEdit} onReturnToQA={onReturnToQA} />
+					<Button
+						variant="ghost"
+						size="icon"
+						className={
+							task.comment?.trim()
+								? 'h-8 w-8 text-yellow-500 hover:text-yellow-600'
+								: 'h-8 w-8'
+						}
+						onClick={onOpenComment}
+						aria-label="Комментарий"
+					>
+						<StickyNote className="h-4 w-4" />
+					</Button>
+				</div>
 			</TableCell>
 		</TableRow>
 	);

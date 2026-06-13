@@ -8,6 +8,7 @@ import { CurrentTasksTable } from '@/components/current/CurrentTasksTable';
 import { EditTaskModal } from '@/components/modals/EditTaskModal';
 import { CompleteTaskModal } from '@/components/modals/CompleteTaskModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
+import { CommentModal } from '@/components/modals/CommentModal';
 import type { Task } from '@/types';
 
 export default function CurrentPage() {
@@ -19,6 +20,7 @@ export default function CurrentPage() {
 	const [completingTask, setCompletingTask] = React.useState<Task | null>(null);
 	const [returningTaskId, setReturningTaskId] = React.useState<string | null>(null);
 	const [returnLoading, setReturnLoading] = React.useState(false);
+	const [commentingTask, setCommentingTask] = React.useState<Task | null>(null);
 
 	const handleReturnConfirm = async () => {
 		if (!returningTaskId) {
@@ -50,6 +52,7 @@ export default function CurrentPage() {
 				onEdit={setEditingTask}
 				onComplete={setCompletingTask}
 				onReturnToQA={setReturningTaskId}
+				onOpenComment={setCommentingTask}
 			/>
 
 			{editingTask && (
@@ -79,6 +82,14 @@ export default function CurrentPage() {
 				loading={returnLoading}
 				confirmLabel="Вернуть"
 			/>
+
+			{commentingTask && (
+				<CommentModal
+					open={true}
+					onClose={() => setCommentingTask(null)}
+					task={commentingTask}
+				/>
+			)}
 		</div>
 	);
 }

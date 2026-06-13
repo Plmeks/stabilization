@@ -5,6 +5,7 @@ import { useSetAtom } from 'jotai';
 import { ModalWrapper } from '@/components/shared/ModalWrapper';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import {
 	Select,
@@ -40,6 +41,8 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 	const [priority, setPriority] = React.useState<Priority | ''>(task.priority ?? '');
 	const [status, setStatus] = React.useState<TaskStatus>(task.status ?? 'В работе');
 	const [link, setLink] = React.useState(task.link ?? '');
+	const [version, setVersion] = React.useState(task.version ?? '');
+	const [comment, setComment] = React.useState(task.comment ?? '');
 	const [loading, setLoading] = React.useState(false);
 	const [showCompleteModal, setShowCompleteModal] = React.useState(false);
 	const [pendingUpdate, setPendingUpdate] = React.useState<UpdateTaskInput | undefined>(undefined);
@@ -51,6 +54,7 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 				assignee: assignee.trim() || undefined,
 				priority: priority || null,
 				link: link.trim() || null,
+				comment: comment.trim() || null,
 			});
 			setShowCompleteModal(true);
 			return;
@@ -62,6 +66,8 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 			priority: priority || null,
 			status,
 			link: link.trim() || null,
+			...(context === 'completed' ? { version: version.trim() || null } : {}),
+			comment: comment.trim() || null,
 		};
 
 		setLoading(true);
@@ -162,6 +168,30 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 							onChange={(e) => setLink(e.target.value)}
 							placeholder="https://..."
 							disabled={loading}
+						/>
+					</div>
+					{context === 'completed' && (
+						<div className="flex flex-col gap-1.5">
+							<Label htmlFor="edit-version">Версия</Label>
+							<Input
+								id="edit-version"
+								value={version}
+								onChange={(e) => setVersion(e.target.value)}
+								placeholder="например, 25.500.0"
+								disabled={loading}
+							/>
+						</div>
+					)}
+					<div className="flex flex-col gap-1.5">
+						<Label htmlFor="edit-comment">Комментарий (необязательно)</Label>
+						<Textarea
+							id="edit-comment"
+							value={comment}
+							onChange={(e) => setComment(e.target.value)}
+							placeholder="Введите комментарий..."
+							disabled={loading}
+							rows={3}
+							className="resize-none"
 						/>
 					</div>
 				</div>

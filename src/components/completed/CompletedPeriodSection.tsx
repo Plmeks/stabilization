@@ -12,6 +12,7 @@ interface CompletedPeriodSectionProps {
 	onToggle: () => void;
 	onEdit: (task: Task) => void;
 	onReturnToQA: (taskId: string) => void;
+	onOpenComment: (task: Task) => void;
 }
 
 export function CompletedPeriodSection({
@@ -22,6 +23,7 @@ export function CompletedPeriodSection({
 	onToggle,
 	onEdit,
 	onReturnToQA,
+	onOpenComment,
 }: CompletedPeriodSectionProps) {
 	const criticalCount = tasks.filter((t) => t.priority === 'Критический').length;
 
@@ -38,6 +40,7 @@ export function CompletedPeriodSection({
 				periods={periods}
 				onEdit={onEdit}
 				onReturnToQA={onReturnToQA}
+				onOpenComment={onOpenComment}
 			/>
 		</PeriodAccordion>
 	);

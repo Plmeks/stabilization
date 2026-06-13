@@ -18,7 +18,9 @@ CREATE TABLE tasks (
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   taken_into_work_at TIMESTAMPTZ,
   completed_at TIMESTAMPTZ,
-  link TEXT
+  link TEXT,
+  version TEXT,
+  comment TEXT
 );
 
 -- Create period_statistics table

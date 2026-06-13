@@ -63,6 +63,8 @@ export type Task = {
 	taken_into_work_at: string | null;
 	completed_at: string | null;
 	link: string | null;
+	version: string | null;
+	comment: string | null;
 };
 
 export type CreatePeriodInput = {
@@ -75,6 +77,7 @@ export type CreateTaskInput = {
 	creation_period_id: string;
 	priority?: Priority;
 	link?: string | null;
+	comment?: string | null;
 };
 
 export type UpdateTaskInput = {
@@ -83,8 +86,11 @@ export type UpdateTaskInput = {
 	priority?: Priority | null;
 	status?: TaskStatus;
 	link?: string | null;
+	version?: string | null;
+	comment?: string | null;
 };
 
 export type CompletionInput = {
 	active_period_id: string;
+	version?: string | null;
 };

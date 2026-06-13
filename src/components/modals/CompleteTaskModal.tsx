@@ -3,6 +3,8 @@
 import * as React from 'react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { ModalWrapper } from '@/components/shared/ModalWrapper';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { PeriodSelector } from '@/components/shared/PeriodSelector';
 import { Button } from '@/components/ui/button';
 import { periodsAtom } from '@/atoms/periodsAtom';
@@ -38,6 +40,7 @@ function CompleteTaskModalBody({
 	const updateTask = useSetAtom(updateTaskAtom);
 
 	const [selectedPeriodId, setSelectedPeriodId] = React.useState<string | null>(null);
+	const [version, setVersion] = React.useState('');
 	const [loading, setLoading] = React.useState(false);
 	const initialized = React.useRef(false);
 
@@ -54,7 +57,7 @@ function CompleteTaskModalBody({
 
 		setLoading(true);
 		try {
-			await completeTask({ id: taskId, input: { active_period_id: selectedPeriodId } });
+			await completeTask({ id: taskId, input: { active_period_id: selectedPeriodId, version: version.trim() || null } });
 
 			if (pendingTaskUpdate && Object.keys(pendingTaskUpdate).length > 0) {
 				await updateTask({ id: taskId, input: pendingTaskUpdate });
@@ -92,6 +95,16 @@ function CompleteTaskModalBody({
 					value={selectedPeriodId}
 					onChange={setSelectedPeriodId}
 				/>
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor="complete-version">Версия (необязательно)</Label>
+					<Input
+						id="complete-version"
+						value={version}
+						onChange={(e) => setVersion(e.target.value)}
+						placeholder="например, 25.500.0"
+						disabled={loading}
+					/>
+				</div>
 			</div>
 		</ModalWrapper>
 	);
