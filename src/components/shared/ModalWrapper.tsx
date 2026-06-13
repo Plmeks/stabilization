@@ -38,13 +38,18 @@ export function ModalWrapper({
 		<Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
 			<DialogContent
 				showCloseButton
-				className={cn('p-6', sizeClasses[size])}
+				className={cn(
+					'flex max-h-[calc(100dvh-0.5rem)] flex-col gap-0 overflow-hidden p-0',
+					sizeClasses[size],
+				)}
 			>
-				<DialogHeader>
+				<DialogHeader className="shrink-0 px-6 pt-6">
 					<DialogTitle>{title}</DialogTitle>
 				</DialogHeader>
-				{children}
-				<DialogFooter className="-mx-6 -mb-6 gap-3 p-6">
+				<div className="min-h-0 flex-1 overflow-y-auto px-6 py-4">
+					{children}
+				</div>
+				<DialogFooter className="mx-0 mb-0 mt-0 shrink-0 gap-3 px-6 py-4">
 					{footer ?? (
 						<Button variant="outline" onClick={onClose}>
 							Закрыть
