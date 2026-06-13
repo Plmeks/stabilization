@@ -96,7 +96,7 @@ function CompleteTaskModalBody({
 					onChange={setSelectedPeriodId}
 				/>
 				<div className="flex flex-col gap-1.5">
-					<Label htmlFor="complete-version">Версия (необязательно)</Label>
+					<Label htmlFor="complete-version">Версия</Label>
 					<Input
 						id="complete-version"
 						value={version}

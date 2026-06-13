@@ -105,16 +105,6 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 						/>
 					</div>
 				)}
-				<div className="flex flex-col gap-1.5">
-					<Label htmlFor="task-link">Ссылка (необязательно)</Label>
-					<Input
-						id="task-link"
-						value={link}
-						onChange={(e) => setLink(e.target.value)}
-						placeholder="https://..."
-						disabled={loading}
-					/>
-				</div>
 				<div className="flex items-center gap-2">
 					<input
 						id="task-critical"
@@ -125,8 +115,18 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 						className="h-4 w-4 cursor-pointer"
 					/>
 					<Label htmlFor="task-critical" className="cursor-pointer">
-						Критическая задача (приоритет «Критический»)
+						Критическая задача
 					</Label>
+				</div>
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor="task-link">Ссылка (необязательно)</Label>
+					<Input
+						id="task-link"
+						value={link}
+						onChange={(e) => setLink(e.target.value)}
+						placeholder="https://..."
+						disabled={loading}
+					/>
 				</div>
 				<div className="flex flex-col gap-1.5">
 					<Label htmlFor="task-comment">Комментарий (необязательно)</Label>

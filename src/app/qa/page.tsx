@@ -8,6 +8,7 @@ import { QAPeriodSection } from '@/components/qa/QAPeriodSection';
 import { CreatePeriodModal } from '@/components/modals/CreatePeriodModal';
 import { AddTaskModal } from '@/components/modals/AddTaskModal';
 import { EditQATaskModal } from '@/components/modals/EditQATaskModal';
+import { CommentModal } from '@/components/modals/CommentModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { deletePeriodAtom } from '@/atoms/periodsAtom';
@@ -35,6 +36,7 @@ export default function QAPage() {
 	const [showDeletePeriodConfirm, setShowDeletePeriodConfirm] = React.useState<string | null>(null);
 	const [showDeleteTaskConfirm, setShowDeleteTaskConfirm] = React.useState<string | null>(null);
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
+	const [commentingTask, setCommentingTask] = React.useState<Task | null>(null);
 
 	React.useEffect(() => {
 		if (!expandedInitialized.current && periods.length > 0) {
@@ -120,6 +122,7 @@ export default function QAPage() {
 							onTakeIntoWork={handleTakeIntoWork}
 							onDeleteTask={setShowDeleteTaskConfirm}
 							onEdit={setEditingTask}
+							onOpenComment={setCommentingTask}
 							totalTaskCount={totalCount}
 							criticalCount={(tasksByCreationPeriod[period.id] ?? []).filter((t) => t.priority === 'Критический').length}
 						/>
@@ -143,6 +146,14 @@ export default function QAPage() {
 					open={true}
 					onClose={() => setEditingTask(null)}
 					task={editingTask}
+				/>
+			)}
+
+			{commentingTask && (
+				<CommentModal
+					open={true}
+					onClose={() => setCommentingTask(null)}
+					task={commentingTask}
 				/>
 			)}
 
