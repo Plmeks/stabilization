@@ -25,7 +25,7 @@ export function CompletedTasksTable({ tasks, periods, onEdit, onReturnToQA, onOp
 		<Table className="min-w-[640px]">
 			<TableHeader>
 				<TableRow>
-					<TableHead className="px-4">Задача</TableHead>
+					<TableHead className="px-4 min-w-[17rem]">Задача</TableHead>
 					<TableHead className="px-4">Исполнитель</TableHead>
 					<TableHead className="px-4">Приоритет</TableHead>
 					<TableHead className="px-4 w-[110px]">Создана в периоде</TableHead>

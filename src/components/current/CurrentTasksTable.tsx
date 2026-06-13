@@ -60,7 +60,7 @@ export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onReturn
 		<Table className="min-w-[640px]">
 			<TableHeader>
 				<tr>
-					<TableHead className="w-1/3 px-4">Задача</TableHead>
+					<TableHead className="min-w-[17rem] px-4">Задача</TableHead>
 					<TableHead className="px-4">Исполнитель</TableHead>
 					<TableHead className="px-4">Приоритет</TableHead>
 					<TableHead className="px-4 w-[110px]">Создана в периоде</TableHead>

@@ -23,11 +23,11 @@ export function CompletedTasksRow({ task, creationPeriod, onEdit, onReturnToQA, 
 			<TableCell className="whitespace-normal px-4 py-3">
 				<TaskNameWithComment task={task} onOpenComment={onOpenComment} />
 			</TableCell>
-			<TableCell className="px-4 py-3">{task.assignee ?? '—'}</TableCell>
+			<TableCell className="px-4 py-3 whitespace-normal">{task.assignee ?? '—'}</TableCell>
 			<TableCell className="px-4 py-3">
 				<PriorityBadge priority={task.priority} />
 			</TableCell>
-			<TableCell className="px-4 py-3 w-[110px] text-xs text-muted-foreground leading-tight">
+			<TableCell className="px-4 py-3">
 				{creationPeriod ? (
 					<>
 						{dayjs(creationPeriod.start_date).format('DD.MM.YYYY')} -
@@ -39,12 +39,12 @@ export function CompletedTasksRow({ task, creationPeriod, onEdit, onReturnToQA, 
 			<TableCell className="px-4 py-3">
 				<StatusBadge status={task.status} />
 			</TableCell>
-			<TableCell className="hidden md:table-cell px-4 py-3">
+			<TableCell className="px-4 py-3">
 				{task.completed_at !== null
 					? dayjs(task.completed_at).format('DD.MM.YYYY')
 					: '—'}
 			</TableCell>
-			<TableCell className="hidden md:table-cell px-4 py-3 text-sm text-muted-foreground">
+			<TableCell className="px-4 py-3">
 				{task.version ?? '—'}
 			</TableCell>
 			<TableCell className="sticky right-0 bg-background z-10 px-4 py-3">

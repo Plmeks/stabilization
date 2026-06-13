@@ -23,13 +23,13 @@ export function CurrentTasksRow({ task, creationPeriod, onEdit, onComplete, onRe
 			<TableCell className="whitespace-normal px-4 py-3">
 				<TaskNameWithComment task={task} onOpenComment={onOpenComment} />
 			</TableCell>
-			<TableCell className="text-muted-foreground px-4 py-3">
+			<TableCell className="px-4 py-3 whitespace-normal">
 				{task.assignee ?? '—'}
 			</TableCell>
 			<TableCell className="px-4 py-3">
 				<PriorityBadge priority={task.priority} />
 			</TableCell>
-			<TableCell className="px-4 py-3 w-[110px] text-xs text-muted-foreground leading-tight">
+			<TableCell className="px-4 py-3t">
 				{creationPeriod ? (
 					<>
 						{dayjs(creationPeriod.start_date).format('DD.MM.YYYY')} -
@@ -41,7 +41,7 @@ export function CurrentTasksRow({ task, creationPeriod, onEdit, onComplete, onRe
 			<TableCell className="px-4 py-3">
 				<StatusBadge status={task.status} />
 			</TableCell>
-			<TableCell className="hidden md:table-cell text-muted-foreground px-4 py-3">
+			<TableCell className="px-4 py-3">
 				{task.taken_into_work_at
 					? dayjs(task.taken_into_work_at).format('DD.MM.YYYY')
 					: '—'}
