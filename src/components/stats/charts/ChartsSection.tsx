@@ -9,6 +9,7 @@ import { periodsAtom } from '@/atoms/periodsAtom';
 import { tasksAtom } from '@/atoms/tasksAtom';
 import { periodStatisticsAtom } from '@/atoms/statsAtom';
 import { calculateChartData } from '@/lib/chart-utils';
+import { Label } from '@/components/ui/label';
 import { CFDChart } from './CFDChart';
 import { BacklogChart } from './BacklogChart';
 
@@ -18,6 +19,7 @@ export function ChartsSection() {
 	const periodStatistics = useAtomValue(periodStatisticsAtom);
 
 	const [selectedPeriodId, setSelectedPeriodId] = useState<string>('');
+	const [zoomToRange, setZoomToRange] = useState(false);
 
 	useEffect(() => {
 		if (periods.length === 0) return;
@@ -74,18 +76,36 @@ export function ChartsSection() {
 				</select>
 			</div>
 			<CFDChart data={chartData} />
-			<BacklogChart
-				data={backlogData}
-				dataKey="uncompleted_critical"
-				color="#f87171"
-				title="Кумулятивный остаток критичных тикетов"
-			/>
-			<BacklogChart
-				data={backlogData}
-				dataKey="uncompleted_non_critical"
-				color="#fb923c"
-				title="Кумулятивный остаток некритичных тикетов"
-			/>
+			<div>
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+					<BacklogChart
+						data={backlogData}
+						dataKey="uncompleted_critical"
+						color="#f87171"
+						title="Кумулятивный остаток критичных тикетов"
+						zoomToRange={zoomToRange}
+					/>
+					<BacklogChart
+						data={backlogData}
+						dataKey="uncompleted_non_critical"
+						color="#fb923c"
+						title="Кумулятивный остаток некритичных тикетов"
+						zoomToRange={zoomToRange}
+					/>
+				</div>
+				<div className="flex items-center gap-2 mt-2">
+					<input
+						id="backlog-zoom"
+						type="checkbox"
+						checked={zoomToRange}
+						onChange={(e) => setZoomToRange(e.target.checked)}
+						className="h-4 w-4 cursor-pointer"
+					/>
+					<Label htmlFor="backlog-zoom" className="cursor-pointer font-normal">
+						Масштабировать по диапазону данных
+					</Label>
+				</div>
+			</div>
 		</div>
 	);
 }

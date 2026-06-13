@@ -34,7 +34,7 @@ export function CFDChart({ data }: CFDChartProps) {
 					<Tooltip />
 					<Legend />
 					<Area
-						type="monotone"
+						type="linear"
 						dataKey="completed_cumulative"
 						name="Готовые"
 						stackId="cfd"
@@ -45,7 +45,7 @@ export function CFDChart({ data }: CFDChartProps) {
 						fillOpacity={0.7}
 					/>
 					<Area
-						type="monotone"
+						type="linear"
 						dataKey="uncompleted_critical"
 						name="Критичные"
 						stackId="cfd"
@@ -56,7 +56,7 @@ export function CFDChart({ data }: CFDChartProps) {
 						fillOpacity={0.7}
 					/>
 					<Area
-						type="monotone"
+						type="linear"
 						dataKey="uncompleted_non_critical"
 						name="Некритичные"
 						stackId="cfd"
@@ -67,7 +67,7 @@ export function CFDChart({ data }: CFDChartProps) {
 						fillOpacity={0.7}
 					/>
 					<Line
-						type="monotone"
+						type="linear"
 						dataKey="wip_total"
 						name="WIP"
 						stroke="#3b82f6"

@@ -55,3 +55,36 @@ export function calculateChartData(
 
 	return periodPoints;
 }
+
+
+export function calculateYAxisZoomDomain(
+	values: number[]
+): [number, number] {
+	if (!values.length) {
+		return [0, 10];
+	}
+
+	const min = Math.min(...values);
+	const max = Math.max(...values);
+
+	if (min === max) {
+		const pad = Math.max(5, min * 0.15);
+
+		return [
+			Math.max(0, Math.floor(min - pad)),
+			Math.ceil(max + pad)
+		];
+	}
+
+	const spread = max - min;
+
+	const pad = Math.max(
+		5,
+		spread * 0.2
+	);
+
+	return [
+		Math.max(0, Math.floor(min - pad)),
+		Math.ceil(max + pad)
+	];
+}
