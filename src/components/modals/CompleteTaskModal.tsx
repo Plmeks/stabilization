@@ -89,7 +89,7 @@ function CompleteTaskModalBody({
 			footer={footer}
 		>
 			<div className="space-y-3">
-				<p className="text-sm text-muted-foreground">Выберите период для архивации:</p>
+				<Label>Выберите период для архивации</Label>
 				<PeriodSelector
 					periods={periods}
 					value={selectedPeriodId}

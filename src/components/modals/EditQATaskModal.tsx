@@ -86,22 +86,12 @@ function EditQATaskModalContent({ onClose, task }: EditQATaskModalContentProps) 
 		>
 			<div className="flex flex-col gap-4">
 				<div className="flex flex-col gap-1.5">
-					<Label htmlFor="qa-edit-title">Название</Label>
+					<Label htmlFor="qa-edit-title" required>Название</Label>
 					<Input
 						id="qa-edit-title"
 						value={title}
 						onChange={(e) => setTitle(e.target.value)}
 						placeholder="Название задачи"
-						disabled={loading}
-					/>
-				</div>
-				<div className="flex flex-col gap-1.5">
-					<Label htmlFor="qa-edit-link">Ссылка (необязательно)</Label>
-					<Input
-						id="qa-edit-link"
-						value={link}
-						onChange={(e) => setLink(e.target.value)}
-						placeholder="https://..."
 						disabled={loading}
 					/>
 				</div>
@@ -119,12 +109,22 @@ function EditQATaskModalContent({ onClose, task }: EditQATaskModalContentProps) 
 					</Label>
 				</div>
 				<div className="flex flex-col gap-1.5">
-					<Label htmlFor="qa-edit-comment">Комментарий (необязательно)</Label>
+					<Label htmlFor="qa-edit-link">Ссылка</Label>
+					<Input
+						id="qa-edit-link"
+						value={link}
+						onChange={(e) => setLink(e.target.value)}
+						placeholder="Ссылка на задачу"
+						disabled={loading}
+					/>
+				</div>
+				<div className="flex flex-col gap-1.5">
+					<Label htmlFor="qa-edit-comment">Комментарий</Label>
 					<Textarea
 						id="qa-edit-comment"
 						value={comment}
 						onChange={(e) => setComment(e.target.value)}
-						placeholder="Введите комментарий..."
+						placeholder="Введите комментарий"
 						disabled={loading}
 						rows={3}
 						className="resize-none"

@@ -84,7 +84,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 		>
 			<div className="flex flex-col gap-4">
 				<div className="flex flex-col gap-1.5">
-					<Label htmlFor="task-title">Название</Label>
+					<Label htmlFor="task-title" required>Название</Label>
 					<Input
 						id="task-title"
 						value={title}
@@ -96,7 +96,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 				</div>
 				{!defaultPeriodId && (
 					<div className="flex flex-col gap-1.5">
-						<Label>Период</Label>
+						<Label required>Период</Label>
 						<PeriodSelector
 							periods={periods}
 							value={periodId}
@@ -119,22 +119,22 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 					</Label>
 				</div>
 				<div className="flex flex-col gap-1.5">
-					<Label htmlFor="task-link">Ссылка (необязательно)</Label>
+					<Label htmlFor="task-link">Ссылка</Label>
 					<Input
 						id="task-link"
 						value={link}
 						onChange={(e) => setLink(e.target.value)}
-						placeholder="https://..."
+						placeholder="Ссылка на задачу"
 						disabled={loading}
 					/>
 				</div>
 				<div className="flex flex-col gap-1.5">
-					<Label htmlFor="task-comment">Комментарий (необязательно)</Label>
+					<Label htmlFor="task-comment">Комментарий</Label>
 					<Textarea
 						id="task-comment"
 						value={comment}
 						onChange={(e) => setComment(e.target.value)}
-						placeholder="Введите комментарий..."
+						placeholder="Введите комментарий"
 						disabled={loading}
 						rows={3}
 						className="resize-none"

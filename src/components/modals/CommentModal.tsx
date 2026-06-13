@@ -56,7 +56,7 @@ function CommentModalContent({ onClose, task }: CommentModalContentProps) {
 			<Textarea
 				value={localComment}
 				onChange={(e) => setLocalComment(e.target.value)}
-				placeholder="Введите комментарий..."
+				placeholder="Введите комментарий"
 				rows={5}
 				className="resize-none"
 				autoFocus

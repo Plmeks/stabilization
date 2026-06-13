@@ -126,7 +126,7 @@ export default function StatsPeriodCard({
 					</StatsMetricGroup>
 
 					{statistics !== null && (
-						<div className="border-t pt-4">
+						<div className="pt-4">
 							<p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-3">
 								Комментарий
 							</p>
