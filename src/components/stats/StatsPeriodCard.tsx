@@ -69,7 +69,7 @@ export default function StatsPeriodCard({
 						onClick={(e) => e.stopPropagation()}
 					>
 						<Button variant="ghost" size="icon" onClick={() => setEditOpen(true)}>
-							<Pencil className="h-4 w-4" />
+							<Pencil className="h-4 w-4 text-amber-500 hover:text-amber-500" />
 						</Button>
 						<Button
 							variant="ghost"

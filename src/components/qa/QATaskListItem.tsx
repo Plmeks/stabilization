@@ -1,6 +1,6 @@
 'use client';
 
-import { Pencil, Play } from 'lucide-react';
+import { Pencil, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ActionButtons } from '@/components/shared/ActionButtons';
 import { TaskNameWithComment } from '@/components/shared/TaskNameWithComment';
@@ -33,19 +33,21 @@ export function QATaskListItem({ task, onTakeIntoWork, onDelete, onEdit, onOpenC
 					<Button
 						variant="ghost"
 						size="icon"
-						className="h-8 w-8"
+						className="h-8 w-8 cursor-pointer text-green-500 hover:text-green-500"
 						aria-label="Взять в работу"
+						title="Взять в работу"
 						onClick={() => onTakeIntoWork(task.id)}
 					>
-						<Play className="h-4 w-4" />
+						<Rocket className="h-4 w-4" />
 					</Button>
 				)}
 				<Button
 					variant="ghost"
 					size="icon"
-					className="h-8 w-8"
+					className="h-8 w-8 cursor-pointer text-amber-500 hover:text-amber-500"
 					onClick={() => onEdit(task)}
 					aria-label="Редактировать"
+					title="Редактировать"
 				>
 					<Pencil className="h-4 w-4" />
 				</Button>

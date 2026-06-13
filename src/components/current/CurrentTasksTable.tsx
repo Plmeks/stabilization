@@ -23,13 +23,27 @@ function getPriorityOrder(priority: string | null): number {
 
 function sortTasks(tasks: Task[]): Task[] {
 	return [...tasks].sort((a, b) => {
-		const priorityDiff = getPriorityOrder(a.priority) - getPriorityOrder(b.priority);
+		const priorityDiff =
+			getPriorityOrder(a.priority) - getPriorityOrder(b.priority);
+
 		if (priorityDiff !== 0) {
 			return priorityDiff;
 		}
-		const aDate = a.taken_into_work_at ?? '';
-		const bDate = b.taken_into_work_at ?? '';
-		return aDate.localeCompare(bDate);
+
+		const aHasDate = Boolean(a.taken_into_work_at);
+		const bHasDate = Boolean(b.taken_into_work_at);
+
+		if (aHasDate && !bHasDate) return -1;
+		if (!aHasDate && bHasDate) return 1;
+
+		if (aHasDate && bHasDate) {
+			return (
+				new Date(b.taken_into_work_at!).getTime() -
+				new Date(a.taken_into_work_at!).getTime()
+			);
+		}
+
+		return 0;
 	});
 }
 
