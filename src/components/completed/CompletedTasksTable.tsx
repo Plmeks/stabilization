@@ -25,13 +25,13 @@ export function CompletedTasksTable({ tasks, periods, onEdit, onReturnToQA, onOp
 		<Table className="min-w-[640px]">
 			<TableHeader>
 				<TableRow>
-					<TableHead className="w-1/3 px-4">Задача</TableHead>
+					<TableHead className="min-w-[17rem] px-4">Задача</TableHead>
 					<TableHead className="px-4">Исполнитель</TableHead>
 					<TableHead className="px-4">Приоритет</TableHead>
 					<TableHead className="px-4 w-[110px]">Создана в периоде</TableHead>
 					<TableHead className="px-4">Статус</TableHead>
-					<TableHead className="hidden md:table-cell px-4">Дата завершения</TableHead>
-					<TableHead className="hidden md:table-cell px-4">Версия</TableHead>
+					<TableHead className="px-4">Дата завершения</TableHead>
+					<TableHead className="px-4">Версия</TableHead>
 					<TableHead className="sticky right-0 bg-background z-10 px-4">Действия</TableHead>
 				</TableRow>
 			</TableHeader>
