@@ -17,8 +17,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Stability",
-  description: "Stability app",
+  title: "Stabana",
+  description: "Stabana - Эпик стабилизации и мониторинг задач",
 };
 
 export default function RootLayout({

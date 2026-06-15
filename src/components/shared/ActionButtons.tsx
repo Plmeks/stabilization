@@ -58,7 +58,7 @@ export function ActionButtons({ onEdit, onComplete, onDelete, onReturnToQA, disa
 				<Button
 					variant="ghost"
 					size="icon"
-					className="h-8 w-8 text-destructive hover:text-destructive cursor-pointer"
+					className="h-8 w-8 text-red-500 hover:text-red-500 cursor-pointer"
 					onClick={onDelete}
 					disabled={disabled}
 					aria-label="Удалить"

@@ -33,7 +33,7 @@ export function QATaskListItem({ task, onTakeIntoWork, onDelete, onEdit, onOpenC
 					<Button
 						variant="ghost"
 						size="icon"
-						className="h-8 w-8 cursor-pointer text-green-500 hover:text-green-500"
+						className="h-8 w-8 cursor-pointer text-[#40BCA9] hover:text-[#40BCA9]"
 						aria-label="Взять в работу"
 						title="Взять в работу"
 						onClick={() => onTakeIntoWork(task.id)}
@@ -44,7 +44,7 @@ export function QATaskListItem({ task, onTakeIntoWork, onDelete, onEdit, onOpenC
 				<Button
 					variant="ghost"
 					size="icon"
-					className="h-8 w-8 cursor-pointer text-amber-500 hover:text-amber-500"
+					className="h-8 w-8 cursor-pointer text-amber-600 hover:text-amber-600"
 					onClick={() => onEdit(task)}
 					aria-label="Редактировать"
 					title="Редактировать"
