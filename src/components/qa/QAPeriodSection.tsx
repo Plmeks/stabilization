@@ -35,25 +35,34 @@ export function QAPeriodSection({
 	totalTaskCount,
 	criticalCount,
 }: QAPeriodSectionProps) {
+	const addTaskButton = (
+		<Button
+			variant="outline"
+			size="sm"
+			className="w-full sm:w-auto"
+			onClick={() => onAddTask(period.id)}
+		>
+			<Plus className="h-3.5 w-3.5 mr-1" />
+			Добавить задачу
+		</Button>
+	);
+
+	const deletePeriodButton = (
+		<Button
+			variant="ghost"
+			size="icon"
+			className="h-8 w-8 text-destructive hover:text-destructive shrink-0"
+			onClick={() => onDeletePeriod(period.id)}
+			aria-label="Удалить период"
+		>
+			<Trash2 className="h-4 w-4" />
+		</Button>
+	);
+
 	const headerActions = (
-		<div className="flex items-center gap-1">
-			<Button
-				variant="outline"
-				size="sm"
-				onClick={() => onAddTask(period.id)}
-			>
-				<Plus className="h-3.5 w-3.5 mr-1" />
-				Добавить задачу
-			</Button>
-			<Button
-				variant="ghost"
-				size="icon"
-				className="h-8 w-8 text-destructive hover:text-destructive"
-				onClick={() => onDeletePeriod(period.id)}
-				aria-label="Удалить период"
-			>
-				<Trash2 className="h-4 w-4" />
-			</Button>
+		<div className="flex w-full items-center gap-2 sm:w-auto sm:gap-1">
+			<div className="min-w-0 flex-1 sm:flex-initial">{addTaskButton}</div>
+			{deletePeriodButton}
 		</div>
 	);
 

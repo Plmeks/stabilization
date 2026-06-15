@@ -46,7 +46,7 @@ export function ModalWrapper({
 				<DialogHeader className="shrink-0 px-6 pt-6">
 					<DialogTitle>{title}</DialogTitle>
 				</DialogHeader>
-				<div className="min-h-0 flex-1 overflow-y-auto px-6 py-4">
+				<div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-6 py-4">
 					{children}
 				</div>
 				<DialogFooter className="mx-0 mb-0 mt-0 shrink-0 gap-3 px-6 py-4">

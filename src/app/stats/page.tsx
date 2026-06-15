@@ -23,7 +23,7 @@ export default function StatsPage() {
 		new Set(sortedPeriods.length > 0 ? [sortedPeriods[0].id] : []),
 	);
 	const expandedInitialized = React.useRef(false);
-	const [isAllExpanded, setIsAllExpanded] = React.useState(false);
+	const [isAllExpanded, setIsAllExpanded] = React.useState(true);
 
 	React.useEffect(() => {
 		if (!expandedInitialized.current && sortedPeriods.length > 0) {
@@ -55,7 +55,7 @@ export default function StatsPage() {
 	};
 
 	return (
-		<div className="p-6 space-y-5">
+		<div className="p-0 sm:p-6 space-y-4 sm:space-y-5">
 			{sortedPeriods.length > 0 && (
 				<div className="flex justify-end">
 					<Button variant="outline" size="sm" onClick={toggleAll}>

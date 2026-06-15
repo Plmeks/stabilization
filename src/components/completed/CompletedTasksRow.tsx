@@ -20,14 +20,16 @@ interface CompletedTasksRowProps {
 export function CompletedTasksRow({ task, creationPeriod, onEdit, onReturnToQA, onOpenComment }: CompletedTasksRowProps) {
 	return (
 		<TableRow>
-			<TableCell className="whitespace-normal px-4 py-3">
+			<TableCell className="whitespace-normal px-2 py-2 md:px-4 md:py-3">
 				<TaskNameWithComment task={task} onOpenComment={onOpenComment} />
 			</TableCell>
-			<TableCell className="px-4 py-3 whitespace-normal">{task.assignee ?? '—'}</TableCell>
-			<TableCell className="px-4 py-3">
+			<TableCell className="px-2 py-2 md:px-4 md:py-3 whitespace-normal">
+				{task.assignee ?? '—'}
+			</TableCell>
+			<TableCell className="px-2 py-2 md:px-4 md:py-3">
 				<PriorityBadge priority={task.priority} />
 			</TableCell>
-			<TableCell className="px-4 py-3">
+			<TableCell className="px-2 py-2 md:px-4 md:py-3">
 				{creationPeriod ? (
 					<>
 						{dayjs(creationPeriod.start_date).format('DD.MM.YYYY')} -
@@ -36,18 +38,18 @@ export function CompletedTasksRow({ task, creationPeriod, onEdit, onReturnToQA, 
 					</>
 				) : '—'}
 			</TableCell>
-			<TableCell className="px-4 py-3">
+			<TableCell className="px-2 py-2 md:px-4 md:py-3">
 				<StatusBadge status={task.status} />
 			</TableCell>
-			<TableCell className="px-4 py-3">
+			<TableCell className="px-2 py-2 md:px-4 md:py-3">
 				{task.completed_at !== null
 					? dayjs(task.completed_at).format('DD.MM.YYYY')
 					: '—'}
 			</TableCell>
-			<TableCell className="px-4 py-3">
+			<TableCell className="px-2 py-2 md:px-4 md:py-3">
 				{task.version ?? '—'}
 			</TableCell>
-			<TableCell className="sticky right-0 bg-background z-10 px-4 py-3">
+			<TableCell className="sticky right-0 bg-background z-10 px-2 py-2 md:px-4 md:py-3">
 				<ActionButtons onEdit={onEdit} onReturnToQA={onReturnToQA} />
 			</TableCell>
 		</TableRow>

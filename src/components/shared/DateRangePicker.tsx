@@ -45,8 +45,8 @@ export function DateRangePicker({
 
 	return (
 		<div className="flex flex-col gap-1.5">
-			<div className="flex items-center gap-2">
-				<div className="flex flex-col gap-1 flex-1">
+			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
+				<div className="flex min-w-0 flex-col gap-1 sm:flex-1">
 					<span className="text-xs text-muted-foreground">Дата начала</span>
 					<Popover open={startOpen} onOpenChange={setStartOpen}>
 						<PopoverTrigger asChild>
@@ -71,7 +71,7 @@ export function DateRangePicker({
 						</PopoverContent>
 					</Popover>
 				</div>
-				<div className="flex flex-col gap-1 flex-1">
+				<div className="flex min-w-0 flex-col gap-1 sm:flex-1">
 					<span className="text-xs text-muted-foreground">Дата конца</span>
 					<Popover open={endOpen} onOpenChange={setEndOpen}>
 						<PopoverTrigger asChild>

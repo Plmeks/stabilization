@@ -1,11 +1,12 @@
 'use client';
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/lib/auth";
-import { LogOut } from "lucide-react";
+import { LogOut, Menu, X } from "lucide-react";
 import logo from "@/app/favicon.png";
 
 const tabs = [
@@ -18,6 +19,11 @@ const tabs = [
 
 export default function TabNavigation() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
 
   function handleLogout() {
     logout();
@@ -36,36 +42,71 @@ export default function TabNavigation() {
             alt=""
             width={32}
             height={32}
-            className="h-9 w-9 rounded-md"
+            className="h-8 w-8 sm:h-9 sm:w-9 rounded-md"
             priority
           />
-          <span className="">Stable<span className="text-[#00A87E]">Call</span></span>
+          <span>Stabana</span>
         </Link>
-        {tabs.map((tab) => {
-          const isActive = pathname === tab.href;
-          return (
-            <Button
-              key={tab.href}
-              asChild
-              variant={isActive ? "default" : "ghost"}
-              size="sm"
-              className={isActive ? "shrink-0 rounded-lg px-4" : "shrink-0 px-4"}
-            >
-              <Link href={tab.href}>{tab.label}</Link>
-            </Button>
-          );
-        })}
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleLogout}
-          className="ml-auto shrink-0 px-3 text-muted-foreground hover:text-foreground"
-          title="Выйти"
-        >
-          <LogOut className="h-4 w-4" />
-          <span className="sr-only">Выйти</span>
-        </Button>
+
+        <div className="hidden md:flex items-center gap-1 flex-1 overflow-x-auto scrollbar-none">
+          {tabs.map((tab) => {
+            const isActive = pathname === tab.href;
+            return (
+              <Button
+                key={tab.href}
+                asChild
+                variant={isActive ? "default" : "ghost"}
+                size="sm"
+                className={isActive ? "shrink-0 rounded-lg px-4" : "shrink-0 px-4"}
+              >
+                <Link href={tab.href}>{tab.label}</Link>
+              </Button>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center gap-1 ml-auto">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLogout}
+            className="shrink-0 px-2 sm:px-3 text-muted-foreground hover:text-foreground"
+            title="Выйти"
+          >
+            <LogOut className="h-4 w-4" />
+            <span className="sr-only">Выйти</span>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden h-9 w-9 shrink-0"
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label={menuOpen ? "Закрыть меню" : "Открыть меню"}
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
+        </div>
       </div>
+
+      {menuOpen && (
+        <div className="md:hidden border-t bg-background px-3 py-2 flex flex-col gap-1">
+          {tabs.map((tab) => {
+            const isActive = pathname === tab.href;
+            return (
+              <Button
+                key={tab.href}
+                asChild
+                variant={isActive ? "default" : "ghost"}
+                size="sm"
+                className="w-full justify-start"
+              >
+                <Link href={tab.href}>{tab.label}</Link>
+              </Button>
+            );
+          })}
+        </div>
+      )}
     </nav>
   );
 }

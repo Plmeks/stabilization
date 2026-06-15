@@ -16,7 +16,7 @@ export default function CompletedPage() {
 	const completedTasks = useAtomValue(completedTasksAtom);
 	const [expandedPeriods, setExpandedPeriods] = React.useState<Set<string>>(new Set());
 	const expandedInitialized = React.useRef(false);
-	const [isAllExpanded, setIsAllExpanded] = React.useState(false);
+	const [isAllExpanded, setIsAllExpanded] = React.useState(true);
 	const returnToQA = useSetAtom(returnToQAAtom);
 
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
@@ -81,7 +81,7 @@ export default function CompletedPage() {
 	};
 
 	return (
-		<div className="flex flex-col gap-5 p-6">
+		<div className="flex flex-col gap-4 p-0 sm:gap-5 sm:p-6">
 			{periodsWithTasks.length === 0 ? (
 				<p className="text-sm text-muted-foreground text-center py-8">
 					Нет выполненных задач

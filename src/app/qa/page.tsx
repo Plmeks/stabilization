@@ -27,7 +27,7 @@ export default function QAPage() {
 	const deleteTask = useSetAtom(deleteTaskAtom);
 	const takeIntoWork = useSetAtom(takeIntoWorkAtom);
 
-	const [isAllExpanded, setIsAllExpanded] = React.useState(false);
+	const [isAllExpanded, setIsAllExpanded] = React.useState(true);
 	const expandedInitialized = React.useRef(false);
 
 	const [showCreatePeriodModal, setShowCreatePeriodModal] = React.useState(false);
@@ -92,9 +92,9 @@ export default function QAPage() {
 		: 0;
 
 	return (
-		<div className="flex flex-col gap-5 p-6">
+		<div className="flex flex-col gap-4 p-0 sm:gap-5 sm:p-6">
 			<div className="flex items-center justify-between gap-2">
-				<Button variant="outline" onClick={() => setShowCreatePeriodModal(true)}>
+				<Button variant="outline" size="sm" onClick={() => setShowCreatePeriodModal(true)}>
 					<Plus className="h-4 w-4 mr-1" />
 					Добавить период
 				</Button>

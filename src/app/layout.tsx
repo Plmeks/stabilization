@@ -33,7 +33,7 @@ export default function RootLayout({
           <Provider>
             <DataLoader />
             <TabNavigation />
-            <main className="max-w-screen-xl mx-auto px-4 sm:px-6 py-6">{children}</main>
+            <main className="max-w-screen-xl mx-auto px-3 py-3 sm:p-6">{children}</main>
           </Provider>
         </AuthGuard>
       </body>

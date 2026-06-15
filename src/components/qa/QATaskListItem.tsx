@@ -19,7 +19,7 @@ export function QATaskListItem({ task, onTakeIntoWork, onDelete, onEdit, onOpenC
 	const canTakeIntoWork = task.status === null;
 
 	return (
-		<div className={`flex items-center gap-2 px-4 py-2.5 border-t${task.status !== null ? ' bg-blue-50' : ''}`}>
+		<div className={`flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 border-t${task.status !== null ? ' bg-blue-50' : ''}`}>
 			<TaskNameWithComment
 				task={task}
 				onOpenComment={() => onOpenComment(task)}
