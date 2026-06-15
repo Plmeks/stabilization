@@ -93,6 +93,8 @@ export default function QAPage() {
 
 	return (
 		<div className="flex flex-col gap-4 p-0 sm:gap-5 sm:p-6">
+			<h1 className="text-2xl font-semibold">Новые задачи</h1>
+
 			<div className="flex items-center justify-between gap-2">
 				<Button variant="outline" size="sm" onClick={() => setShowCreatePeriodModal(true)}>
 					<Plus className="h-4 w-4 mr-1" />

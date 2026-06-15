@@ -88,8 +88,9 @@ export default function CompletedPage() {
 				</p>
 			) : (
 				<>
-					<div className="flex justify-end">
-						<Button variant="outline" size="sm" onClick={toggleAll}>
+					<div className="flex justify-between md:flex-row flex-col md:items-center gap-2">
+						<h1 className="text-2xl font-semibold mb-2 md:mb-0">Завршенные задачи</h1>
+						<Button variant="outline" size="sm" onClick={toggleAll} className='md:w-auto w-fit self-end'>
 							{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
 						</Button>
 					</div>

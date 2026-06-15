@@ -39,9 +39,9 @@ export default function CurrentPage() {
 
 	return (
 		<div className="p-0 sm:p-6">
-			<div className="mb-8 flex items-center gap-2">
+			<div className="mb-4 flex md:flex-row flex-col md:items-center gap-2">
 				<h1 className="text-2xl font-semibold">Текущие задачи</h1>
-				<div className="bg-muted/80 text-muted-foreground text-xs px-2.5 py-0.5 rounded-full">
+				<div className="bg-muted/80 text-muted-foreground text-xs px-2.5 py-0.5 rounded-full md:w-auto w-fit">
 					Всего: {tasks.length}{criticalCount !== undefined && criticalCount > 0 ? <>, Крит: <span className="text-red-500">{criticalCount}</span></> : ''}
 				</div>
 			</div>
