@@ -90,7 +90,7 @@ export function EditMetricsModal({ open, onClose, statistics }: EditMetricsModal
 				<div className="space-y-5">
 					<div>
 						<p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-2">
-							Добавлено за период
+							Были добавлены за период
 						</p>
 						<div className="grid grid-cols-2 gap-4">
 							<div className="flex flex-col gap-1.5">
@@ -131,7 +131,7 @@ export function EditMetricsModal({ open, onClose, statistics }: EditMetricsModal
 
 					<div>
 						<p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-2">
-							Выполнено за период
+							Завершено в период
 						</p>
 						<div className="grid grid-cols-2 gap-4">
 							<div className="flex flex-col gap-1.5">
@@ -172,7 +172,7 @@ export function EditMetricsModal({ open, onClose, statistics }: EditMetricsModal
 
 					<div>
 						<p className="text-xs text-muted-foreground uppercase tracking-wide font-semibold mb-2">
-							В работе (WIP)
+							WIP за период
 						</p>
 						<div className="grid grid-cols-2 gap-4">
 							<div className="flex flex-col gap-1.5">

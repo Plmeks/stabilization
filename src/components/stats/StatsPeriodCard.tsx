@@ -106,20 +106,20 @@ export default function StatsPeriodCard({
 						<StatsMetricItem label="Некритические" value={metrics.uncompleted_non_critical} isSubMetric />
 					</StatsMetricGroup>
 
-					<StatsMetricGroup title="WIP">
+					<StatsMetricGroup title="WIP за период">
 						<StatsMetricItem label="Всего" value={metrics.wip_total} />
 						<StatsMetricItem label="В работе" value={metrics.in_progress} isSubMetric />
 						<StatsMetricItem label="В тесте" value={metrics.in_testing} isSubMetric />
 						<StatsMetricItem label="В блоке" value={metrics.in_block} isSubMetric />
 					</StatsMetricGroup>
 
-					<StatsMetricGroup title="Выполнено за период">
+					<StatsMetricGroup title="Завершено в период">
 						<StatsMetricItem label="Всего" value={metrics.resolved_total} />
 						<StatsMetricItem label="Критические" value={metrics.resolved_critical} isSubMetric />
 						<StatsMetricItem label="Некритические" value={metrics.resolved_non_critical} isSubMetric />
 					</StatsMetricGroup>
 
-					<StatsMetricGroup title="Добавлено за период">
+					<StatsMetricGroup title="Были добавлены за период">
 						<StatsMetricItem label="Всего" value={metrics.added_to_backlog} />
 						<StatsMetricItem label="Критические" value={metrics.added_critical} isSubMetric />
 						<StatsMetricItem label="Некритические" value={metrics.added_non_critical} isSubMetric />
