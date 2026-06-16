@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { Trash2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PeriodAccordion from '@/components/shared/PeriodAccordion';
@@ -35,6 +36,17 @@ export function QAPeriodSection({
 	totalTaskCount,
 	criticalCount,
 }: QAPeriodSectionProps) {
+	const sortedTasks = React.useMemo(
+		() =>
+			[...tasks].sort((a, b) => {
+				const aTaken = a.status !== null ? 1 : 0;
+				const bTaken = b.status !== null ? 1 : 0;
+				if (aTaken !== bTaken) return aTaken - bTaken;
+				return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+			}),
+		[tasks],
+	);
+
 	const addTaskButton = (
 		<Button
 			variant="outline"
@@ -75,10 +87,10 @@ export function QAPeriodSection({
 			criticalCount={criticalCount}
 			headerActions={headerActions}
 		>
-			{tasks.length === 0 ? (
+			{sortedTasks.length === 0 ? (
 				<p className="px-4 py-3 text-sm text-muted-foreground">Нет задач</p>
 			) : (
-				tasks.map((task) => (
+				sortedTasks.map((task) => (
 					<QATaskListItem
 						key={task.id}
 						task={task}
