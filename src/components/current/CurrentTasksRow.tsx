@@ -41,11 +41,6 @@ export function CurrentTasksRow({ task, creationPeriod, onEdit, onComplete, onRe
 			<TableCell className="px-2 py-2 md:px-4 md:py-3">
 				<StatusBadge status={task.status} />
 			</TableCell>
-			<TableCell className="px-2 py-2 md:px-4 md:py-3">
-				{task.taken_into_work_at
-					? dayjs(task.taken_into_work_at).format('DD.MM.YYYY')
-					: '—'}
-			</TableCell>
 			<TableCell className="sticky right-0 bg-background z-10 px-2 py-2 md:px-4 md:py-3">
 				<ActionButtons onComplete={onComplete} onEdit={onEdit} onReturnToQA={onReturnToQA} />
 			</TableCell>

@@ -35,7 +35,7 @@ export function detectUrls(text: string): Array<{ text: string; url?: string }> 
 }
 
 export function isTaskActive(task: Task): boolean {
-	return task.status === 'В работе' || task.status === 'В тесте' || task.status === 'Блокер';
+	return !isTaskCompleted(task);
 }
 
 export function isTaskCompleted(task: Task): boolean {

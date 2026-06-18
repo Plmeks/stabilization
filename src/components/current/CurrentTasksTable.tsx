@@ -30,16 +30,16 @@ function sortTasks(tasks: Task[]): Task[] {
 			return priorityDiff;
 		}
 
-		const aHasDate = Boolean(a.taken_into_work_at);
-		const bHasDate = Boolean(b.taken_into_work_at);
+		const aHasDate = Boolean(a.created_at);
+		const bHasDate = Boolean(b.created_at);
 
 		if (aHasDate && !bHasDate) return -1;
 		if (!aHasDate && bHasDate) return 1;
 
 		if (aHasDate && bHasDate) {
 			return (
-				new Date(b.taken_into_work_at!).getTime() -
-				new Date(a.taken_into_work_at!).getTime()
+				new Date(b.created_at!).getTime() -
+				new Date(a.created_at!).getTime()
 			);
 		}
 
@@ -79,7 +79,6 @@ export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onReturn
 					<TableHead className="px-2 md:px-4">Приоритет</TableHead>
 					<TableHead className="px-2 md:px-4 w-[110px]">Создана в периоде</TableHead>
 					<TableHead className="px-2 md:px-4">Статус</TableHead>
-					<TableHead className="px-2 md:px-4">Дата взятия</TableHead>
 					<TableHead className="sticky right-0 bg-background z-10 px-2 md:px-4">Действия</TableHead>
 				</tr>
 			</TableHeader>
