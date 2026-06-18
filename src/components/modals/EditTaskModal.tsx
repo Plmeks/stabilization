@@ -15,7 +15,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { updateTaskAtom, returnTaskToWorkAtom } from '@/atoms/tasksAtom';
-import { PRIORITIES, TASK_STATUSES } from '@/types/constants';
+import { PRIORITIES, TASK_STATUSES, BACKLOG_SELECT_VALUE, BACKLOG_STATUS_LABEL } from '@/types/constants';
 import type { Task, Priority, TaskStatus, UpdateTaskInput } from '@/types';
 import { CompleteTaskModal } from './CompleteTaskModal';
 
@@ -39,7 +39,7 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 	const [title, setTitle] = React.useState(task.title);
 	const [assignee, setAssignee] = React.useState(task.assignee ?? '');
 	const [priority, setPriority] = React.useState<Priority | ''>(task.priority ?? '');
-	const [status, setStatus] = React.useState<TaskStatus>(task.status ?? 'В работе');
+	const [status, setStatus] = React.useState<TaskStatus | null>(task.status);
 	const [link, setLink] = React.useState(task.link ?? '');
 	const [version, setVersion] = React.useState(task.version ?? '');
 	const [comment, setComment] = React.useState(task.comment ?? '');
@@ -146,14 +146,17 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 					<div className="flex flex-col gap-1.5">
 						<Label>Статус</Label>
 						<Select
-							value={status}
-							onValueChange={(val) => setStatus(val as TaskStatus)}
+							value={status ?? BACKLOG_SELECT_VALUE}
+							onValueChange={(val) => setStatus(val === BACKLOG_SELECT_VALUE ? null : val as TaskStatus)}
 							disabled={loading}
 						>
 							<SelectTrigger className="w-full">
 								<SelectValue />
 							</SelectTrigger>
 							<SelectContent>
+								{context === 'current' && (
+									<SelectItem value={BACKLOG_SELECT_VALUE}>{BACKLOG_STATUS_LABEL}</SelectItem>
+								)}
 								{TASK_STATUSES.map((s) => (
 									<SelectItem key={s} value={s}>{s}</SelectItem>
 								))}

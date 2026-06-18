@@ -24,3 +24,9 @@ export const STATUS_COLORS: Record<TaskStatus, string> = {
 	'Завершена': 'bg-green-100 text-green-800 border-green-200',
 	'Блокер': 'bg-red-100 text-red-800 border-red-200',
 };
+
+// Статус null отображается как «Бэклог»: задача заведена, но ещё не взята в работу.
+export const BACKLOG_STATUS_LABEL = 'Бэклог';
+export const BACKLOG_STATUS_COLOR = 'bg-indigo-100 text-indigo-800 border-indigo-200';
+// Select не принимает null как значение — используем sentinel (по аналогии с '__none__' для приоритета).
+export const BACKLOG_SELECT_VALUE = '__backlog__';

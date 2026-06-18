@@ -12,16 +12,19 @@ const PRIORITY_RANK: Record<string, number> = {
 const priorityRank = (p: string | null): number =>
 	p === null ? 3 : PRIORITY_RANK[p] ?? 3;
 
-// Severity order for the current-tasks board: Блокер выше, затем В работе, В тесте.
+// Severity order for the current-tasks board: Блокер выше, затем Бэклог (null), В работе, В тесте.
 const STATUS_RANK: Record<string, number> = {
 	'Блокер': 0,
-	'В работе': 1,
-	'В тесте': 2,
-	'Завершена': 3,
+	'В работе': 2,
+	'В тесте': 3,
+	'Завершена': 4,
 };
 
+// Бэклог (status === null) встаёт между Блокером и «В работе».
+const BACKLOG_RANK = 1;
+
 const statusRank = (s: string | null): number =>
-	s === null ? 4 : STATUS_RANK[s] ?? 4;
+	s === null ? BACKLOG_RANK : STATUS_RANK[s] ?? 5;
 
 const timeOf = (d: string | null | undefined): number => (d ? new Date(d).getTime() : 0);
 

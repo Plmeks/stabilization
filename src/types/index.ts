@@ -84,7 +84,7 @@ export type UpdateTaskInput = {
 	title?: string;
 	assignee?: string;
 	priority?: Priority | null;
-	status?: TaskStatus;
+	status?: TaskStatus | null;
 	link?: string | null;
 	version?: string | null;
 	comment?: string | null;

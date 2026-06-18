@@ -44,9 +44,13 @@ export function calculateDynamicMetrics(
 		(t) => t.status === 'Завершена' && t.priority !== 'Критический',
 	).length;
 
-	const in_progress = activePeriodTasks.filter((t) => t.status === 'В работе').length;
-	const in_testing = activePeriodTasks.filter((t) => t.status === 'В тесте').length;
-	const in_block = activePeriodTasks.filter((t) => t.status === 'Блокер').length;
+	// WIP отражает живую доску «Текущие задачи» (все незавершённые задачи),
+	// а не только привязанные к этому периоду — как и блок «Незавершенные» ниже.
+	// Закрытые периоды этого не используют: они берут зафиксированную статистику.
+	const activeTasks = allTasks.filter((t) => isTaskActive(t));
+	const in_progress = activeTasks.filter((t) => t.status === 'В работе').length;
+	const in_testing = activeTasks.filter((t) => t.status === 'В тесте').length;
+	const in_block = activeTasks.filter((t) => t.status === 'Блокер').length;
 	const wip_total = in_progress + in_testing;
 
 	const sortedPeriods = [...allPeriods].sort((a, b) =>
@@ -87,7 +91,6 @@ export function calculateDynamicMetrics(
 	// "Незавершенные" reflect the live count of active (not completed) tasks,
 	// i.e. exactly what the "Текущие задачи" table shows. Locked periods freeze
 	// this snapshot via fixed statistics; only unlocked periods stay live.
-	const activeTasks = allTasks.filter((t) => isTaskActive(t));
 	const uncompleted = activeTasks.length;
 	const uncompleted_critical = activeTasks.filter((t) => t.priority === 'Критический').length;
 	const uncompleted_non_critical = activeTasks.filter((t) => t.priority !== 'Критический').length;

@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-import { STATUS_COLORS } from '@/types/constants';
+import { STATUS_COLORS, BACKLOG_STATUS_LABEL, BACKLOG_STATUS_COLOR } from '@/types/constants';
 import type { TaskStatus } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -8,16 +8,15 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status }: StatusBadgeProps) {
-	if (status === null) {
-		return null;
-	}
+	const label = status ?? BACKLOG_STATUS_LABEL;
+	const color = status ? STATUS_COLORS[status] : BACKLOG_STATUS_COLOR;
 
 	return (
 		<Badge
 			variant="outline"
-			className={cn('rounded-full px-2.5 py-0.5', STATUS_COLORS[status])}
+			className={cn('rounded-full px-2.5 py-0.5', color)}
 		>
-			{status}
+			{label}
 		</Badge>
 	);
 }

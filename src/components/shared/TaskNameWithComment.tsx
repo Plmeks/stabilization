@@ -40,7 +40,7 @@ export function TaskNameWithComment({
 			{hasComment && (
 				<button
 					type="button"
-					className="absolute -top-1.5 -left-2 z-10 inline-flex items-center cursor-pointer shrink-0 text-yellow-400 hover:text-yellow-300"
+					className="absolute -top-1.5 -left-3 z-10 inline-flex items-center cursor-pointer shrink-0 text-yellow-400 hover:text-yellow-300"
 					onClick={onOpenComment}
 					aria-label="Комментарий"
 				>
