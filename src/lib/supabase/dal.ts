@@ -66,7 +66,11 @@ export async function createTask(input: CreateTaskInput): Promise<Task> {
 	return data as Task;
 }
 
-export async function takeIntoWork(id: string, latestPeriodId: string): Promise<Task> {
+export async function takeIntoWork(
+	id: string,
+	latestPeriodId: string,
+	assignee?: string | null,
+): Promise<Task> {
 	const { data: existing, error: fetchError } = await supabase
 		.from('tasks')
 		.select('priority')
@@ -84,6 +88,7 @@ export async function takeIntoWork(id: string, latestPeriodId: string): Promise<
 			taken_into_work_at: new Date().toISOString(),
 			priority,
 			active_period_id: latestPeriodId,
+			...(assignee !== undefined ? { assignee } : {}),
 		})
 		.eq('id', id)
 		.select()

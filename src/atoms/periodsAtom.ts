@@ -32,6 +32,8 @@ export const fetchPeriodsAtom = atom(
 export const createPeriodAtom = atom(
 	null,
 	async (get, set, input: CreatePeriodInput) => {
+		// The period that is latest right now — it will be auto-locked once a newer one appears.
+		const previousLatest = get(periodsAtom)[0] ?? null;
 		const tempId = `temp-${Date.now()}`;
 		const tempPeriod: Period = {
 			id: tempId,
@@ -58,6 +60,24 @@ export const createPeriodAtom = atom(
 			const isLatest = updatedPeriods.length > 0 && updatedPeriods[0].id === realPeriod.id;
 
 			if (isLatest) {
+				// Opening a new period closes the previous one: snapshot its metrics
+				// (same effect as the "Зафиксировать метрики" button). Done before the
+				// WIP transfer so the closed period keeps its real WIP counts.
+				if (previousLatest) {
+					try {
+						const stats = await import('@/atoms/statsAtom');
+						const alreadyLocked = get(stats.periodStatisticsAtom).some(
+							(s) => s.period_id === previousLatest.id,
+						);
+						if (!alreadyLocked) {
+							await set(stats.lockPeriodMetricsAtom, previousLatest.id);
+						}
+					} catch (lockError) {
+						console.error('Auto-lock of previous period failed after period creation:', lockError);
+						// Non-fatal: the period was created; metrics can still be locked manually.
+					}
+				}
+
 				try {
 					const updatedTasks = await transferWipTasks(realPeriod.id);
 					if (updatedTasks.length > 0) {

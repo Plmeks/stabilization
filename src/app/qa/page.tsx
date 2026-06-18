@@ -8,11 +8,12 @@ import { QAPeriodSection } from '@/components/qa/QAPeriodSection';
 import { CreatePeriodModal } from '@/components/modals/CreatePeriodModal';
 import { AddTaskModal } from '@/components/modals/AddTaskModal';
 import { EditQATaskModal } from '@/components/modals/EditQATaskModal';
+import { TakeIntoWorkModal } from '@/components/modals/TakeIntoWorkModal';
 import { CommentModal } from '@/components/modals/CommentModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { deletePeriodAtom } from '@/atoms/periodsAtom';
-import { qaTasksAtom, tasksByCreationPeriodAtom, tasksByActivePeriodAtom, deleteTaskAtom, takeIntoWorkAtom } from '@/atoms/tasksAtom';
+import { qaTasksAtom, tasksByCreationPeriodAtom, tasksByActivePeriodAtom, deleteTaskAtom } from '@/atoms/tasksAtom';
 import { expandedPeriodsAtom, togglePeriodExpansionAtom } from '@/atoms/uiAtom';
 import type { Task } from '@/types';
 
@@ -25,7 +26,6 @@ export default function QAPage() {
 	const toggleExpansion = useSetAtom(togglePeriodExpansionAtom);
 	const deletePeriod = useSetAtom(deletePeriodAtom);
 	const deleteTask = useSetAtom(deleteTaskAtom);
-	const takeIntoWork = useSetAtom(takeIntoWorkAtom);
 
 	const [isAllExpanded, setIsAllExpanded] = React.useState(true);
 	const expandedInitialized = React.useRef(false);
@@ -36,6 +36,7 @@ export default function QAPage() {
 	const [showDeletePeriodConfirm, setShowDeletePeriodConfirm] = React.useState<string | null>(null);
 	const [showDeleteTaskConfirm, setShowDeleteTaskConfirm] = React.useState<string | null>(null);
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
+	const [takingTask, setTakingTask] = React.useState<Task | null>(null);
 	const [commentingTask, setCommentingTask] = React.useState<Task | null>(null);
 
 	React.useEffect(() => {
@@ -78,8 +79,8 @@ export default function QAPage() {
 		setShowDeleteTaskConfirm(null);
 	};
 
-	const handleTakeIntoWork = async (taskId: string) => {
-		await takeIntoWork(taskId);
+	const handleTakeIntoWork = (task: Task) => {
+		setTakingTask(task);
 	};
 
 	const deletePeriodTaskCount = showDeletePeriodConfirm
@@ -148,6 +149,14 @@ export default function QAPage() {
 					open={true}
 					onClose={() => setEditingTask(null)}
 					task={editingTask}
+				/>
+			)}
+
+			{takingTask !== null && (
+				<TakeIntoWorkModal
+					open={true}
+					onClose={() => setTakingTask(null)}
+					task={takingTask}
 				/>
 			)}
 

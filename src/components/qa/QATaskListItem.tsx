@@ -9,7 +9,7 @@ import type { Task } from '@/types';
 
 interface QATaskListItemProps {
 	task: Task;
-	onTakeIntoWork: (taskId: string) => void;
+	onTakeIntoWork: (task: Task) => void;
 	onDelete: (taskId: string) => void;
 	onEdit: (task: Task) => void;
 	onOpenComment: (task: Task) => void;
@@ -36,7 +36,7 @@ export function QATaskListItem({ task, onTakeIntoWork, onDelete, onEdit, onOpenC
 						className="h-8 w-8 cursor-pointer text-[#40BCA9] hover:text-[#40BCA9]"
 						aria-label="Взять в работу"
 						title="Взять в работу"
-						onClick={() => onTakeIntoWork(task.id)}
+						onClick={() => onTakeIntoWork(task)}
 					>
 						<Rocket className="h-4 w-4" />
 					</Button>

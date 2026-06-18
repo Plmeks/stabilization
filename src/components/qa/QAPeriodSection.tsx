@@ -14,7 +14,7 @@ interface QAPeriodSectionProps {
 	onToggle: () => void;
 	onAddTask: (periodId: string) => void;
 	onDeletePeriod: (periodId: string) => void;
-	onTakeIntoWork: (taskId: string) => void;
+	onTakeIntoWork: (task: Task) => void;
 	onDeleteTask: (taskId: string) => void;
 	onEdit: (task: Task) => void;
 	onOpenComment: (task: Task) => void;

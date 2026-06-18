@@ -34,6 +34,17 @@ export function detectUrls(text: string): Array<{ text: string; url?: string }> 
 	return segments;
 }
 
+// If the title contains a numeric id (6+ digits, e.g. "call: 0249130:"),
+// derive the jabber ticket link, stripping leading zeros: id=249130.
+export function extractJabberLink(title: string): string | null {
+	const match = title.match(/\d{6,}/);
+	if (!match) {
+		return null;
+	}
+	const id = match[0].replace(/^0+/, '') || '0';
+	return `http://jabber.bx/view.php?id=${id}`;
+}
+
 export function isTaskActive(task: Task): boolean {
 	return !isTaskCompleted(task);
 }

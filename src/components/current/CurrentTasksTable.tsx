@@ -4,48 +4,12 @@ import {
 	TableHeader,
 	TableHead,
 	TableBody,
+	TableRow,
 } from '@/components/ui/table';
 import { CurrentTasksRow } from './CurrentTasksRow';
+import { SortableTableHead, useTableSort } from '@/components/shared/SortableTableHead';
+import { sortTasksForTable, defaultCurrentComparator } from '@/lib/task-sort';
 import type { Task, Period } from '@/types';
-
-const PRIORITY_ORDER: Record<string, number> = {
-	'Критический': 0,
-	'Нормальный': 1,
-	'Некритичный': 2,
-};
-
-function getPriorityOrder(priority: string | null): number {
-	if (priority === null) {
-		return 3;
-	}
-	return PRIORITY_ORDER[priority] ?? 3;
-}
-
-function sortTasks(tasks: Task[]): Task[] {
-	return [...tasks].sort((a, b) => {
-		const priorityDiff =
-			getPriorityOrder(a.priority) - getPriorityOrder(b.priority);
-
-		if (priorityDiff !== 0) {
-			return priorityDiff;
-		}
-
-		const aHasDate = Boolean(a.created_at);
-		const bHasDate = Boolean(b.created_at);
-
-		if (aHasDate && !bHasDate) return -1;
-		if (!aHasDate && bHasDate) return 1;
-
-		if (aHasDate && bHasDate) {
-			return (
-				new Date(b.created_at!).getTime() -
-				new Date(a.created_at!).getTime()
-			);
-		}
-
-		return 0;
-	});
-}
 
 interface CurrentTasksTableProps {
 	tasks: Task[];
@@ -57,10 +21,19 @@ interface CurrentTasksTableProps {
 }
 
 export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onReturnToQA, onOpenComment }: CurrentTasksTableProps) {
-	const sorted = sortTasks(tasks);
+	const { sort, toggleSort } = useTableSort();
 
-	const getPeriod = (periodId: string): Period | undefined =>
-		periods.find((p) => p.id === periodId);
+	const periodMap = React.useMemo(
+		() => new Map(periods.map((p) => [p.id, p])),
+		[periods],
+	);
+
+	const sorted = React.useMemo(
+		() => sortTasksForTable(tasks, sort, periodMap, defaultCurrentComparator),
+		[tasks, sort, periodMap],
+	);
+
+	const getPeriod = (periodId: string): Period | undefined => periodMap.get(periodId);
 
 	if (sorted.length === 0) {
 		return (
@@ -73,14 +46,14 @@ export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onReturn
 	return (
 		<Table className="min-w-[640px]">
 			<TableHeader>
-				<tr>
+				<TableRow>
 					<TableHead className="min-w-[17rem] px-2 md:px-4">Задача</TableHead>
-					<TableHead className="px-2 md:px-4">Исполнитель</TableHead>
-					<TableHead className="px-2 md:px-4">Приоритет</TableHead>
-					<TableHead className="px-2 md:px-4 w-[110px]">Создана в периоде</TableHead>
-					<TableHead className="px-2 md:px-4">Статус</TableHead>
+					<SortableTableHead label="Исполнитель" column="assignee" sort={sort} onSort={toggleSort} className="px-2 md:px-4" />
+					<SortableTableHead label="Приоритет" column="priority" sort={sort} onSort={toggleSort} className="px-2 md:px-4" />
+					<SortableTableHead label="Создана в периоде" column="createdPeriod" sort={sort} onSort={toggleSort} className="px-2 md:px-4 w-[110px]" />
+					<SortableTableHead label="Статус" column="status" sort={sort} onSort={toggleSort} className="px-2 md:px-4" />
 					<TableHead className="sticky right-0 bg-background z-10 px-2 md:px-4">Действия</TableHead>
-				</tr>
+				</TableRow>
 			</TableHeader>
 			<TableBody>
 				{sorted.map((task) => (

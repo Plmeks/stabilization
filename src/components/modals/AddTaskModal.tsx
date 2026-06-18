@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { createTaskAtom } from '@/atoms/tasksAtom';
+import { extractJabberLink } from '@/lib/utils';
 
 interface AddTaskModalProps {
 	open: boolean;
@@ -30,9 +31,24 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 	const [periodId, setPeriodId] = React.useState<string | null>(defaultPeriodId ?? null);
 	const [isCritical, setIsCritical] = React.useState(false);
 	const [link, setLink] = React.useState('');
+	const [linkEdited, setLinkEdited] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);
 	const [comment, setComment] = React.useState('');
 	const [loading, setLoading] = React.useState(false);
+
+	const handleTitleChange = (value: string) => {
+		setTitle(value);
+		// Auto-fill the jabber link from a numeric id in the title, unless the
+		// user has already typed their own link.
+		if (!linkEdited) {
+			setLink(extractJabberLink(value) ?? '');
+		}
+	};
+
+	const handleLinkChange = (value: string) => {
+		setLink(value);
+		setLinkEdited(true);
+	};
 
 	const handleSubmit = async () => {
 		if (!title.trim()) {
@@ -88,7 +104,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 					<Input
 						id="task-title"
 						value={title}
-						onChange={(e) => setTitle(e.target.value)}
+						onChange={(e) => handleTitleChange(e.target.value)}
 						placeholder="Введите название задачи"
 						disabled={loading}
 						aria-invalid={error === 'Введите название задачи' ? true : undefined}
@@ -123,7 +139,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 					<Input
 						id="task-link"
 						value={link}
-						onChange={(e) => setLink(e.target.value)}
+						onChange={(e) => handleLinkChange(e.target.value)}
 						placeholder="Ссылка на задачу"
 						disabled={loading}
 					/>

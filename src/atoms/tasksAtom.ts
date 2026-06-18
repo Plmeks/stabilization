@@ -57,7 +57,7 @@ export const createTaskAtom = atom(
 
 export const takeIntoWorkAtom = atom(
 	null,
-	async (get, set, id: string) => {
+	async (get, set, { id, assignee }: { id: string; assignee?: string | null }) => {
 		const periods = get(periodsAtom);
 		const latestPeriodId = periods[0]?.id ?? '';
 		const previous = get(tasksAtom);
@@ -69,12 +69,13 @@ export const takeIntoWorkAtom = atom(
 					taken_into_work_at: new Date().toISOString(),
 					priority: t.priority ?? 'Нормальный' as const,
 					active_period_id: latestPeriodId,
+					...(assignee !== undefined ? { assignee } : {}),
 				}
 				: t,
 		));
 
 		try {
-			const updated = await takeIntoWork(id, latestPeriodId);
+			const updated = await takeIntoWork(id, latestPeriodId, assignee);
 			set(tasksAtom, get(tasksAtom).map((t) => (t.id === id ? updated : t)));
 		} catch (error) {
 			set(tasksAtom, previous);
