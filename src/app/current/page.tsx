@@ -9,12 +9,20 @@ import { EditTaskModal } from '@/components/modals/EditTaskModal';
 import { CompleteTaskModal } from '@/components/modals/CompleteTaskModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { CommentModal } from '@/components/modals/CommentModal';
+import { SearchInput } from '@/components/shared/SearchInput';
+import { matchesQuery } from '@/lib/utils';
 import type { Task } from '@/types';
 
 export default function CurrentPage() {
 	const tasks = useAtomValue(currentTasksAtom);
 	const periods = useAtomValue(periodsAtom);
 	const returnToQA = useSetAtom(returnToQAAtom);
+
+	const [query, setQuery] = React.useState('');
+	const filteredTasks = React.useMemo(
+		() => tasks.filter((t) => matchesQuery(query, t.title, t.assignee)),
+		[tasks, query],
+	);
 
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
 	const [completingTask, setCompletingTask] = React.useState<Task | null>(null);
@@ -44,10 +52,11 @@ export default function CurrentPage() {
 				<div className="bg-muted/80 text-muted-foreground text-xs px-2.5 py-0.5 rounded-full md:w-auto w-fit">
 					Всего: {tasks.length}{criticalCount !== undefined && criticalCount > 0 ? <>, Крит: <span className="text-red-500">{criticalCount}</span></> : ''}
 				</div>
+				<SearchInput onChange={setQuery} className="md:ml-auto" />
 			</div>
 
 			<CurrentTasksTable
-				tasks={tasks}
+				tasks={filteredTasks}
 				periods={periods}
 				onEdit={setEditingTask}
 				onComplete={setCompletingTask}

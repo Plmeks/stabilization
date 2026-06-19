@@ -9,6 +9,8 @@ import { EditTaskModal } from '@/components/modals/EditTaskModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { CommentModal } from '@/components/modals/CommentModal';
 import { CompletedPeriodSection } from '@/components/completed/CompletedPeriodSection';
+import { SearchInput } from '@/components/shared/SearchInput';
+import { matchesQuery } from '@/lib/utils';
 import type { Task } from '@/types';
 
 export default function CompletedPage() {
@@ -19,19 +21,27 @@ export default function CompletedPage() {
 	const [isAllExpanded, setIsAllExpanded] = React.useState(true);
 	const returnToQA = useSetAtom(returnToQAAtom);
 
+	const [query, setQuery] = React.useState('');
+	const isSearching = query.trim().length > 0;
+
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
 	const [returningTaskId, setReturningTaskId] = React.useState<string | null>(null);
 	const [returnLoading, setReturnLoading] = React.useState(false);
 	const [commentingTask, setCommentingTask] = React.useState<Task | null>(null);
 
+	const filteredTasks = React.useMemo(
+		() => completedTasks.filter((t) => matchesQuery(query, t.title, t.assignee, t.version)),
+		[completedTasks, query],
+	);
+
 	const completedTasksByPeriod = React.useMemo(() => {
 		const map = new Map<string, Task[]>();
-		for (const task of completedTasks) {
+		for (const task of filteredTasks) {
 			const existing = map.get(task.active_period_id) ?? [];
 			map.set(task.active_period_id, [...existing, task]);
 		}
 		return map;
-	}, [completedTasks]);
+	}, [filteredTasks]);
 
 	const periodsWithTasks = React.useMemo(() =>
 		periods
@@ -82,7 +92,7 @@ export default function CompletedPage() {
 
 	return (
 		<div className="flex flex-col gap-4 p-0 sm:gap-5 sm:p-6">
-			{periodsWithTasks.length === 0 ? (
+			{completedTasks.length === 0 ? (
 				<p className="text-sm text-muted-foreground text-center py-8">
 					Нет выполненных задач
 				</p>
@@ -90,23 +100,32 @@ export default function CompletedPage() {
 				<>
 					<div className="flex justify-between md:flex-row flex-col md:items-center gap-2">
 						<h1 className="text-2xl font-semibold mb-2 md:mb-0">Завршенные задачи</h1>
-						<Button variant="outline" size="sm" onClick={toggleAll} className='md:w-auto w-fit self-end'>
-							{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
-						</Button>
+						<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+							<SearchInput onChange={setQuery} />
+							<Button variant="outline" size="sm" onClick={toggleAll} className='md:w-[8rem] w-fit self-end'>
+								{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
+							</Button>
+						</div>
 					</div>
-					{periodsWithTasks.map((period) => (
-						<CompletedPeriodSection
-							key={period.id}
-							period={period}
-							tasks={completedTasksByPeriod.get(period.id) ?? []}
-							periods={periods}
-							isExpanded={expandedPeriods.has(period.id)}
-							onToggle={() => togglePeriod(period.id)}
-							onEdit={setEditingTask}
-							onReturnToQA={setReturningTaskId}
-							onOpenComment={setCommentingTask}
-						/>
-					))}
+					{periodsWithTasks.length === 0 ? (
+						<p className="text-sm text-muted-foreground text-center py-8">
+							Нет выполненных задач
+						</p>
+					) : (
+						periodsWithTasks.map((period) => (
+							<CompletedPeriodSection
+								key={period.id}
+								period={period}
+								tasks={completedTasksByPeriod.get(period.id) ?? []}
+								periods={periods}
+								isExpanded={isSearching ? true : expandedPeriods.has(period.id)}
+								onToggle={() => togglePeriod(period.id)}
+								onEdit={setEditingTask}
+								onReturnToQA={setReturningTaskId}
+								onOpenComment={setCommentingTask}
+							/>
+						))
+					)}
 				</>
 			)}
 

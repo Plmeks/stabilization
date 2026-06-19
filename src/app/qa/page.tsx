@@ -11,6 +11,8 @@ import { EditQATaskModal } from '@/components/modals/EditQATaskModal';
 import { TakeIntoWorkModal } from '@/components/modals/TakeIntoWorkModal';
 import { CommentModal } from '@/components/modals/CommentModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
+import { SearchInput } from '@/components/shared/SearchInput';
+import { matchesQuery } from '@/lib/utils';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { deletePeriodAtom } from '@/atoms/periodsAtom';
 import { qaTasksAtom, tasksByCreationPeriodAtom, tasksByActivePeriodAtom, deleteTaskAtom } from '@/atoms/tasksAtom';
@@ -29,6 +31,26 @@ export default function QAPage() {
 
 	const [isAllExpanded, setIsAllExpanded] = React.useState(true);
 	const expandedInitialized = React.useRef(false);
+
+	const [query, setQuery] = React.useState('');
+	const isSearching = query.trim().length > 0;
+
+	// Tasks matching the search, grouped by their creation period.
+	const matchedTasksByPeriod = React.useMemo(() => {
+		const map = new Map<string, Task[]>();
+		for (const task of qaTasks) {
+			if (!matchesQuery(query, task.title)) continue;
+			const existing = map.get(task.creation_period_id) ?? [];
+			existing.push(task);
+			map.set(task.creation_period_id, existing);
+		}
+		return map;
+	}, [qaTasks, query]);
+
+	// While searching, only keep periods that have at least one match.
+	const visiblePeriods = isSearching
+		? periods.filter((p) => (matchedTasksByPeriod.get(p.id)?.length ?? 0) > 0)
+		: periods;
 
 	const [showCreatePeriodModal, setShowCreatePeriodModal] = React.useState(false);
 	const [showAddTaskModal, setShowAddTaskModal] = React.useState(false);
@@ -96,29 +118,34 @@ export default function QAPage() {
 		<div className="flex flex-col gap-4 p-0 sm:gap-5 sm:p-6">
 			<h1 className="text-2xl font-semibold">Новые задачи</h1>
 
-			<div className="flex items-center justify-between gap-2">
-				<Button variant="outline" size="sm" onClick={() => setShowCreatePeriodModal(true)}>
+			<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+				<Button variant="outline" size="sm" onClick={() => setShowCreatePeriodModal(true)} className="w-full sm:w-auto">
 					<Plus className="h-4 w-4 mr-1" />
 					Добавить период
 				</Button>
-				{periods.length > 0 && (
-					<Button variant="outline" size="sm" onClick={toggleAll}>
-						{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
-					</Button>
-				)}
+				<div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+					<SearchInput onChange={setQuery} />
+					{periods.length > 0 && (
+						<Button variant="outline" size="sm" onClick={toggleAll} className="w-fit self-end sm:self-auto sm:w-[8rem]">
+							{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
+						</Button>
+					)}
+				</div>
 			</div>
 
 			<div className="flex flex-col gap-4">
-				{periods.map((period) => {
-					const periodQATasks = qaTasks.filter((t) => t.creation_period_id === period.id);
-					const totalCount = tasksByCreationPeriod[period.id]?.length ?? 0;
+				{visiblePeriods.map((period) => {
+					const allPeriodTasks = tasksByCreationPeriod[period.id] ?? [];
+					const periodTasks = isSearching
+						? (matchedTasksByPeriod.get(period.id) ?? [])
+						: allPeriodTasks;
 
 					return (
 						<QAPeriodSection
 							key={period.id}
 							period={period}
-							tasks={periodQATasks}
-							isExpanded={expandedPeriods.has(period.id)}
+							tasks={periodTasks}
+							isExpanded={isSearching ? true : expandedPeriods.has(period.id)}
 							onToggle={() => toggleExpansion(period.id)}
 							onAddTask={handleAddTaskForPeriod}
 							onDeletePeriod={setShowDeletePeriodConfirm}
@@ -126,11 +153,14 @@ export default function QAPage() {
 							onDeleteTask={setShowDeleteTaskConfirm}
 							onEdit={setEditingTask}
 							onOpenComment={setCommentingTask}
-							totalTaskCount={totalCount}
-							criticalCount={(tasksByCreationPeriod[period.id] ?? []).filter((t) => t.priority === 'Критический').length}
+							totalTaskCount={periodTasks.length}
+							criticalCount={periodTasks.filter((t) => t.priority === 'Критический').length}
 						/>
 					);
 				})}
+				{isSearching && visiblePeriods.length === 0 && (
+					<p className="py-8 text-center text-sm text-muted-foreground">Нет задач</p>
+				)}
 			</div>
 
 			<CreatePeriodModal

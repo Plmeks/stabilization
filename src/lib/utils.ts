@@ -52,3 +52,16 @@ export function isTaskActive(task: Task): boolean {
 export function isTaskCompleted(task: Task): boolean {
 	return task.status === 'Завершена';
 }
+
+// Case-insensitive substring search. Returns true if the (trimmed) query is
+// empty, or if any of the provided fields contains the query.
+export function matchesQuery(
+	query: string,
+	...fields: Array<string | null | undefined>
+): boolean {
+	const q = query.trim().toLowerCase();
+	if (!q) {
+		return true;
+	}
+	return fields.some((field) => field != null && field.toLowerCase().includes(q));
+}
