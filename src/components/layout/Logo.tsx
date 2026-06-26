@@ -28,7 +28,8 @@ export function Logo({
 			className={className}
 			style={{ color: 'var(--success)' }}
 		>
-			{/* Круговые стрелки — цикл (две дуги навстречу друг другу). Чёрные. */}
+			{/* Круговые стрелки — цикл (две дуги навстречу друг другу). Чёрные.
+			    Радиус увеличен (21.8) — больше отступ от шестерёнки. */}
 			<g
 				stroke="var(--foreground)"
 				strokeWidth={2.1}
@@ -36,23 +37,23 @@ export function Logo({
 				strokeLinejoin="round"
 				fill="none"
 			>
-				<path d="M38.2 38.2 A20.2 20.2 0 0 1 6.0 15.2" />
-				<path d="M9.8 9.8 A20.2 20.2 0 0 1 42.0 32.8" />
+				<path d="M39.42 39.42 A21.8 21.8 0 0 1 4.41 14.44" />
+				<path d="M8.58 8.58 A21.8 21.8 0 0 1 43.59 33.56" />
 			</g>
 			<g fill="var(--foreground)">
-				<path d="M7.4 11.6 L2.9 13.4 L8.4 16.2 Z" />
-				<path d="M40.6 36.4 L45.1 34.6 L39.6 31.8 Z" />
+				<path d="M6.12 10.94 L1.53 13.04 L7.29 15.84 Z" />
+				<path d="M41.88 37.06 L46.47 34.96 L40.71 32.16 Z" />
 			</g>
 
 			{/* Тело шестерёнки. */}
 			<path d={gearPath} fill="currentColor" />
 			{/* Белая ступица (внутренний круг с галочкой). */}
 			<circle cx={24} cy={24} r={9.4} fill="var(--card)" />
-			{/* Галочка в ступице. */}
+			{/* Галочка в ступице — крупнее и чуть толще. */}
 			<path
-				d="M20.5 24.1 L23 26.7 L27.8 20.4"
+				d="M20.08 24.11 L22.88 27.02 L28.26 19.97"
 				stroke="currentColor"
-				strokeWidth={2.4}
+				strokeWidth={2.8}
 				strokeLinecap="round"
 				strokeLinejoin="round"
 				fill="none"
