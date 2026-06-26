@@ -57,12 +57,12 @@ export function Logo({
 				<path d="M24 24 L24 34 A10 10 0 0 1 14 24 Z" fill="var(--warn)" />
 			</g>
 			{/* Тонкие белые оси x/y — секторы отстоят друг от друга, как кусочки пирога. */}
-			<g stroke="var(--card)" strokeWidth={0.9}>
+			<g stroke="var(--card)" strokeWidth={0.6}>
 				<line x1={14} y1={24} x2={34} y2={24} />
 				<line x1={24} y1={14} x2={24} y2={34} />
 			</g>
 			{/* Белая обводка по краю ступицы — секторы будто отступают от края шестерёнки. */}
-			<circle cx={24} cy={24} r={10} fill="none" stroke="var(--card)" strokeWidth={1.8} />
+			<circle cx={24} cy={24} r={10} fill="none" stroke="var(--card)" strokeWidth={1.1} />
 		</svg>
 	);
 }
