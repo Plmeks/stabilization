@@ -1,22 +1,47 @@
 import * as React from 'react';
 
 /**
- * Логотип Stabana: чёрная шестерёнка (трапециевидные зубья), в ступице — круг,
- * разделённый осями на 4 сектора нашими цветами (синий/оранжевый/красный/
- * зелёный). Обёрнута двумя синими круговыми стрелками («круговорот задач»).
- * Самодостаточный SVG, читается от 24px.
+ * Логотип Stabana: шестерёнка (трапециевидные зубья) с круглой ступицей,
+ * разделённой осями x/y на 4 сектора нашими цветами (зелёный/синий/красный/
+ * оранжевый). Самодостаточный SVG.
+ *
+ * Варианты:
+ *  - по умолчанию: ink-шестерёнка + синие круговые стрелки + белая обводка
+ *    (для светлых поверхностей — навбар/модалка входа);
+ *  - arrows={false}: без стрелок, шестерёнка крупнее (как фавиконка). Хорошо
+ *    для тёмного фона с gearFill="#ffffff".
  */
 export function Logo({
 	size = 36,
 	className,
+	arrows = true,
+	gearFill = 'var(--foreground)',
+	ring = true,
 }: {
 	size?: number;
 	className?: string;
+	arrows?: boolean;
+	gearFill?: string;
+	ring?: boolean;
 }) {
-	// Силуэт шестерёнки строим программно: трапециевидные зубья с фасками.
-	// rTip — вершины зубьев, rRoot — основание (толще обод → короче зубья).
-	// Шестерёнка чуть крупнее (стрелки при этом не трогаем).
-	const gearPath = React.useMemo(() => buildGear(9, 24, 24, 17.8, 14.8), []);
+	// Без стрелок шестерёнка заполняет холст сильнее.
+	const rTip = arrows ? 17.8 : 21.5;
+	const rRoot = arrows ? 14.8 : 18.0;
+	const rHub = arrows ? 10 : 12.4;
+
+	const gearPath = React.useMemo(() => buildGear(9, 24, 24, rTip, rRoot), [rTip, rRoot]);
+
+	const lo = (24 - rHub).toFixed(1);
+	const hi = (24 + rHub).toFixed(1);
+
+	// 4 «лампочки» ступицы: всегда цветные, по наведению загораются по кругу
+	// (зелёная → синяя → красная → оранжевая). delay задаёт бегущий огонёк.
+	const bulbs = [
+		{ d: `M24 24 L${lo} 24 A${rHub} ${rHub} 0 0 1 24 ${lo} Z`, color: 'var(--success)', delay: '0s' },
+		{ d: `M24 24 L24 ${lo} A${rHub} ${rHub} 0 0 1 ${hi} 24 Z`, color: 'var(--wip)', delay: '0.45s' },
+		{ d: `M24 24 L${hi} 24 A${rHub} ${rHub} 0 0 1 24 ${hi} Z`, color: 'var(--danger)', delay: '0.9s' },
+		{ d: `M24 24 L24 ${hi} A${rHub} ${rHub} 0 0 1 ${lo} 24 Z`, color: 'var(--warn)', delay: '1.35s' },
+	];
 
 	return (
 		<svg
@@ -26,44 +51,48 @@ export function Logo({
 			fill="none"
 			role="img"
 			aria-label="Stabana"
-			className={className}
+			className={className ? `logo-mark ${className}` : 'logo-mark'}
 		>
-			{/* Круговые стрелки — «круговорот задач» (две дуги навстречу друг другу).
-			    Синие (WIP/поток) — перекликаются с синим в ленте под навбаром.
-			    Радиус 21.8 — отступ от шестерёнки. */}
-			<g
-				stroke="var(--wip)"
-				strokeWidth={2.1}
-				strokeLinecap="round"
-				strokeLinejoin="round"
-				fill="none"
-			>
-				<path d="M39.42 39.42 A21.8 21.8 0 0 1 4.41 14.44" />
-				<path d="M8.58 8.58 A21.8 21.8 0 0 1 43.59 33.56" />
-			</g>
-			<g fill="var(--wip)">
-				<path d="M6.12 10.94 L1.53 13.04 L7.29 15.84 Z" />
-				<path d="M41.88 37.06 L46.47 34.96 L40.71 32.16 Z" />
+			{arrows && (
+				<>
+					{/* Круговые стрелки — «круговорот задач» (синие, WIP/поток). */}
+					<g stroke="var(--wip)" strokeWidth={2.1} strokeLinecap="round" strokeLinejoin="round" fill="none">
+						<path d="M39.42 39.42 A21.8 21.8 0 0 1 4.41 14.44" />
+						<path d="M8.58 8.58 A21.8 21.8 0 0 1 43.59 33.56" />
+					</g>
+					<g fill="var(--wip)">
+						<path d="M6.12 10.94 L1.53 13.04 L7.29 15.84 Z" />
+						<path d="M41.88 37.06 L46.47 34.96 L40.71 32.16 Z" />
+					</g>
+				</>
+			)}
+
+			{/* Тело шестерёнки. */}
+			<path d={gearPath} fill={gearFill} />
+
+			{/* Ступица: 4 цветных «лампочки» (сектора), загораются по кругу при наведении. */}
+			<g>
+				{bulbs.map((b) => (
+					<path
+						key={b.delay}
+						className="logo-bulb"
+						d={b.d}
+						fill={b.color}
+						style={{ color: b.color, animationDelay: b.delay }}
+					/>
+				))}
 			</g>
 
-			{/* Тело шестерёнки — чёрное. */}
-			<path d={gearPath} fill="var(--foreground)" />
-			{/* Ступица: круг (r=10), разделённый осями x/y на 4 ровных сектора.
-			    С верхнего-левого по часовой: зелёный → синий → красный → оранжевый. */}
-			<g>
-				<path d="M24 24 L14 24 A10 10 0 0 1 24 14 Z" fill="var(--success)" />
-				<path d="M24 24 L24 14 A10 10 0 0 1 34 24 Z" fill="var(--wip)" />
-				<path d="M24 24 L34 24 A10 10 0 0 1 24 34 Z" fill="var(--danger)" />
-				<path d="M24 24 L24 34 A10 10 0 0 1 14 24 Z" fill="var(--warn)" />
+			{/* Тонкие белые оси x/y — секторы как кусочки пирога. */}
+			<g stroke="var(--card)" strokeWidth={arrows ? 0.6 : 0.9}>
+				<line x1={lo} y1={24} x2={hi} y2={24} />
+				<line x1={24} y1={lo} x2={24} y2={hi} />
 			</g>
-			{/* Тонкие белые оси x/y — секторы отстоят друг от друга, как кусочки пирога. */}
-			<g stroke="var(--card)" strokeWidth={0.6}>
-				<line x1={14} y1={24} x2={34} y2={24} />
-				<line x1={24} y1={14} x2={24} y2={34} />
-			</g>
-			{/* Белая обводка: внешний край ровно на краю пирога (r=10), толщина уходит
-			    ВНУТРЬ (r=9.2 + width=1.6 → внешний край = 10). Шестерёнка не срезается. */}
-			<circle cx={24} cy={24} r={9.2} fill="none" stroke="var(--card)" strokeWidth={1.6} />
+
+			{/* Белая обводка: внешний край на краю пирога, толщина уходит внутрь. */}
+			{ring && (
+				<circle cx={24} cy={24} r={rHub - 0.8} fill="none" stroke="var(--card)" strokeWidth={1.6} />
+			)}
 		</svg>
 	);
 }
