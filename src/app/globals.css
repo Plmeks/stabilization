@@ -180,20 +180,20 @@
     flex: 1;
   }
 
-  /* «Лампочки» логотипа: всегда цветные; при наведении по кругу пробегает
-     подсветка (как лампы на игровом автомате). */
+  /* «Лампочки» логотипа: всегда цветные; при наведении по кругу плавно
+     разгораются (свечение на месте, без ореола — чтобы не «менялся размер»). */
   .logo-bulb {
-    transition: filter 0.2s ease;
+    transition: filter 0.3s ease;
   }
   @media (prefers-reduced-motion: no-preference) {
     .logo-mark:hover .logo-bulb {
-      animation: logo-bulb 1.6s infinite ease-in-out;
+      animation: logo-bulb 2.4s infinite ease-in-out;
     }
   }
   @keyframes logo-bulb {
     0% { filter: brightness(1) saturate(1); }
-    7% { filter: brightness(1.65) saturate(1.5) drop-shadow(0 0 3px currentColor); }
-    20% { filter: brightness(1) saturate(1); }
+    12% { filter: brightness(1.5) saturate(1.35); }
+    40% { filter: brightness(1) saturate(1); }
     100% { filter: brightness(1) saturate(1); }
   }
 }
