@@ -39,7 +39,7 @@ export default function TabNavigation() {
         >
           <Logo size={34} className="shrink-0" />
           <span className="text-xl font-bold tracking-tight text-foreground">
-            Stab<span style={{ color: 'var(--success)' }}>ana</span>
+            Stabana
           </span>
         </Link>
 
