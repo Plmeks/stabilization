@@ -165,6 +165,7 @@ export function AssigneeMultiSelect({ value, onChange, disabled, id }: AssigneeM
 			<PopoverContent
 				align="start"
 				sideOffset={6}
+				portalled={false}
 				onOpenAutoFocus={(e) => e.preventDefault()}
 				onCloseAutoFocus={(e) => e.preventDefault()}
 				onFocusOutside={keepOpenOnField}
