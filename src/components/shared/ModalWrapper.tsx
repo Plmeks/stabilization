@@ -61,7 +61,11 @@ export function ModalWrapper({
 			<DialogContent
 				showCloseButton
 				className={cn(
-					'flex max-h-[calc(100dvh-0.5rem)] flex-col gap-0 overflow-hidden p-0',
+					// overflow-visible (а не hidden): выпадашки внутри модалки (например
+					// мультиселект исполнителей) позиционируются fixed относительно этого
+					// контейнера из-за translate-центрирования — overflow-hidden их обрезал.
+					// Скролл длинных модалок остаётся на внутреннем теле (overflow-y-auto).
+					'flex max-h-[calc(100dvh-0.5rem)] flex-col gap-0 overflow-visible p-0',
 					sizeClasses[size],
 				)}
 			>
