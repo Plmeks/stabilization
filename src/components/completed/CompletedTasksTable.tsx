@@ -45,7 +45,7 @@ export function CompletedTasksTable({ tasks, periods, onEdit, onReturnToQA, onOp
 					<TableHead className="px-2 md:px-4">Статус</TableHead>
 					<SortableTableHead label="Дата завершения" column="completedAt" sort={sort} onSort={toggleSort} className="px-2 md:px-4" />
 					<SortableTableHead label="Версия" column="version" sort={sort} onSort={toggleSort} className="px-2 md:px-4" />
-					<TableHead className="sticky right-0 bg-background z-10 px-2 md:px-4">Действия</TableHead>
+					<TableHead className="sticky right-0 bg-muted z-10 px-2 md:px-4">Действия</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>

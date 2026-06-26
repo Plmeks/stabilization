@@ -52,7 +52,7 @@ export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onReturn
 					<SortableTableHead label="Приоритет" column="priority" sort={sort} onSort={toggleSort} className="px-2 md:px-4" />
 					<SortableTableHead label="Создана в периоде" column="createdPeriod" sort={sort} onSort={toggleSort} className="px-2 md:px-4 w-[110px]" />
 					<SortableTableHead label="Статус" column="status" sort={sort} onSort={toggleSort} className="px-2 md:px-4" />
-					<TableHead className="sticky right-0 bg-background z-10 px-2 md:px-4">Действия</TableHead>
+					<TableHead className="sticky right-0 bg-muted z-10 px-2 md:px-4">Действия</TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>

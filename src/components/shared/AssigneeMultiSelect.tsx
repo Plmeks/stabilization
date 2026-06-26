@@ -77,6 +77,9 @@ export function AssigneeMultiSelect({ value, onChange, disabled, id }: AssigneeM
 
 	const removeChip = (name: string) => {
 		onChange(value.filter((v) => v.toLowerCase() !== name.toLowerCase()));
+		// Не закрываем список — пользователь видит, как снимается галочка.
+		setOpen(true);
+		inputRef.current?.focus();
 	};
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -127,6 +130,7 @@ export function AssigneeMultiSelect({ value, onChange, disabled, id }: AssigneeM
 							{name}
 							<button
 								type="button"
+								onMouseDown={(e) => e.preventDefault()}
 								onClick={() => removeChip(name)}
 								aria-label={`Убрать ${name}`}
 								className="text-muted-foreground transition-colors hover:text-foreground"

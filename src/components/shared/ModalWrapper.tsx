@@ -56,10 +56,25 @@ export function ModalWrapper({
 		</>
 	);
 
+	// Enter подтверждает действие даже когда фокус не в поле ввода (например,
+	// клик по пустой области модалки фокусирует сам DialogContent). Вешаем
+	// обработчик на DialogContent — он ловит Enter из любого места внутри.
+	// В textarea/кнопках/выпадашках (которые сами останавливают событие или
+	// помечают defaultPrevented) — поведение по умолчанию.
+	const handleEnterKey = (e: React.KeyboardEvent) => {
+		if (!onSubmit) return;
+		if (e.key !== 'Enter' || e.defaultPrevented || e.nativeEvent.isComposing) return;
+		const el = e.target as HTMLElement;
+		if (el.tagName === 'TEXTAREA' || el.tagName === 'BUTTON' || el.isContentEditable) return;
+		e.preventDefault();
+		onSubmit();
+	};
+
 	return (
 		<Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
 			<DialogContent
 				showCloseButton
+				onKeyDown={onSubmit ? handleEnterKey : undefined}
 				className={cn(
 					// overflow-visible (а не hidden): выпадашки внутри модалки (например
 					// мультиселект исполнителей) позиционируются fixed относительно этого

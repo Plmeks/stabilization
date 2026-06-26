@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { QAPeriodSection } from '@/components/qa/QAPeriodSection';
 import { CreatePeriodModal } from '@/components/modals/CreatePeriodModal';
 import { AddTaskModal } from '@/components/modals/AddTaskModal';
-import { EditQATaskModal } from '@/components/modals/EditQATaskModal';
+import { EditTaskModal } from '@/components/modals/EditTaskModal';
 import { TakeIntoWorkModal } from '@/components/modals/TakeIntoWorkModal';
 import { CommentModal } from '@/components/modals/CommentModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
@@ -176,10 +176,11 @@ export default function QAPage() {
 			/>
 
 			{editingTask !== null && (
-				<EditQATaskModal
+				<EditTaskModal
 					open={true}
 					onClose={() => setEditingTask(null)}
 					task={editingTask}
+					context="current"
 				/>
 			)}
 
