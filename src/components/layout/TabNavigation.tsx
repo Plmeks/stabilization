@@ -36,7 +36,7 @@ export default function TabNavigation() {
       <div className="max-w-screen-2xl mx-auto flex overflow-x-auto px-4 py-3 sm:px-6 gap-1 scrollbar-none items-center">
         <Link
           href="/"
-          className="flex items-center gap-2.5 mr-8 shrink-0 hover:opacity-90"
+          className="flex items-center gap-1.5 mr-8 shrink-0 hover:opacity-90"
         >
           <Logo size={36} arrows={false} gearFill="#ffffff" ring={false} className="shrink-0" />
           <span className="text-xl font-bold tracking-tight text-white">

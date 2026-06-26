@@ -33,7 +33,15 @@ export function Logo({
 
 	const lo = (24 - rHub).toFixed(1);
 	const hi = (24 + rHub).toFixed(1);
-	const sector = (path: string, fill: string) => <path d={path} fill={fill} />;
+
+	// 4 «лампочки» ступицы: всегда цветные, по наведению загораются по кругу
+	// (зелёная → синяя → красная → оранжевая). delay задаёт бегущий огонёк.
+	const bulbs = [
+		{ d: `M24 24 L${lo} 24 A${rHub} ${rHub} 0 0 1 24 ${lo} Z`, color: 'var(--success)', delay: '0s' },
+		{ d: `M24 24 L24 ${lo} A${rHub} ${rHub} 0 0 1 ${hi} 24 Z`, color: 'var(--wip)', delay: '0.4s' },
+		{ d: `M24 24 L${hi} 24 A${rHub} ${rHub} 0 0 1 24 ${hi} Z`, color: 'var(--danger)', delay: '0.8s' },
+		{ d: `M24 24 L24 ${hi} A${rHub} ${rHub} 0 0 1 ${lo} 24 Z`, color: 'var(--warn)', delay: '1.2s' },
+	];
 
 	return (
 		<svg
@@ -43,7 +51,7 @@ export function Logo({
 			fill="none"
 			role="img"
 			aria-label="Stabana"
-			className={className}
+			className={className ? `logo-mark ${className}` : 'logo-mark'}
 		>
 			{arrows && (
 				<>
@@ -62,13 +70,17 @@ export function Logo({
 			{/* Тело шестерёнки. */}
 			<path d={gearPath} fill={gearFill} />
 
-			{/* Ступица: круг, разделённый осями x/y на 4 сектора.
-			    С верхнего-левого по часовой: зелёный → синий → красный → оранжевый. */}
+			{/* Ступица: 4 цветных «лампочки» (сектора), загораются по кругу при наведении. */}
 			<g>
-				{sector(`M24 24 L${lo} 24 A${rHub} ${rHub} 0 0 1 24 ${lo} Z`, 'var(--success)')}
-				{sector(`M24 24 L24 ${lo} A${rHub} ${rHub} 0 0 1 ${hi} 24 Z`, 'var(--wip)')}
-				{sector(`M24 24 L${hi} 24 A${rHub} ${rHub} 0 0 1 24 ${hi} Z`, 'var(--danger)')}
-				{sector(`M24 24 L24 ${hi} A${rHub} ${rHub} 0 0 1 ${lo} 24 Z`, 'var(--warn)')}
+				{bulbs.map((b) => (
+					<path
+						key={b.delay}
+						className="logo-bulb"
+						d={b.d}
+						fill={b.color}
+						style={{ color: b.color, animationDelay: b.delay }}
+					/>
+				))}
 			</g>
 
 			{/* Тонкие белые оси x/y — секторы как кусочки пирога. */}
