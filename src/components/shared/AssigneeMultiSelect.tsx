@@ -147,6 +147,17 @@ export function AssigneeMultiSelect({ value, onChange, disabled, id }: AssigneeM
 						onKeyDown={handleKeyDown}
 						disabled={disabled}
 						placeholder={value.length === 0 ? 'Без исполнителя' : ''}
+						role="combobox"
+						aria-expanded={open}
+						aria-autocomplete="list"
+						// Гасим встроенный браузерный autosuggest/autofill — он перекрывал наш список.
+						autoComplete="off"
+						autoCorrect="off"
+						autoCapitalize="off"
+						spellCheck={false}
+						data-1p-ignore
+						data-lpignore="true"
+						name={id ? `assignee-search-${id}` : 'assignee-search'}
 						className="min-w-[6rem] flex-1 bg-transparent px-1 py-0.5 outline-none placeholder:text-muted-foreground"
 					/>
 				</div>
@@ -159,9 +170,9 @@ export function AssigneeMultiSelect({ value, onChange, disabled, id }: AssigneeM
 				onFocusOutside={keepOpenOnField}
 				onPointerDownOutside={keepOpenOnField}
 				onInteractOutside={keepOpenOnField}
-				className="w-(--radix-popover-trigger-width) min-w-56 p-1"
+				className="w-(--radix-popover-trigger-width) min-w-56 overflow-hidden p-1"
 			>
-				<div className="max-h-60 overflow-y-auto">
+				<div className="max-h-60 overflow-y-auto overscroll-contain">
 					{canCreate && (
 						<button
 							type="button"
