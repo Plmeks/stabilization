@@ -38,8 +38,8 @@ export default function TabNavigation() {
           className="flex items-center gap-2.5 mr-8 shrink-0 hover:opacity-90"
         >
           <Logo size={34} className="shrink-0" />
-          <span className="text-xl font-semibold tracking-tight text-foreground">
-            Stabana
+          <span className="text-xl font-bold tracking-tight text-foreground">
+            Stab<span style={{ color: 'var(--success)' }}>ana</span>
           </span>
         </Link>
 
