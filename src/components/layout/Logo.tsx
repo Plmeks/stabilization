@@ -38,9 +38,9 @@ export function Logo({
 	// (зелёная → синяя → красная → оранжевая). delay задаёт бегущий огонёк.
 	const bulbs = [
 		{ d: `M24 24 L${lo} 24 A${rHub} ${rHub} 0 0 1 24 ${lo} Z`, color: 'var(--success)', delay: '0s' },
-		{ d: `M24 24 L24 ${lo} A${rHub} ${rHub} 0 0 1 ${hi} 24 Z`, color: 'var(--wip)', delay: '0.6s' },
-		{ d: `M24 24 L${hi} 24 A${rHub} ${rHub} 0 0 1 24 ${hi} Z`, color: 'var(--danger)', delay: '1.2s' },
-		{ d: `M24 24 L24 ${hi} A${rHub} ${rHub} 0 0 1 ${lo} 24 Z`, color: 'var(--warn)', delay: '1.8s' },
+		{ d: `M24 24 L24 ${lo} A${rHub} ${rHub} 0 0 1 ${hi} 24 Z`, color: 'var(--wip)', delay: '0.45s' },
+		{ d: `M24 24 L${hi} 24 A${rHub} ${rHub} 0 0 1 24 ${hi} Z`, color: 'var(--danger)', delay: '0.9s' },
+		{ d: `M24 24 L24 ${hi} A${rHub} ${rHub} 0 0 1 ${lo} 24 Z`, color: 'var(--warn)', delay: '1.35s' },
 	];
 
 	return (
