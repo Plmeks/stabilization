@@ -9,6 +9,7 @@ import { periodStatisticsAtom } from '@/atoms/statsAtom';
 import { calculateDynamicMetrics } from '@/lib/stats-utils';
 import StatsPeriodCard from '@/components/stats/StatsPeriodCard';
 import { Button } from '@/components/ui/button';
+import { PageHeader } from '@/components/shared/PageHeader';
 import { DownloadReportButton } from '@/components/report/DownloadReportButton';
 
 export default function StatsPage() {
@@ -58,15 +59,18 @@ export default function StatsPage() {
 	return (
 		<div className="p-0 sm:p-6 space-y-4 sm:space-y-5">
 			{sortedPeriods.length > 0 && (
-				<div className="flex justify-between md:flex-row flex-col md:items-center gap-2">
-					<h1 className="text-2xl font-semibold mb-2 md:mb-0">Отчет в цифрах</h1>
-					<div className="flex items-center gap-2 self-end md:self-auto">
-						<DownloadReportButton />
-						<Button variant="outline" size="sm" onClick={toggleAll} className='md:w-[8rem] w-fit'>
-							{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
-						</Button>
-					</div>
-				</div>
+				<PageHeader
+					eyebrow="Отчёт за период"
+					title="Отчёт в цифрах"
+					actions={
+						<>
+							<DownloadReportButton />
+							<Button variant="outline" size="sm" onClick={toggleAll} className='md:w-[8rem] w-fit'>
+								{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
+							</Button>
+						</>
+					}
+				/>
 			)}
 				{sortedPeriods.map((period) => {
 				const statistics = periodStatistics.find((s) => s.period_id === period.id) ?? null;

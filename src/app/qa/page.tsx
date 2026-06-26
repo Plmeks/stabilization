@@ -12,6 +12,7 @@ import { TakeIntoWorkModal } from '@/components/modals/TakeIntoWorkModal';
 import { CommentModal } from '@/components/modals/CommentModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { SearchInput } from '@/components/shared/SearchInput';
+import { PageHeader } from '@/components/shared/PageHeader';
 import { matchesQuery } from '@/lib/utils';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { deletePeriodAtom } from '@/atoms/periodsAtom';
@@ -116,7 +117,7 @@ export default function QAPage() {
 
 	return (
 		<div className="flex flex-col gap-4 p-0 sm:gap-5 sm:p-6">
-			<h1 className="text-2xl font-semibold">Новые задачи</h1>
+			<PageHeader eyebrow="Очередь приёмки" title="Новые задачи" />
 
 			<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 				<Button variant="outline" size="sm" onClick={() => setShowCreatePeriodModal(true)} className="w-full sm:w-auto">

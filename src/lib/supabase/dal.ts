@@ -7,7 +7,40 @@ import type {
 	CreateTaskInput,
 	UpdateTaskInput,
 	CompletionInput,
+	Assignee,
 } from '@/types';
+
+// Assignee functions
+
+export async function fetchAssignees(): Promise<Assignee[]> {
+	const { data, error } = await supabase
+		.from('assignees')
+		.select('*')
+		.order('name', { ascending: true });
+
+	if (error) throw error;
+	return data as Assignee[];
+}
+
+export async function createAssignee(name: string): Promise<Assignee> {
+	const { data, error } = await supabase
+		.from('assignees')
+		.insert({ name })
+		.select()
+		.single();
+
+	if (error) throw error;
+	return data as Assignee;
+}
+
+export async function deleteAssignee(id: string): Promise<void> {
+	const { error } = await supabase
+		.from('assignees')
+		.delete()
+		.eq('id', id);
+
+	if (error) throw error;
+}
 
 // Period functions
 

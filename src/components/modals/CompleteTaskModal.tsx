@@ -71,10 +71,10 @@ function CompleteTaskModalBody({
 
 	const footer = (
 		<>
-			<Button variant="outline" onClick={onCancel} disabled={loading}>
+			<Button variant="outline" type="button" onClick={onCancel} disabled={loading}>
 				Отмена
 			</Button>
-			<Button onClick={handleConfirm} disabled={!selectedPeriodId || loading}>
+			<Button type="submit" disabled={!selectedPeriodId || loading}>
 				Завершить
 			</Button>
 		</>
@@ -85,6 +85,7 @@ function CompleteTaskModalBody({
 			open
 			onClose={onCancel}
 			title="Завершить задачу"
+			onSubmit={handleConfirm}
 			size="sm"
 			footer={footer}
 		>

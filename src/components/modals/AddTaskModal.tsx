@@ -82,10 +82,10 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 
 	const footer = (
 		<>
-			<Button variant="outline" onClick={onClose} disabled={loading}>
+			<Button variant="outline" type="button" onClick={onClose} disabled={loading}>
 				Отмена
 			</Button>
-			<Button onClick={handleSubmit} disabled={loading}>
+			<Button type="submit" disabled={loading}>
 				Добавить
 			</Button>
 		</>
@@ -97,6 +97,7 @@ function AddTaskModalContent({ onClose, defaultPeriodId }: AddTaskModalContentPr
 			onClose={onClose}
 			title="Добавить задачу"
 			footer={footer}
+			onSubmit={handleSubmit}
 		>
 			<div className="flex flex-col gap-4">
 				<div className="flex flex-col gap-1.5">

@@ -10,6 +10,7 @@ import { CompleteTaskModal } from '@/components/modals/CompleteTaskModal';
 import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { CommentModal } from '@/components/modals/CommentModal';
 import { SearchInput } from '@/components/shared/SearchInput';
+import { PageHeader, CountChip } from '@/components/shared/PageHeader';
 import { matchesQuery } from '@/lib/utils';
 import type { Task } from '@/types';
 
@@ -46,23 +47,24 @@ export default function CurrentPage() {
 	const criticalCount = tasks.filter((t) => t.priority === 'Критический').length;
 
 	return (
-		<div className="p-0 sm:p-6">
-			<div className="mb-4 flex md:flex-row flex-col md:items-center gap-2">
-				<h1 className="text-2xl font-semibold">Текущие задачи</h1>
-				<div className="bg-muted/80 text-muted-foreground text-xs px-2.5 py-0.5 rounded-full md:w-auto w-fit">
-					Всего: {tasks.length}{criticalCount !== undefined && criticalCount > 0 ? <>, Крит: <span className="text-red-500">{criticalCount}</span></> : ''}
-				</div>
-				<SearchInput onChange={setQuery} className="md:ml-auto" />
-			</div>
-
-			<CurrentTasksTable
-				tasks={filteredTasks}
-				periods={periods}
-				onEdit={setEditingTask}
-				onComplete={setCompletingTask}
-				onReturnToQA={setReturningTaskId}
-				onOpenComment={setCommentingTask}
+		<div className="flex flex-col gap-4 p-0 sm:gap-5 sm:p-6">
+			<PageHeader
+				eyebrow="В работе"
+				title="Текущие задачи"
+				meta={<CountChip total={tasks.length} critical={criticalCount} />}
+				actions={<SearchInput onChange={setQuery} />}
 			/>
+
+			<div className="panel overflow-hidden">
+				<CurrentTasksTable
+					tasks={filteredTasks}
+					periods={periods}
+					onEdit={setEditingTask}
+					onComplete={setCompletingTask}
+					onReturnToQA={setReturningTaskId}
+					onOpenComment={setCommentingTask}
+				/>
+			</div>
 
 			{editingTask && (
 				<EditTaskModal

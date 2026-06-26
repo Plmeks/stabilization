@@ -10,6 +10,7 @@ import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { CommentModal } from '@/components/modals/CommentModal';
 import { CompletedPeriodSection } from '@/components/completed/CompletedPeriodSection';
 import { SearchInput } from '@/components/shared/SearchInput';
+import { PageHeader } from '@/components/shared/PageHeader';
 import { matchesQuery } from '@/lib/utils';
 import type { Task } from '@/types';
 
@@ -98,15 +99,18 @@ export default function CompletedPage() {
 				</p>
 			) : (
 				<>
-					<div className="flex justify-between md:flex-row flex-col md:items-center gap-2">
-						<h1 className="text-2xl font-semibold mb-2 md:mb-0">Завршенные задачи</h1>
-						<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
-							<SearchInput onChange={setQuery} />
-							<Button variant="outline" size="sm" onClick={toggleAll} className='md:w-[8rem] w-fit self-end'>
-								{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
-							</Button>
-						</div>
-					</div>
+					<PageHeader
+						eyebrow="Завершено"
+						title="Выполненные задачи"
+						actions={
+							<>
+								<SearchInput onChange={setQuery} />
+								<Button variant="outline" size="sm" onClick={toggleAll} className='md:w-[8rem] w-fit self-end'>
+									{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
+								</Button>
+							</>
+						}
+					/>
 					{periodsWithTasks.length === 0 ? (
 						<p className="text-sm text-muted-foreground text-center py-8">
 							Нет выполненных задач

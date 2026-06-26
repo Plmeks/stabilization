@@ -24,6 +24,12 @@ interface ModalWrapperProps {
 	children: React.ReactNode;
 	footer?: React.ReactNode;
 	size?: 'sm' | 'md' | 'lg';
+	/**
+	 * Если задан — содержимое оборачивается в <form>, и нажатие Enter в обычном
+	 * поле подтверждает действие (в <textarea> Enter по-прежнему переносит строку).
+	 * Основная кнопка футера должна быть type="submit", «Отмена» — type="button".
+	 */
+	onSubmit?: () => void;
 }
 
 export function ModalWrapper({
@@ -33,7 +39,23 @@ export function ModalWrapper({
 	children,
 	footer,
 	size = 'md',
+	onSubmit,
 }: ModalWrapperProps) {
+	const body = (
+		<>
+			<div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-6 py-4">
+				{children}
+			</div>
+			<DialogFooter className="mx-0 mb-0 mt-0 shrink-0 gap-3 px-6 py-4">
+				{footer ?? (
+					<Button variant="outline" type="button" onClick={onClose}>
+						Закрыть
+					</Button>
+				)}
+			</DialogFooter>
+		</>
+	);
+
 	return (
 		<Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose(); }}>
 			<DialogContent
@@ -46,16 +68,19 @@ export function ModalWrapper({
 				<DialogHeader className="shrink-0 px-6 pt-6">
 					<DialogTitle>{title}</DialogTitle>
 				</DialogHeader>
-				<div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-6 py-4">
-					{children}
-				</div>
-				<DialogFooter className="mx-0 mb-0 mt-0 shrink-0 gap-3 px-6 py-4">
-					{footer ?? (
-						<Button variant="outline" onClick={onClose}>
-							Закрыть
-						</Button>
-					)}
-				</DialogFooter>
+				{onSubmit ? (
+					<form
+						className="flex min-h-0 flex-1 flex-col"
+						onSubmit={(e) => {
+							e.preventDefault();
+							onSubmit();
+						}}
+					>
+						{body}
+					</form>
+				) : (
+					body
+				)}
 			</DialogContent>
 		</Dialog>
 	);

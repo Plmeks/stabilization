@@ -4,6 +4,7 @@ import { TableRow, TableCell } from '@/components/ui/table';
 import { PriorityBadge } from '@/components/shared/PriorityBadge';
 import { StatusBadge } from '@/components/shared/StatusBadge';
 import { ActionButtons } from '@/components/shared/ActionButtons';
+import { AssigneeTags } from '@/components/shared/AssigneeTags';
 import { TaskNameWithComment } from '@/components/shared/TaskNameWithComment';
 import type { Task, Period } from '@/types';
 
@@ -24,7 +25,7 @@ export function CurrentTasksRow({ task, creationPeriod, onEdit, onComplete, onRe
 				<TaskNameWithComment task={task} onOpenComment={onOpenComment} />
 			</TableCell>
 			<TableCell className="px-2 py-2 md:px-4 md:py-3 whitespace-normal">
-				{task.assignee ?? '—'}
+				<AssigneeTags value={task.assignee} />
 			</TableCell>
 			<TableCell className="px-2 py-2 md:px-4 md:py-3">
 				<PriorityBadge priority={task.priority} />

@@ -75,17 +75,17 @@ export function EditMetricsModal({ open, onClose, statistics }: EditMetricsModal
 
 	const footer = (
 		<>
-			<Button variant="outline" onClick={onClose} disabled={loading}>
+			<Button variant="outline" type="button" onClick={onClose} disabled={loading}>
 				Отмена
 			</Button>
-			<Button onClick={handleSave} disabled={loading}>
+			<Button type="submit" disabled={loading}>
 				Сохранить
 			</Button>
 		</>
 	);
 
 	return (
-		<ModalWrapper open={open} onClose={onClose} title="Редактировать метрики периода" footer={footer}>
+		<ModalWrapper open={open} onClose={onClose} title="Редактировать метрики периода" footer={footer} onSubmit={handleSave}>
 			<div className="overflow-y-auto max-h-[60vh]">
 				<div className="space-y-5">
 					<div>

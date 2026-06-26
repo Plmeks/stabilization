@@ -45,6 +45,33 @@ export function extractJabberLink(title: string): string | null {
 	return `http://jabber.bx/view.php?id=${id}`;
 }
 
+// Исполнители хранятся в одном текстовом поле как имена через запятую.
+// Эти помощники переводят туда-обратно в массив для мультиселекта.
+export function parseAssignees(value: string | null | undefined): string[] {
+	if (!value) {
+		return [];
+	}
+	return value
+		.split(',')
+		.map((name) => name.trim())
+		.filter(Boolean);
+}
+
+export function serializeAssignees(names: string[]): string | null {
+	const cleaned = names.map((name) => name.trim()).filter(Boolean);
+	// Уникализируем без учёта регистра, сохраняя первое написание.
+	const seen = new Set<string>();
+	const unique: string[] = [];
+	for (const name of cleaned) {
+		const key = name.toLowerCase();
+		if (!seen.has(key)) {
+			seen.add(key);
+			unique.push(name);
+		}
+	}
+	return unique.length > 0 ? unique.join(', ') : null;
+}
+
 export function isTaskActive(task: Task): boolean {
 	return !isTaskCompleted(task);
 }

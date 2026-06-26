@@ -39,6 +39,11 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-warn: var(--warn);
+  --color-wip: var(--wip);
+  --color-surface: var(--surface);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -49,38 +54,51 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  /* Палитра «документа отчёта»: slate-ink на светлом, семантические акценты.
+     Светлая тема с небольшими тёмными акцентами (primary = slate-900). */
+  --background: #ffffff;
+  --foreground: #0f172a;            /* slate-900 — ink */
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #0f172a;               /* тёмный акцент: кнопки, активная вкладка, чипы */
+  --primary-foreground: #f8fafc;
+  --secondary: #f1f5f9;             /* slate-100 */
+  --secondary-foreground: #0f172a;
+  --muted: #f8fafc;                 /* slate-50 — вторичная поверхность */
+  --muted-foreground: #64748b;      /* slate-500 */
+  --accent: #f1f5f9;
+  --accent-foreground: #0f172a;
+  --destructive: #dc2626;
+  --border: #e8eaee;                /* волосок-граница как в отчёте */
+  --input: #e2e8f0;                 /* slate-200 — граница полей */
+  --ring: #94a3b8;                  /* slate-400 — фокус */
+
+  /* Семантика статусов — те же значения, что в PDF-отчёте */
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warn: #ea580c;
+  --wip: #3b82f6;
+
+  /* Бледные eyebrow-подписи разделов */
+  --label: #94a3b8;                 /* slate-400 */
+  --surface: #f8fafc;               /* slate-50 — фон страницы/панелей */
+
+  --chart-1: #16a34a;
+  --chart-2: #3b82f6;
+  --chart-3: #ea580c;
+  --chart-4: #dc2626;
+  --chart-5: #64748b;
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: #f8fafc;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #0f172a;
+  --sidebar-primary-foreground: #f8fafc;
+  --sidebar-accent: #f1f5f9;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #e8eaee;
+  --sidebar-ring: #94a3b8;
 }
 
 .dark {
@@ -122,9 +140,43 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    /* Канва-«стол»: бледный slate, чтобы белые панели читались как документ. */
+    background-color: var(--surface);
+    @apply text-foreground;
+    /* Табличные цифры по всему приложению — как в отчёте. */
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
   }
   html {
     @apply font-sans;
+  }
+}
+
+@layer components {
+  /* Eyebrow-подпись разделов: UPPERCASE, широкий трекинг — сигнатура отчёта. */
+  .eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.6875rem;       /* 11px */
+    font-weight: 600;
+    color: var(--label);
+    line-height: 1.2;
+  }
+
+  /* Белая «панель-документ» с волоском-границей. */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;     /* 12px */
+  }
+
+  /* 4-цветная «лента стабильности» — фирменный мотив (success/danger/warn/wip). */
+  .stability-ribbon {
+    display: flex;
+    height: 3px;
+    width: 100%;
+  }
+  .stability-ribbon > span {
+    flex: 1;
   }
 }

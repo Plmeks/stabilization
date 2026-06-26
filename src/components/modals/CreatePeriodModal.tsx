@@ -62,10 +62,10 @@ function CreatePeriodModalContent({ onClose }: CreatePeriodModalContentProps) {
 
 	const footer = (
 		<>
-			<Button variant="outline" onClick={onClose} disabled={loading}>
+			<Button variant="outline" type="button" onClick={onClose} disabled={loading}>
 				Отмена
 			</Button>
-			<Button onClick={handleSubmit} disabled={loading}>
+			<Button type="submit" disabled={loading}>
 				Создать
 			</Button>
 		</>
@@ -78,6 +78,7 @@ function CreatePeriodModalContent({ onClose }: CreatePeriodModalContentProps) {
 			title="Добавить период"
 			size="sm"
 			footer={footer}
+			onSubmit={handleSubmit}
 		>
 			<DateRangePicker
 				startDate={startDate}

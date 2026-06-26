@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { logout } from "@/lib/auth";
 import { LogOut, Menu, X } from "lucide-react";
-import logo from "@/app/favicon.png";
+import { Logo } from "./Logo";
+import { StabilityRibbon } from "@/components/shared/StabilityRibbon";
 
 const tabs = [
   { href: "/qa", label: "Новые задачи" },
@@ -31,21 +31,16 @@ export default function TabNavigation() {
   }
 
   return (
-    <nav className="border-b bg-background shadow-sm">
+    <nav className="sticky top-0 z-40 border-b border-border bg-white">
       <div className="max-w-screen-2xl mx-auto flex overflow-x-auto px-4 py-3 sm:px-6 gap-1 scrollbar-none items-center">
         <Link
           href="/"
-          className="flex items-center gap-2 mr-8 shrink-0 text-xl font-bold text-foreground hover:opacity-90"
+          className="flex items-center gap-2.5 mr-8 shrink-0 hover:opacity-90"
         >
-          <Image
-            src={logo}
-            alt=""
-            width={32}
-            height={32}
-            className="h-8 w-8 sm:h-9 sm:w-9 rounded-md"
-            priority
-          />
-          <span>Stabana</span>
+          <Logo size={34} className="shrink-0" />
+          <span className="text-xl font-semibold tracking-tight text-foreground">
+            Stabana
+          </span>
         </Link>
 
         <div className="hidden md:flex items-center gap-1 flex-1 overflow-x-auto scrollbar-none">
@@ -107,6 +102,7 @@ export default function TabNavigation() {
           })}
         </div>
       )}
+      <StabilityRibbon />
     </nav>
   );
 }

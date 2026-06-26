@@ -16,6 +16,12 @@ export type Period = {
 	created_at: string;
 };
 
+export type Assignee = {
+	id: string;
+	name: string;
+	created_at: string;
+};
+
 export type PeriodStatistics = {
 	id: string;
 	period_id: string;
@@ -82,7 +88,7 @@ export type CreateTaskInput = {
 
 export type UpdateTaskInput = {
 	title?: string;
-	assignee?: string;
+	assignee?: string | null;
 	priority?: Priority | null;
 	status?: TaskStatus | null;
 	link?: string | null;

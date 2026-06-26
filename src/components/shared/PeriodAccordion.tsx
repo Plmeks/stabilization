@@ -22,12 +22,12 @@ function TaskCountBadge({
   criticalCount?: number;
 }) {
   return (
-    <span className="bg-muted/80 text-muted-foreground text-xs px-2.5 py-0.5 rounded-full shrink-0">
-      Всего: {taskCount}
+    <span className="bg-secondary text-muted-foreground text-xs px-2.5 py-0.5 rounded-full shrink-0">
+      Всего: <span className="text-foreground">{taskCount}</span>
       {criticalCount !== undefined && criticalCount > 0 ? (
         <>
           {", "}
-          Крит: <span className="text-red-500">{criticalCount}</span>
+          Крит: <span className="text-danger">{criticalCount}</span>
         </>
       ) : null}
     </span>
@@ -50,9 +50,9 @@ export default function PeriodAccordion({
   );
 
   return (
-    <div className="border rounded-xl overflow-hidden shadow-sm">
+    <div className="panel overflow-hidden">
       <div
-        className="hidden sm:flex items-center gap-2 px-5 py-5 bg-muted/40 cursor-pointer select-none hover:bg-muted/50 transition-colors"
+        className="hidden sm:flex items-center gap-2 px-5 py-4 bg-muted cursor-pointer select-none hover:bg-secondary transition-colors"
         onClick={onToggle}
         role="button"
         aria-expanded={isExpanded}
@@ -67,7 +67,7 @@ export default function PeriodAccordion({
         )}
       </div>
 
-      <div className="flex sm:hidden gap-2 px-3 py-3 bg-muted/40">
+      <div className="flex sm:hidden gap-2 px-3 py-3 bg-muted">
         <button
           type="button"
           className="flex shrink-0 self-stretch items-start pt-0.5 text-muted-foreground hover:text-foreground"

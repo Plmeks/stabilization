@@ -68,10 +68,10 @@ function EditQATaskModalContent({ onClose, task }: EditQATaskModalContentProps) 
 
 	const footer = (
 		<>
-			<Button variant="outline" onClick={onClose} disabled={loading}>
+			<Button variant="outline" type="button" onClick={onClose} disabled={loading}>
 				Отмена
 			</Button>
-			<Button onClick={handleSave} disabled={loading}>
+			<Button type="submit" disabled={loading}>
 				Сохранить
 			</Button>
 		</>
@@ -83,6 +83,7 @@ function EditQATaskModalContent({ onClose, task }: EditQATaskModalContentProps) 
 			onClose={onClose}
 			title="Редактировать задачу"
 			footer={footer}
+			onSubmit={handleSave}
 		>
 			<div className="flex flex-col gap-4">
 				<div className="flex flex-col gap-1.5">

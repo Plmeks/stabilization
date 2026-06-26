@@ -14,7 +14,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import { AssigneeMultiSelect } from '@/components/shared/AssigneeMultiSelect';
 import { updateTaskAtom, returnTaskToWorkAtom } from '@/atoms/tasksAtom';
+import { parseAssignees, serializeAssignees } from '@/lib/utils';
 import { PRIORITIES, TASK_STATUSES, BACKLOG_SELECT_VALUE, BACKLOG_STATUS_LABEL } from '@/types/constants';
 import type { Task, Priority, TaskStatus, UpdateTaskInput } from '@/types';
 import { CompleteTaskModal } from './CompleteTaskModal';
@@ -37,7 +39,7 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 	const returnTaskToWork = useSetAtom(returnTaskToWorkAtom);
 
 	const [title, setTitle] = React.useState(task.title);
-	const [assignee, setAssignee] = React.useState(task.assignee ?? '');
+	const [assignees, setAssignees] = React.useState<string[]>(parseAssignees(task.assignee));
 	const [priority, setPriority] = React.useState<Priority | ''>(task.priority ?? '');
 	const [status, setStatus] = React.useState<TaskStatus | null>(task.status);
 	const [link, setLink] = React.useState(task.link ?? '');
@@ -51,7 +53,7 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 		if (context === 'current' && status === 'Завершена') {
 			setPendingUpdate({
 				title: title.trim() || task.title,
-				assignee: assignee.trim() || undefined,
+				assignee: serializeAssignees(assignees),
 				priority: priority || null,
 				link: link.trim() || null,
 				comment: comment.trim() || null,
@@ -62,7 +64,7 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 
 		const input: UpdateTaskInput = {
 			title: title.trim() || task.title,
-			assignee: assignee.trim() || undefined,
+			assignee: serializeAssignees(assignees),
 			priority: priority || null,
 			status,
 			link: link.trim() || null,
@@ -85,10 +87,10 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 
 	const footer = (
 		<>
-			<Button variant="outline" onClick={onClose} disabled={loading}>
+			<Button variant="outline" type="button" onClick={onClose} disabled={loading}>
 				Отмена
 			</Button>
-			<Button onClick={handleSave} disabled={loading}>
+			<Button type="submit" disabled={loading}>
 				Сохранить
 			</Button>
 		</>
@@ -101,6 +103,7 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 				onClose={onClose}
 				title="Редактировать задачу"
 				footer={footer}
+				onSubmit={handleSave}
 			>
 				<div className="flex flex-col gap-4">
 					<div className="flex flex-col gap-1.5">
@@ -114,12 +117,11 @@ function EditTaskModalContent({ onClose, task, context }: EditTaskModalContentPr
 						/>
 					</div>
 					<div className="flex flex-col gap-1.5">
-						<Label htmlFor="edit-assignee">Исполнитель</Label>
-						<Input
+						<Label htmlFor="edit-assignee">Исполнители</Label>
+						<AssigneeMultiSelect
 							id="edit-assignee"
-							placeholder="Не указан"
-							value={assignee}
-							onChange={(e) => setAssignee(e.target.value)}
+							value={assignees}
+							onChange={setAssignees}
 							disabled={loading}
 						/>
 					</div>
