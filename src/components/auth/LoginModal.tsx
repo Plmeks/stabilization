@@ -10,6 +10,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Logo } from '@/components/layout/Logo';
+import { StabilityRibbon } from '@/components/shared/StabilityRibbon';
 import { login } from '@/lib/auth';
 
 interface LoginModalProps {
@@ -42,14 +44,20 @@ export default function LoginModal({ onSuccess }: LoginModalProps) {
 		<Dialog open modal>
 			<DialogContent
 				showCloseButton={false}
-				className="sm:max-w-sm p-6"
+				className="overflow-hidden p-0 sm:max-w-sm"
 				onPointerDownOutside={(e) => e.preventDefault()}
 				onEscapeKeyDown={(e) => e.preventDefault()}
 			>
-				<DialogHeader>
-					<DialogTitle className="text-lg">Вход в систему</DialogTitle>
-				</DialogHeader>
-				<form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-2">
+				<StabilityRibbon />
+				<div className="flex flex-col gap-5 p-6">
+					<DialogHeader className="items-center gap-3 text-center">
+						<Logo size={48} />
+						<div className="flex flex-col gap-1">
+							<DialogTitle className="text-lg">Вход в Stabana</DialogTitle>
+							<span className="eyebrow">Команда Видеозвонки</span>
+						</div>
+					</DialogHeader>
+					<form onSubmit={handleSubmit} className="flex flex-col gap-4">
 					<div className="flex flex-col gap-1.5">
 						<Label htmlFor="username">Логин</Label>
 						<Input
@@ -90,7 +98,8 @@ export default function LoginModal({ onSuccess }: LoginModalProps) {
 					<Button type="submit" disabled={isLoading} className="mt-1">
 						{isLoading ? 'Вход...' : 'Войти'}
 					</Button>
-				</form>
+					</form>
+				</div>
 			</DialogContent>
 		</Dialog>
 	);
