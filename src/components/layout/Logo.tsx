@@ -14,7 +14,8 @@ export function Logo({
 	className?: string;
 }) {
 	// Силуэт шестерёнки строим программно: трапециевидные зубья с фасками.
-	const gearPath = React.useMemo(() => buildGear(9, 24, 24, 16.8, 12.4), []);
+	// rTip — вершины зубьев, rRoot — основание (толще обод → короче зубья).
+	const gearPath = React.useMemo(() => buildGear(9, 24, 24, 16.8, 13.9), []);
 
 	return (
 		<svg

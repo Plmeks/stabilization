@@ -5,7 +5,7 @@ export function AssigneeTags({ value }: { value: string | null }) {
 	const names = parseAssignees(value);
 
 	if (names.length === 0) {
-		return <span className="text-muted-foreground">Без исполнителя</span>;
+		return <span className="text-muted-foreground text-xs">Без исполнителя</span>;
 	}
 
 	return (
