@@ -9,6 +9,7 @@ import { periodStatisticsAtom } from '@/atoms/statsAtom';
 import { calculateDynamicMetrics } from '@/lib/stats-utils';
 import StatsPeriodCard from '@/components/stats/StatsPeriodCard';
 import { Button } from '@/components/ui/button';
+import { DownloadReportButton } from '@/components/report/DownloadReportButton';
 
 export default function StatsPage() {
 	const periods = useAtomValue(periodsAtom);
@@ -59,9 +60,12 @@ export default function StatsPage() {
 			{sortedPeriods.length > 0 && (
 				<div className="flex justify-between md:flex-row flex-col md:items-center gap-2">
 					<h1 className="text-2xl font-semibold mb-2 md:mb-0">Отчет в цифрах</h1>
-					<Button variant="outline" size="sm" onClick={toggleAll} className='md:w-[8rem] w-fit self-end'>
-						{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
-					</Button>
+					<div className="flex items-center gap-2 self-end md:self-auto">
+						<DownloadReportButton />
+						<Button variant="outline" size="sm" onClick={toggleAll} className='md:w-[8rem] w-fit'>
+							{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
+						</Button>
+					</div>
 				</div>
 			)}
 				{sortedPeriods.map((period) => {
