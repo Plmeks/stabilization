@@ -46,8 +46,8 @@ export function Logo({
 
 			{/* Тело шестерёнки. */}
 			<path d={gearPath} fill="currentColor" />
-			{/* Белая ступица. */}
-			<circle cx={24} cy={24} r={7.4} fill="var(--card)" />
+			{/* Белая ступица (внутренний круг с галочкой). */}
+			<circle cx={24} cy={24} r={9.4} fill="var(--card)" />
 			{/* Галочка в ступице. */}
 			<path
 				d="M20.5 24.1 L23 26.7 L27.8 20.4"
