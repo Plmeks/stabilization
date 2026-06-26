@@ -45,8 +45,6 @@ export function Logo({
 
 			{/* Тело шестерёнки. */}
 			<path d={gearPath} fill="currentColor" />
-			{/* Тонкое кольцо-фаска для «дизайнерской» глубины. */}
-			<circle cx={24} cy={24} r={10} fill="none" stroke="var(--card)" strokeWidth={1.1} opacity={0.5} />
 			{/* Белая ступица. */}
 			<circle cx={24} cy={24} r={7.4} fill="var(--card)" />
 			{/* Галочка в ступице. */}
