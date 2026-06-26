@@ -117,7 +117,7 @@ export default function QAPage() {
 
 	return (
 		<div className="flex flex-col gap-4 p-0 sm:gap-5 sm:p-6">
-			<PageHeader eyebrow="Очередь приёмки" title="Новые задачи" />
+			<PageHeader eyebrow="Задачи от QA" title="Новые задачи" />
 
 			<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 				<Button variant="outline" size="sm" onClick={() => setShowCreatePeriodModal(true)} className="w-full sm:w-auto">
