@@ -23,6 +23,13 @@ CREATE TABLE tasks (
   comment TEXT
 );
 
+-- Create assignees table (управляемый список исполнителей для выпадашки)
+CREATE TABLE assignees (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- Create period_statistics table
 CREATE TABLE period_statistics (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

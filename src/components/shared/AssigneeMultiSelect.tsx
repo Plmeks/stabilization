@@ -32,6 +32,15 @@ export function AssigneeMultiSelect({ value, onChange, disabled, id }: AssigneeM
 	const [query, setQuery] = React.useState('');
 	const [open, setOpen] = React.useState(false);
 	const inputRef = React.useRef<HTMLInputElement>(null);
+	const anchorRef = React.useRef<HTMLDivElement>(null);
+
+	// Поле (input/чипы) живёт в anchor, а не в content — поэтому фокус/клик по нему
+	// Radix считает «снаружи» и закрывает поповер. Гасим закрытие в этих случаях.
+	const keepOpenOnField = (e: { target: EventTarget | null; preventDefault: () => void }) => {
+		if (anchorRef.current?.contains(e.target as Node)) {
+			e.preventDefault();
+		}
+	};
 
 	const selectedSet = React.useMemo(
 		() => new Set(value.map((v) => v.toLowerCase())),
@@ -97,6 +106,7 @@ export function AssigneeMultiSelect({ value, onChange, disabled, id }: AssigneeM
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverAnchor asChild>
 				<div
+					ref={anchorRef}
 					className={cn(
 						'flex min-h-8 w-full flex-wrap items-center gap-1 rounded-lg border border-input bg-transparent px-1.5 py-1 text-sm transition-colors',
 						'focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/50',
@@ -145,6 +155,10 @@ export function AssigneeMultiSelect({ value, onChange, disabled, id }: AssigneeM
 				align="start"
 				sideOffset={6}
 				onOpenAutoFocus={(e) => e.preventDefault()}
+				onCloseAutoFocus={(e) => e.preventDefault()}
+				onFocusOutside={keepOpenOnField}
+				onPointerDownOutside={keepOpenOnField}
+				onInteractOutside={keepOpenOnField}
 				className="w-(--radix-popover-trigger-width) min-w-56 p-1"
 			>
 				<div className="max-h-60 overflow-y-auto">
