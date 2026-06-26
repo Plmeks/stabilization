@@ -190,11 +190,9 @@
       animation: logo-bulb 1.8s infinite ease-in-out;
     }
   }
-  /* Свечение через насыщенность (не яркость): все цвета загораются одинаково
-     сочно. На чистой brightness синий/зелёный уходили в пастель («затухали»). */
   @keyframes logo-bulb {
     0% { filter: brightness(1) saturate(1); }
-    12% { filter: brightness(1.25) saturate(1.8); }
+    12% { filter: brightness(1.5) saturate(1.35); }
     40% { filter: brightness(1) saturate(1); }
     100% { filter: brightness(1) saturate(1); }
   }
