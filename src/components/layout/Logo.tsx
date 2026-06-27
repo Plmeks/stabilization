@@ -1,12 +1,13 @@
 import * as React from 'react';
 
 /**
- * Логотип Stabana: шестерёнка (трапециевидные зубья) с круглой ступицей,
- * разделённой осями x/y на 4 сектора нашими цветами (зелёный/синий/красный/
- * оранжевый). Самодостаточный SVG.
+ * Логотип Stabana: шестерёнка (трапециевидные зубья) с круглой ступицей —
+ * сплошной 4-цветный «пирог» (зелёный/синий/красный/оранжевый) без белых
+ * разделителей: цвета граничат друг с другом напрямую. По центру пирога —
+ * белая галочка («готово/качество»). Самодостаточный SVG.
  *
  * Варианты:
- *  - по умолчанию: ink-шестерёнка + синие круговые стрелки + белая обводка
+ *  - по умолчанию: ink-шестерёнка + синие круговые стрелки
  *    (для светлых поверхностей — навбар/модалка входа);
  *  - arrows={false}: без стрелок, шестерёнка крупнее (как фавиконка). Хорошо
  *    для тёмного фона с gearFill="#ffffff".
@@ -16,13 +17,11 @@ export function Logo({
 	className,
 	arrows = true,
 	gearFill = 'var(--foreground)',
-	ring = true,
 }: {
 	size?: number;
 	className?: string;
 	arrows?: boolean;
 	gearFill?: string;
-	ring?: boolean;
 }) {
 	// Без стрелок шестерёнка заполняет холст сильнее.
 	const rTip = arrows ? 17.8 : 21.5;
@@ -34,13 +33,20 @@ export function Logo({
 	const lo = (24 - rHub).toFixed(1);
 	const hi = (24 + rHub).toFixed(1);
 
-	// 4 «лампочки» ступицы: всегда цветные, по наведению загораются по кругу
-	// (синяя → красная → оранжевая → зелёная). delay задаёт бегущий огонёк.
+	// Белая галочка по центру пирога, масштаб пропорционален ступице.
+	const checkPath = React.useMemo(() => buildCheck(rHub / 6.0, 24, 24.3), [rHub]);
+
+	// 4 «лампочки» ступицы: по наведению загораются по кругу. Свечение стартует
+	// не сразу: сначала пошла шестерёнка, и лишь примерно через время полного
+	// свечения одного сектора секторы начинают разгораться. glowStart — эта
+	// стартовая задержка, step — шаг бегущей очереди.
+	const glowStart = 0.42;
+	const step = 0.45;
 	const bulbs = [
-		{ d: `M24 24 L${lo} 24 A${rHub} ${rHub} 0 0 1 24 ${lo} Z`, color: 'var(--success)', delay: '1.35s' },
-		{ d: `M24 24 L24 ${lo} A${rHub} ${rHub} 0 0 1 ${hi} 24 Z`, color: 'var(--wip)', delay: '0s' },
-		{ d: `M24 24 L${hi} 24 A${rHub} ${rHub} 0 0 1 24 ${hi} Z`, color: 'var(--danger)', delay: '0.45s' },
-		{ d: `M24 24 L24 ${hi} A${rHub} ${rHub} 0 0 1 ${lo} 24 Z`, color: 'var(--warn)', delay: '0.9s' },
+		{ d: `M24 24 L${lo} 24 A${rHub} ${rHub} 0 0 1 24 ${lo} Z`, color: 'var(--success)', delay: `${(glowStart + 3 * step).toFixed(2)}s` },
+		{ d: `M24 24 L24 ${lo} A${rHub} ${rHub} 0 0 1 ${hi} 24 Z`, color: 'var(--wip)', delay: `${glowStart.toFixed(2)}s` },
+		{ d: `M24 24 L${hi} 24 A${rHub} ${rHub} 0 0 1 24 ${hi} Z`, color: 'var(--danger)', delay: `${(glowStart + step).toFixed(2)}s` },
+		{ d: `M24 24 L24 ${hi} A${rHub} ${rHub} 0 0 1 ${lo} 24 Z`, color: 'var(--warn)', delay: `${(glowStart + 2 * step).toFixed(2)}s` },
 	];
 
 	return (
@@ -67,32 +73,42 @@ export function Logo({
 				</>
 			)}
 
-			{/* Тело шестерёнки. */}
-			<path d={gearPath} fill={gearFill} />
+			{/* Тело шестерёнки. При наведении медленно проворачивается (механизм
+			   работает); цветной пирог и галочка остаются на месте. */}
+			<path className="logo-gear" d={gearPath} fill={gearFill} />
 
-			{/* Ступица: 4 цветных «лампочки» (сектора), загораются по кругу при наведении. */}
+			{/* Статичная база пирога — под светящимся слоем: сглаженная кромка
+			   анимируемых секторов пропускает правильный цвет, а не белую
+			   шестерёнку (иначе на швах — белые волоски). */}
+			<g>
+				{bulbs.map((b) => (
+					<path key={`base-${b.color}`} d={b.d} fill={b.color} />
+				))}
+			</g>
+
+			{/* Свечение: секторы по очереди разгораются по кругу при наведении
+			   (со стартовой задержкой относительно вращения шестерёнки). */}
 			<g>
 				{bulbs.map((b) => (
 					<path
-						key={b.delay}
+						key={b.color}
 						className="logo-bulb"
 						d={b.d}
 						fill={b.color}
-						style={{ color: b.color, animationDelay: b.delay }}
+						style={{ animationDelay: b.delay }}
 					/>
 				))}
 			</g>
 
-			{/* Тонкие белые оси x/y — секторы как кусочки пирога. */}
-			<g stroke="var(--card)" strokeWidth={arrows ? 0.6 : 0.9}>
-				<line x1={lo} y1={24} x2={hi} y2={24} />
-				<line x1={24} y1={lo} x2={24} y2={hi} />
-			</g>
-
-			{/* Белая обводка: внешний край на краю пирога, толщина уходит внутрь. */}
-			{ring && (
-				<circle cx={24} cy={24} r={rHub - 0.8} fill="none" stroke="var(--card)" strokeWidth={1.6} />
-			)}
+			{/* Белая галочка по центру пирога — «готово/качество». */}
+			<path
+				d={checkPath}
+				fill="none"
+				stroke="var(--card)"
+				strokeWidth={rHub / 6.0}
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			/>
 		</svg>
 	);
 }
@@ -115,4 +131,11 @@ function buildGear(teeth: number, cx: number, cy: number, rTip: number, rRoot: n
 		d += `L ${pt(rRoot, a + T * 0.82)} `;
 	}
 	return `${d}Z`;
+}
+
+/** Галочка по центру: излом — нижняя точка, центрирована на (cx,cy). */
+function buildCheck(scale: number, cx: number, cy: number): string {
+	const p = (dx: number, dy: number) =>
+		`${(cx + dx * scale).toFixed(2)} ${(cy + dy * scale).toFixed(2)}`;
+	return `M ${p(-2.8, -0.1)} L ${p(-0.7, 2.0)} L ${p(3.0, -2.6)}`;
 }

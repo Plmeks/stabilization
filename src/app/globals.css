@@ -185,15 +185,28 @@
   .logo-bulb {
     transition: filter 0.3s ease;
   }
+  /* Шестерёнка вращается вокруг центра viewBox (24,24) — ровно. */
+  .logo-gear {
+    transform-box: view-box;
+    transform-origin: center;
+  }
   @media (prefers-reduced-motion: no-preference) {
     .logo-mark:hover .logo-bulb {
       animation: logo-bulb 1.8s infinite ease-in-out;
     }
+    .logo-mark:hover .logo-gear {
+      animation: logo-gear-spin 4s linear infinite;
+    }
   }
+  @keyframes logo-gear-spin {
+    to { transform: rotate(360deg); }
+  }
+  /* Умеренная яркость: ровно по тонам (синий/зелёный наравне с красным),
+     не выжигает белую галочку по центру. */
   @keyframes logo-bulb {
     0% { filter: brightness(1) saturate(1); }
-    12% { filter: brightness(1.5) saturate(1.35); }
-    40% { filter: brightness(1) saturate(1); }
+    14% { filter: brightness(1.28) saturate(1.12); }
+    42% { filter: brightness(1) saturate(1); }
     100% { filter: brightness(1) saturate(1); }
   }
 }
