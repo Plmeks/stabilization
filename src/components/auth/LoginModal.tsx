@@ -51,7 +51,9 @@ export default function LoginModal({ onSuccess }: LoginModalProps) {
 				<StabilityRibbon />
 				<div className="flex flex-col gap-5 p-6">
 					<DialogHeader className="items-center gap-3 text-center">
-						<Logo size={48} />
+						<div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#0f172a] shadow-md ring-1 ring-black/5">
+								<Logo size={40} arrows={false} gearFill="#ffffff" ring={false} />
+							</div>
 						<div className="flex flex-col gap-1">
 							<DialogTitle className="text-lg">Вход в Stabana</DialogTitle>
 							<span className="eyebrow">Команда Видеозвонки</span>

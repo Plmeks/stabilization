@@ -17,7 +17,8 @@ const COLOR = {
 //  success — зелёный если > 0 (решено/выполнено — это успех), иначе чёрный
 //  danger  — красный если > 0 (критичные незавершённые/добавленные, в блоке), иначе чёрный
 //  warn    — оранжевый если > 0 (некритичные незавершённые/добавленные), иначе чёрный
-type Role = 'neutral' | 'success' | 'danger' | 'warn';
+//  wip     — синий если > 0 (в работе/в тесте/WIP — поток задач), иначе чёрный
+type Role = 'neutral' | 'success' | 'danger' | 'warn' | 'wip';
 
 type Metric = { label: string; value: number; role: Role };
 type Group = { title: string; metrics: Metric[] };
@@ -36,8 +37,8 @@ function buildGroups(m: ReportMetrics): Group[] {
 				{ label: 'Из них критических', value: m.added_critical, role: 'danger' },
 				{ label: 'Решено всего', value: m.resolved_total, role: 'success' },
 				{ label: 'Решено критических', value: m.resolved_critical, role: 'success' },
-				{ label: 'В работе', value: m.in_progress, role: 'neutral' },
-				{ label: 'В тесте', value: m.in_testing, role: 'neutral' },
+				{ label: 'В работе', value: m.in_progress, role: 'wip' },
+				{ label: 'В тесте', value: m.in_testing, role: 'wip' },
 				{ label: 'В блоке', value: m.in_block, role: 'danger' },
 			],
 		},
@@ -59,9 +60,9 @@ function buildGroups(m: ReportMetrics): Group[] {
 		{
 			title: 'WIP',
 			metrics: [
-				{ label: 'Всего', value: m.wip_total, role: 'neutral' },
-				{ label: 'В работе', value: m.in_progress, role: 'neutral' },
-				{ label: 'В тесте', value: m.in_testing, role: 'neutral' },
+				{ label: 'Всего', value: m.wip_total, role: 'wip' },
+				{ label: 'В работе', value: m.in_progress, role: 'wip' },
+				{ label: 'В тесте', value: m.in_testing, role: 'wip' },
 				{ label: 'В блоке', value: m.in_block, role: 'danger' },
 			],
 		},
@@ -103,7 +104,7 @@ export const ReportDocument = React.forwardRef<HTMLDivElement, { data: ReportDat
 			{ label: 'Всего проблем', value: metrics.total_problems_cumulative, border: COLOR.ink, role: 'neutral' },
 			{ label: 'Выполнено', value: metrics.completed_cumulative, border: COLOR.success, role: 'success' },
 			{ label: 'Незавершённые', value: metrics.uncompleted, border: COLOR.warn, role: 'neutral' },
-			{ label: 'WIP', value: metrics.wip_total, border: COLOR.wip, role: 'neutral' },
+			{ label: 'WIP', value: metrics.wip_total, border: COLOR.wip, role: 'wip' },
 		];
 
 		return (

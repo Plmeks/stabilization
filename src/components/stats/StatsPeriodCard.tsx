@@ -44,7 +44,7 @@ export default function StatsPeriodCard({
 		{ label: 'Всего проблем', value: metrics.total_problems_cumulative, border: 'var(--foreground)', role: 'neutral' },
 		{ label: 'Выполнено', value: metrics.completed_cumulative, border: 'var(--success)', role: 'success' },
 		{ label: 'Незавершённые', value: metrics.uncompleted, border: 'var(--warn)', role: 'neutral' },
-		{ label: 'WIP', value: metrics.wip_total, border: 'var(--wip)', role: 'neutral' },
+		{ label: 'WIP', value: metrics.wip_total, border: 'var(--wip)', role: 'wip' },
 	];
 
 	const handleDeleteConfirm = async () => {
@@ -120,8 +120,8 @@ export default function StatsPeriodCard({
 							<StatsMetricItem label="Из них критических" value={metrics.added_critical} role="danger" />
 							<StatsMetricItem label="Решено всего" value={metrics.resolved_total} role="success" />
 							<StatsMetricItem label="Решено критических" value={metrics.resolved_critical} role="success" />
-							<StatsMetricItem label="В работе" value={metrics.in_progress} />
-							<StatsMetricItem label="В тесте" value={metrics.in_testing} />
+							<StatsMetricItem label="В работе" value={metrics.in_progress} role="wip" />
+							<StatsMetricItem label="В тесте" value={metrics.in_testing} role="wip" />
 							<StatsMetricItem label="В блоке" value={metrics.in_block} role="danger" />
 						</StatsMetricGroup>
 
@@ -137,9 +137,9 @@ export default function StatsPeriodCard({
 						</StatsMetricGroup>
 
 						<StatsMetricGroup title="WIP">
-							<StatsMetricItem label="Всего" value={metrics.wip_total} />
-							<StatsMetricItem label="В работе" value={metrics.in_progress} />
-							<StatsMetricItem label="В тесте" value={metrics.in_testing} />
+							<StatsMetricItem label="Всего" value={metrics.wip_total} role="wip" />
+							<StatsMetricItem label="В работе" value={metrics.in_progress} role="wip" />
+							<StatsMetricItem label="В тесте" value={metrics.in_testing} role="wip" />
 							<StatsMetricItem label="В блоке" value={metrics.in_block} role="danger" />
 						</StatsMetricGroup>
 

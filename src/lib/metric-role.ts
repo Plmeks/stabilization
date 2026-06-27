@@ -3,16 +3,18 @@
  *  neutral — всегда ink (итоги, в работе, в тесте, бэклог);
  *  success — зелёный, если > 0 (решено/выполнено — это успех), иначе ink;
  *  danger  — красный, если > 0 (критичные незавершённые/добавленные, блок), иначе ink;
- *  warn    — оранжевый, если > 0 (некритичные незавершённые/добавленные), иначе ink.
+ *  warn    — оранжевый, если > 0 (некритичные незавершённые/добавленные), иначе ink;
+ *  wip     — синий, если > 0 (в работе/в тесте/WIP — поток задач), иначе ink.
  * Ноль всегда нейтральный, чтобы не «шуметь» цветом.
  */
-export type MetricRole = 'neutral' | 'success' | 'danger' | 'warn';
+export type MetricRole = 'neutral' | 'success' | 'danger' | 'warn' | 'wip';
 
 const ROLE_VAR: Record<MetricRole, string> = {
 	neutral: 'var(--foreground)',
 	success: 'var(--success)',
 	danger: 'var(--danger)',
 	warn: 'var(--warn)',
+	wip: 'var(--wip)',
 };
 
 export function roleColor(value: number, role: MetricRole): string {
