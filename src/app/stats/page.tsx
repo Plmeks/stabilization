@@ -60,8 +60,8 @@ export default function StatsPage() {
 		<div className="p-0 sm:p-6 space-y-4 sm:space-y-5">
 			{sortedPeriods.length > 0 && (
 				<PageHeader
-					eyebrow="Отчёт за период"
-					title="Отчёт в цифрах"
+					eyebrow="Статистика в цифрах"
+					title="Отчет за период"
 					actions={
 						<>
 							<DownloadReportButton />

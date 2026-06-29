@@ -88,11 +88,15 @@ export function PeriodMultiSelect({ periods, value, onChange }: PeriodMultiSelec
 							<span className="shrink-0 pt-px font-medium tabular-nums">
 								{count} из {total}
 							</span>
-							<span className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] gap-x-1.5 gap-y-0.5 text-muted-foreground">
-								<span>по</span>
-								<span className="truncate tabular-nums">{oldestLabel}</span>
-								<span>с</span>
-								<span className="truncate tabular-nums">{newestLabel}</span>
+							<span className="flex flex-col gap-x-1.5 gap-y-0.5 text-muted-foreground text-start">
+								<span>
+									<span>с&nbsp;</span>
+									<span className="truncate tabular-nums">{newestLabel}</span>
+								</span>
+								<span>
+									<span>по&nbsp;</span>
+									<span className="truncate tabular-nums">{oldestLabel}</span>
+								</span>
 							</span>
 						</span>
 					)}
