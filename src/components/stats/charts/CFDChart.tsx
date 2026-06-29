@@ -32,7 +32,10 @@ export function CFDChart({ data }: CFDChartProps) {
 					<XAxis dataKey="label" tick={{ fontSize: 12 }} />
 					<YAxis width={36} tickMargin={4} tick={{ fontSize: 12 }} />
 					<Tooltip />
-					<Legend />
+					<Legend
+							wrapperStyle={{ paddingTop: 8, fontSize: 12, lineHeight: '22px' }}
+							iconSize={12}
+						/>
 					<Area
 						type="linear"
 						dataKey="completed_cumulative"
