@@ -1,13 +1,14 @@
 'use client';
 
 import * as React from 'react';
-import { useAtomValue } from 'jotai';
-import { currentTasksAtom } from '@/atoms/tasksAtom';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { currentTasksAtom, deleteTaskAtom } from '@/atoms/tasksAtom';
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { CurrentTasksTable } from '@/components/current/CurrentTasksTable';
 import { EditTaskModal } from '@/components/modals/EditTaskModal';
 import { CompleteTaskModal } from '@/components/modals/CompleteTaskModal';
 import { CommentModal } from '@/components/modals/CommentModal';
+import { ConfirmDialog } from '@/components/shared/ConfirmDialog';
 import { SearchInput } from '@/components/shared/SearchInput';
 import { PageHeader, CountChip } from '@/components/shared/PageHeader';
 import { matchesQuery } from '@/lib/utils';
@@ -16,6 +17,7 @@ import type { Task } from '@/types';
 export default function CurrentPage() {
 	const tasks = useAtomValue(currentTasksAtom);
 	const periods = useAtomValue(periodsAtom);
+	const deleteTask = useSetAtom(deleteTaskAtom);
 
 	const [query, setQuery] = React.useState('');
 	const filteredTasks = React.useMemo(
@@ -26,6 +28,13 @@ export default function CurrentPage() {
 	const [editingTask, setEditingTask] = React.useState<Task | null>(null);
 	const [completingTask, setCompletingTask] = React.useState<Task | null>(null);
 	const [commentingTask, setCommentingTask] = React.useState<Task | null>(null);
+	const [showDeleteTaskConfirm, setShowDeleteTaskConfirm] = React.useState<string | null>(null);
+
+	const handleDeleteTaskConfirm = async () => {
+		if (!showDeleteTaskConfirm) return;
+		await deleteTask(showDeleteTaskConfirm);
+		setShowDeleteTaskConfirm(null);
+	};
 
 	const criticalCount = tasks.filter((t) => t.priority === 'Критический').length;
 
@@ -44,6 +53,7 @@ export default function CurrentPage() {
 					periods={periods}
 					onEdit={setEditingTask}
 					onComplete={setCompletingTask}
+					onDelete={setShowDeleteTaskConfirm}
 					onOpenComment={setCommentingTask}
 				/>
 			</div>
@@ -73,6 +83,14 @@ export default function CurrentPage() {
 					task={commentingTask}
 				/>
 			)}
+
+			<ConfirmDialog
+				open={showDeleteTaskConfirm !== null}
+				onClose={() => setShowDeleteTaskConfirm(null)}
+				onConfirm={handleDeleteTaskConfirm}
+				title="Удалить задачу"
+				message="Вы уверены, что хотите удалить эту задачу?"
+			/>
 		</div>
 	);
 }
