@@ -68,9 +68,9 @@ export function ChartsSection() {
 				<label className="text-sm font-medium">Периоды на графике</label>
 				<PeriodMultiSelect periods={periods} value={selectedIds} onChange={handleSelectionChange} />
 			</div>
-			{chartData.length === 0 ? (
+			{chartData.length < 2 ? (
 				<p className="py-12 text-center text-sm text-muted-foreground">
-					Выберите хотя бы один период
+					Выберите хотя бы два периода
 				</p>
 			) : (
 			<>

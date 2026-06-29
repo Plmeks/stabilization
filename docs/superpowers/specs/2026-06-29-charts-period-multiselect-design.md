@@ -43,8 +43,10 @@ the charts consistent with the report and the tables. The alternative
   without extra action). A deleted period drops out of the selection.
 - **User deselections persist** across period-list changes — only genuinely new
   ids are auto-added; ids that vanish are removed.
-- **Empty selection** (nothing checked) → charts area shows a quiet hint
-  `Выберите хотя бы один период`, not a broken axis.
+- **Minimum two periods to chart.** The charts need at least two points to be
+  meaningful (lines/trends). With **fewer than 2** selected (0 or 1), the charts
+  area shows a quiet hint `Выберите хотя бы два периода` instead of broken axes.
+  The field still reflects the current selection (e.g. `1 из 15 …`).
 - Selection lives in page state only (resets on reload). No persistence — same
   as the current behaviour.
 
@@ -54,32 +56,33 @@ Replaces the native `<select>`. A Popover dropdown with a checkbox per period,
 following the existing `AssigneeMultiSelect` pattern (Radix Popover + a
 foreground-filled checkbox square with a `Check` icon, `hover:bg-muted` rows).
 
-### Trigger (closed) — two-line "N из M · с … по …"
+### Trigger (closed) — two-line "N из M · по … / с …"
 
-A two-line field (`min-h` ≈ 2 lines). The count stands apart on the left; the
-selected range is written newest → oldest as two full period labels:
+A two-line field with a **white background** (`bg-background`), `min-h` ≈ 2
+lines. The count stands apart on the left; the selected range is written as two
+full period labels, oldest on top (`по`) and newest below (`с`):
 
 ```
-12 из 15   с  29.06.2026 - 05.07.2026
-           по 01.01.2026 - 08.01.2026
+12 из 15   по 01.01.2026 - 08.01.2026
+           с  29.06.2026 - 05.07.2026
 ```
 
 - `N из M` — count in `var(--foreground)`, `font-medium`, sits alone on the
   left (only on the first line).
-- `с <newest selected period>` on line 1, `по <oldest selected period>` on
+- `по <oldest selected period>` on line 1, `с <newest selected period>` on
   line 2, both in `var(--muted-foreground)`. Each endpoint is the period's
-  **full label** (`DD.MM.YYYY - DD.MM.YYYY`), newest first.
-- Layout: count is a flex item; the `с/по` block is a 2-column grid
-  (`[preposition] [dates]`) to the right of it. The grid puts `с` directly above
-  `по` and aligns the two date labels; because the count occupies the space to
-  the left of line 1, line 2 (`по …`) is naturally indented under `с`.
+  **full label** (`DD.MM.YYYY - DD.MM.YYYY`).
+- Layout: count is a flex item; the `по/с` block is a 2-column grid
+  (`[preposition] [dates]`) to the right of it. The prepositions are left-aligned
+  in one column, so `с` sits exactly under `п`; the date labels align too.
 - A trailing chevron, vertically centered.
 
 States:
-- All selected → `15 из 15` · `с 29.06.2026 - 05.07.2026` / `по 01.01.2026 - 08.01.2026`.
-- Subset → `12 из 15` with the newest/oldest still-selected periods as the two
+- All selected → `15 из 15` · `по 01.01.2026 - 08.01.2026` / `с 29.06.2026 - 05.07.2026`.
+- Subset → `12 из 15` with the oldest/newest still-selected periods as the two
   endpoints (recomputed as you toggle).
-- One selected → single line `1 из 15  22.06.2026 - 28.06.2026` (no `с/по`).
+- One selected → single line `1 из 15  22.06.2026 - 28.06.2026` (no `по/с`);
+  charts show the min-two hint.
 - None selected → muted placeholder `Не выбрано`.
 
 Note: with a gappy selection the two endpoints are the outer bounds, not a

@@ -70,7 +70,7 @@ export function PeriodMultiSelect({ periods, value, onChange }: PeriodMultiSelec
 								? `Периоды на графике: выбран период ${newestLabel}`
 								: `Периоды на графике: выбрано ${count} из ${total}, с ${newestLabel} по ${oldestLabel}`
 					}
-					className="flex min-h-[3.25rem] w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+					className="flex min-h-[3.25rem] w-full items-center justify-between gap-2 rounded-lg border border-input bg-background px-2.5 py-2 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
 				>
 					{count === 0 ? (
 						<span className="text-muted-foreground">Не выбрано</span>
@@ -83,16 +83,16 @@ export function PeriodMultiSelect({ periods, value, onChange }: PeriodMultiSelec
 						</span>
 					) : (
 						<span className="flex min-w-0 items-start gap-2.5 leading-5">
-							{/* «N из M» стоит особняком слева; вторая строка из-за него с отступом,
-							   поэтому «по» оказывается ровно под «с». */}
+							{/* «N из M» стоит особняком слева; предлоги «по»/«с» выровнены по левому
+							   краю в одной колонке, поэтому «с» оказывается ровно под «п». */}
 							<span className="shrink-0 pt-px font-medium tabular-nums">
 								{count} из {total}
 							</span>
 							<span className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] gap-x-1.5 gap-y-0.5 text-muted-foreground">
-								<span>с</span>
-								<span className="truncate tabular-nums">{newestLabel}</span>
 								<span>по</span>
 								<span className="truncate tabular-nums">{oldestLabel}</span>
+								<span>с</span>
+								<span className="truncate tabular-nums">{newestLabel}</span>
 							</span>
 						</span>
 					)}
