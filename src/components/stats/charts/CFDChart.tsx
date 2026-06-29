@@ -27,10 +27,10 @@ export function CFDChart({ data }: CFDChartProps) {
 		<div>
 			<p className="text-sm font-semibold text-foreground mb-3">CFD с линией WIP</p>
 			<ResponsiveContainer width="100%" height={350}>
-				<ComposedChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+				<ComposedChart data={data} margin={{ top: 10, right: 16, left: 0, bottom: 0 }}>
 					<CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 					<XAxis dataKey="label" tick={{ fontSize: 12 }} />
-					<YAxis tick={{ fontSize: 12 }} />
+					<YAxis width={36} tickMargin={4} tick={{ fontSize: 12 }} />
 					<Tooltip />
 					<Legend />
 					<Area

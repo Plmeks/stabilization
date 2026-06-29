@@ -40,18 +40,14 @@ export function BacklogChart({ data, dataKey, color, title, zoomToRange = false 
 		<div className="min-w-0">
 			<p className="text-sm font-semibold text-foreground mb-3">{title}</p>
 			<ResponsiveContainer width="100%" height={280}>
-				<LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 40 }}>
+				<LineChart data={data} margin={{ top: 10, right: 16, left: 0, bottom: 40 }}>
 					<CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 					<XAxis dataKey="periodLabel" tick={{ fontSize: 11 }} angle={-30} textAnchor="end" />
 					<YAxis
 						domain={zoomToRange ? yDomain : undefined}
 						allowDataOverflow={zoomToRange}
-						label={{
-							value: 'Остаток',
-							angle: -90,
-							position: 'insideLeft',
-							style: { fontSize: 11 },
-						}}
+						width={36}
+						tickMargin={4}
 						tick={{ fontSize: 12 }}
 					/>
 					<Tooltip
