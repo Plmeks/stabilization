@@ -152,6 +152,37 @@
   }
 }
 
+/* Семантические бейджи статусов/приоритетов выводятся из фирменных токенов
+   навбара (success/danger/warn/wip) через color-mix — чтобы бейджи и навбар
+   были одной палитрой, а не из дефолтной палитры Tailwind (red-100/blue-100…),
+   которая визуально расходилась с брендом. Классы НЕ в @layer: так они
+   перебивают утилиты варианта outline у Badge (text-foreground/border-border). */
+.tag-success {
+  background: color-mix(in oklab, var(--success) 12%, white);
+  color: color-mix(in oklab, var(--success) 76%, black);
+  border-color: color-mix(in oklab, var(--success) 26%, white);
+}
+.tag-danger {
+  background: color-mix(in oklab, var(--danger) 12%, white);
+  color: color-mix(in oklab, var(--danger) 76%, black);
+  border-color: color-mix(in oklab, var(--danger) 26%, white);
+}
+.tag-warn {
+  background: color-mix(in oklab, var(--warn) 13%, white);
+  color: color-mix(in oklab, var(--warn) 80%, black);
+  border-color: color-mix(in oklab, var(--warn) 28%, white);
+}
+.tag-wip {
+  background: color-mix(in oklab, var(--wip) 12%, white);
+  color: color-mix(in oklab, var(--wip) 80%, black);
+  border-color: color-mix(in oklab, var(--wip) 28%, white);
+}
+.tag-neutral {
+  background: var(--secondary);
+  color: var(--muted-foreground);
+  border-color: var(--border);
+}
+
 @layer components {
   /* Eyebrow-подпись разделов: UPPERCASE, широкий трекинг — сигнатура отчёта. */
   .eyebrow {

@@ -27,7 +27,7 @@ export function TaskNameWithComment({
 			href={task.link}
 			target="_blank"
 			rel="noopener noreferrer"
-			className={cn('text-blue-600 hover:underline', linkClassName)}
+			className={cn('text-wip hover:underline', linkClassName)}
 		>
 			{task.title}
 		</a>
@@ -40,7 +40,7 @@ export function TaskNameWithComment({
 			{hasComment && (
 				<button
 					type="button"
-					className="absolute -top-1.5 -left-3 z-10 inline-flex items-center cursor-pointer shrink-0 text-yellow-400 hover:text-yellow-300"
+					className="absolute -top-1.5 -left-3 z-10 inline-flex items-center cursor-pointer shrink-0 text-warn hover:text-warn/80"
 					onClick={onOpenComment}
 					aria-label="Комментарий"
 				>

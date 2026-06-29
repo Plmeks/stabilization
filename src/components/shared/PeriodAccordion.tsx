@@ -22,7 +22,7 @@ function TaskCountBadge({
   criticalCount?: number;
 }) {
   return (
-    <span className="bg-secondary text-muted-foreground text-xs px-2.5 py-0.5 rounded-full shrink-0">
+    <span className="w-fit bg-secondary text-muted-foreground text-xs px-2.5 py-0.5 rounded-full shrink-0">
       Всего: <span className="text-foreground">{taskCount}</span>
       {criticalCount !== undefined && criticalCount > 0 ? (
         <>

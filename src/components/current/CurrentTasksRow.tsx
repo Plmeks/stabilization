@@ -14,11 +14,10 @@ interface CurrentTasksRowProps {
 	creationPeriod: Period | undefined;
 	onEdit: () => void;
 	onComplete: () => void;
-	onReturnToQA: () => void;
 	onOpenComment: () => void;
 }
 
-export function CurrentTasksRow({ task, creationPeriod, onEdit, onComplete, onReturnToQA, onOpenComment }: CurrentTasksRowProps) {
+export function CurrentTasksRow({ task, creationPeriod, onEdit, onComplete, onOpenComment }: CurrentTasksRowProps) {
 	return (
 		<TableRow>
 			<TableCell className="whitespace-normal px-2 py-2 md:px-4 md:py-3">
@@ -43,7 +42,7 @@ export function CurrentTasksRow({ task, creationPeriod, onEdit, onComplete, onRe
 				<StatusBadge status={task.status} />
 			</TableCell>
 			<TableCell className="sticky right-0 bg-background z-10 px-2 py-2 md:px-4 md:py-3">
-				<ActionButtons onComplete={onComplete} onEdit={onEdit} onReturnToQA={onReturnToQA} />
+				<ActionButtons onComplete={onComplete} onEdit={onEdit} />
 			</TableCell>
 		</TableRow>
 	);

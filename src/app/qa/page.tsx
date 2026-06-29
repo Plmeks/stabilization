@@ -124,10 +124,10 @@ export default function QAPage() {
 					<Plus className="h-4 w-4 mr-1" />
 					Добавить период
 				</Button>
-				<div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-					<SearchInput onChange={setQuery} />
+				<div className="flex w-full items-center gap-2 sm:w-auto">
+					<SearchInput onChange={setQuery} className="flex-1 min-w-0 sm:w-64 sm:flex-none" />
 					{periods.length > 0 && (
-						<Button variant="outline" size="sm" onClick={toggleAll} className="w-fit self-end sm:self-auto sm:w-[8rem]">
+						<Button variant="outline" size="sm" onClick={toggleAll} className="shrink-0 w-fit sm:w-[8rem]">
 							{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
 						</Button>
 					)}

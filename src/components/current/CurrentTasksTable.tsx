@@ -16,11 +16,10 @@ interface CurrentTasksTableProps {
 	periods: Period[];
 	onEdit: (task: Task) => void;
 	onComplete: (task: Task) => void;
-	onReturnToQA: (taskId: string) => void;
 	onOpenComment: (task: Task) => void;
 }
 
-export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onReturnToQA, onOpenComment }: CurrentTasksTableProps) {
+export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onOpenComment }: CurrentTasksTableProps) {
 	const { sort, toggleSort } = useTableSort();
 
 	const periodMap = React.useMemo(
@@ -64,7 +63,6 @@ export function CurrentTasksTable({ tasks, periods, onEdit, onComplete, onReturn
 						creationPeriod={getPeriod(task.creation_period_id)}
 						onEdit={() => onEdit(task)}
 						onComplete={() => onComplete(task)}
-						onReturnToQA={() => onReturnToQA(task.id)}
 						onOpenComment={() => onOpenComment(task)}
 					/>
 				))}

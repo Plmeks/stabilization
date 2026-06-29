@@ -103,12 +103,12 @@ export default function CompletedPage() {
 						eyebrow="Завершено"
 						title="Выполненные задачи"
 						actions={
-							<>
-								<SearchInput onChange={setQuery} />
-								<Button variant="outline" size="sm" onClick={toggleAll} className='md:w-[8rem] w-fit self-end'>
+							<div className="flex w-full items-center gap-2 sm:w-auto">
+								<SearchInput onChange={setQuery} className="flex-1 min-w-0 sm:w-64 sm:flex-none" />
+								<Button variant="outline" size="sm" onClick={toggleAll} className="shrink-0 w-fit sm:w-[8rem]">
 									{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
 								</Button>
-							</>
+							</div>
 						}
 					/>
 					{periodsWithTasks.length === 0 ? (

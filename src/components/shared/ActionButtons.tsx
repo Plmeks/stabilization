@@ -19,7 +19,7 @@ export function ActionButtons({ onEdit, onComplete, onDelete, onReturnToQA, disa
 				<Button
 					variant="ghost"
 					size="icon"
-					className="h-9 w-8 text-green-600 hover:text-green-600 cursor-pointer"
+					className="h-9 w-8 text-success hover:text-success cursor-pointer"
 					onClick={onComplete}
 					disabled={disabled}
 					aria-label="Завершить задачу"
@@ -32,7 +32,7 @@ export function ActionButtons({ onEdit, onComplete, onDelete, onReturnToQA, disa
 				<Button
 					variant="ghost"
 					size="icon"
-					className="h-8 w-8 cursor-pointer text-amber-600 hover:text-amber-600"
+					className="h-8 w-8 cursor-pointer text-warn hover:text-warn"
 					onClick={onEdit}
 					disabled={disabled}
 					aria-label="Редактировать"
@@ -58,7 +58,7 @@ export function ActionButtons({ onEdit, onComplete, onDelete, onReturnToQA, disa
 				<Button
 					variant="ghost"
 					size="icon"
-					className="h-8 w-8 text-red-500 hover:text-red-500 cursor-pointer"
+					className="h-8 w-8 text-danger hover:text-danger cursor-pointer"
 					onClick={onDelete}
 					disabled={disabled}
 					aria-label="Удалить"

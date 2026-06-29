@@ -19,7 +19,7 @@ export function QATaskListItem({ task, onTakeIntoWork, onDelete, onEdit, onOpenC
 	const canTakeIntoWork = task.status === null;
 
 	return (
-		<div className={`flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 border-t${task.status !== null ? ' bg-blue-50' : ''}`}>
+		<div className={`flex items-center gap-2 px-3 py-2 sm:px-4 sm:py-2.5 border-t${task.status !== null ? ' bg-wip/10' : ''}`}>
 			<TaskNameWithComment
 				task={task}
 				onOpenComment={() => onOpenComment(task)}
@@ -33,7 +33,7 @@ export function QATaskListItem({ task, onTakeIntoWork, onDelete, onEdit, onOpenC
 					<Button
 						variant="ghost"
 						size="icon"
-						className="h-8 w-8 cursor-pointer text-[#40BCA9] hover:text-[#40BCA9]"
+						className="h-8 w-8 cursor-pointer text-wip hover:text-wip"
 						aria-label="Взять в работу"
 						title="Взять в работу"
 						onClick={() => onTakeIntoWork(task)}
@@ -44,7 +44,7 @@ export function QATaskListItem({ task, onTakeIntoWork, onDelete, onEdit, onOpenC
 				<Button
 					variant="ghost"
 					size="icon"
-					className="h-8 w-8 cursor-pointer text-amber-600 hover:text-amber-600"
+					className="h-8 w-8 cursor-pointer text-warn hover:text-warn"
 					onClick={() => onEdit(task)}
 					aria-label="Редактировать"
 					title="Редактировать"

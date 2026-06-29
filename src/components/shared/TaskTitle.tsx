@@ -18,7 +18,7 @@ export function TaskTitle({ title, className }: TaskTitleProps) {
 						href={segment.url}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-blue-600 underline hover:text-blue-800"
+						className="text-wip underline hover:text-wip/80"
 					>
 						{segment.text}
 					</a>
