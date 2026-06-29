@@ -19,12 +19,13 @@ function row(label: string, value: string | number): string {
  * распознал кодировку и колонки.
  */
 export function generateReportCsv(data: ReportData): Blob {
-	const { metrics, periodLabel, generatedAt, comment, isLocked } = data;
+	const { metrics, periodLabel, scopeLabel, generatedAt, comment, isLocked } = data;
 
 	const lines: string[] = [
 		row('Отчёт', 'STABANA — отчёт за период'),
 		row('Команда', 'Видеозвонки'),
 		row('Период', periodLabel),
+		row('Периоды в отчёте', scopeLabel),
 		row('Сформировано', generatedAt),
 		row('Данные', isLocked ? 'Зафиксированные' : 'Динамические'),
 		'',

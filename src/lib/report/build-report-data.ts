@@ -28,10 +28,18 @@ export function buildReportData(
 		return null;
 	}
 
-	// Шапка отчёта — самый свежий из выбранных периодов.
-	const period = [...selected].sort((a, b) =>
-		dayjs(b.start_date).diff(dayjs(a.start_date)),
-	)[0];
+	// Хронологически: самый старый → самый свежий. Шапка отчёта (числа) — самый
+	// свежий период; охват — от старта самого старого до конца самого свежего.
+	const sortedAsc = [...selected].sort((a, b) =>
+		dayjs(a.start_date).diff(dayjs(b.start_date)),
+	);
+	const oldest = sortedAsc[0];
+	const period = sortedAsc[sortedAsc.length - 1];
+
+	const periodCount = selected.length;
+	const rangeStart = dayjs(oldest.start_date).format('DD.MM.YYYY');
+	const rangeEnd = dayjs(period.end_date).format('DD.MM.YYYY');
+	const scopeLabel = `с ${rangeStart} по ${rangeEnd} · ${periodCount} ${pluralizePeriods(periodCount)}`;
 
 	const statistics = periodStatistics.find((s) => s.period_id === period.id) ?? null;
 	const dynamicMetrics = calculateDynamicMetrics(period, periods, tasks, periodStatistics);
@@ -61,10 +69,21 @@ export function buildReportData(
 	return {
 		period,
 		periodLabel: formatPeriodLabel(period),
+		periodCount,
+		scopeLabel,
 		generatedAt: dayjs().format('DD.MM.YYYY HH:mm'),
 		metrics,
 		comment: statistics?.comment ?? null,
 		chartData,
 		isLocked: statistics !== null,
 	};
+}
+
+/** Склонение слова «период» под число: 1 период, 2 периода, 5 периодов. */
+function pluralizePeriods(n: number): string {
+	const mod10 = n % 10;
+	const mod100 = n % 100;
+	if (mod10 === 1 && mod100 !== 11) return 'период';
+	if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return 'периода';
+	return 'периодов';
 }

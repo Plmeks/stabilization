@@ -29,10 +29,14 @@ export type ReportMetrics = {
 export type ReportData = {
 	period: Period;
 	periodLabel: string;
+	/** Сколько периодов вошло в отчёт (выбрано в выпадашке). */
+	periodCount: number;
+	/** Охват: «с <старт самого старого> по <конец самого свежего> · N периодов». */
+	scopeLabel: string;
 	generatedAt: string;
 	metrics: ReportMetrics;
 	comment: string | null;
-	/** Кумулятивные точки графиков от самого старого периода до выбранного включительно. */
+	/** Кумулятивные точки графиков — только выбранные периоды, в хронологическом порядке. */
 	chartData: ChartDataPoint[];
 	isLocked: boolean;
 };

@@ -97,7 +97,7 @@ type Kpi = { label: string; value: number; border: string; role: Role };
  */
 export const ReportDocument = React.forwardRef<HTMLDivElement, { data: ReportData }>(
 	function ReportDocument({ data }, ref) {
-		const { periodLabel, generatedAt, metrics, comment, isLocked } = data;
+		const { periodLabel, scopeLabel, generatedAt, metrics, comment, isLocked } = data;
 		const groups = buildGroups(metrics);
 
 		const kpis: Kpi[] = [
@@ -116,6 +116,7 @@ export const ReportDocument = React.forwardRef<HTMLDivElement, { data: ReportDat
 					<header className="report-head">
 						<div className="report-head__eyebrow">STABANA · Отчёт за период · Команда Видеозвонки</div>
 						<div className="report-head__range">{periodLabel}</div>
+						<div className="report-head__scope">Периоды в отчёте: {scopeLabel}</div>
 						<div className="report-head__meta">
 							Сформировано {generatedAt} · {isLocked ? 'зафиксированные данные' : 'динамические данные'}
 						</div>
@@ -179,7 +180,7 @@ export const ReportDocument = React.forwardRef<HTMLDivElement, { data: ReportDat
 
 				{/* Страница 2: графики */}
 				<div data-report-section className="report-charts-page">
-					<div className="report-charts-page__eyebrow">STABANA · Графики · {periodLabel}</div>
+					<div className="report-charts-page__eyebrow">STABANA · Графики · {scopeLabel}</div>
 					<ReportCharts data={data.chartData} />
 					<footer className="report-foot">
 						<span>STABANA · Команда Видеозвонки</span>
@@ -231,8 +232,14 @@ const REPORT_CSS = `
 	letter-spacing: -0.01em;
 	color: #f8fafc;
 }
+.report-head__scope {
+	margin-top: 12px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #e2e8f0;
+}
 .report-head__meta {
-	margin-top: 10px;
+	margin-top: 6px;
 	font-size: 12px;
 	color: #94a3b8;
 }
