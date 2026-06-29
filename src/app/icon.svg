@@ -15,5 +15,8 @@
   <path d="M24 24 L24 11.6 A12.4 12.4 0 0 1 36.4 24 Z" fill="#3b82f6"/>
   <path d="M24 24 L36.4 24 A12.4 12.4 0 0 1 24 36.4 Z" fill="#dc2626"/>
   <path d="M24 24 L24 36.4 A12.4 12.4 0 0 1 11.6 24 Z" fill="#ea580c"/>
-  <path d="M 18.21 24.09 L 22.55 28.43 L 30.20 18.93" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/>
+  <g stroke="#ffffff" stroke-width="0.9">
+    <line x1="11.6" y1="24" x2="36.4" y2="24"/>
+    <line x1="24" y1="11.6" x2="24" y2="36.4"/>
+  </g>
 </svg>
