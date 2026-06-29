@@ -47,8 +47,18 @@ export function PeriodMultiSelect({ periods, value, onChange }: PeriodMultiSelec
 		onChange(count > 0 ? [] : periods.map((p) => p.id));
 	};
 
-	// В свёрнутом поле: 0 — заглушка; 1 — метка периода; иначе — счётчик.
-	const onlySelected = count === 1 ? periods.find((p) => p.id === value[0]) : undefined;
+	// В свёрнутом поле: «N из M» + диапазон выбранного (от старта самого раннего
+	// до конца самого позднего выбранного периода). 0 — заглушка.
+	const selectedOldestFirst = React.useMemo(
+		() => oldestFirst.filter((p) => selectedSet.has(p.id)),
+		[oldestFirst, selectedSet],
+	);
+	const spanLabel =
+		selectedOldestFirst.length > 0
+			? `${dayjs(selectedOldestFirst[0].start_date).format('DD.MM.YYYY')} – ${dayjs(
+					selectedOldestFirst[selectedOldestFirst.length - 1].end_date,
+				).format('DD.MM.YYYY')}`
+			: '';
 
 	return (
 		<Popover>
@@ -58,24 +68,17 @@ export function PeriodMultiSelect({ periods, value, onChange }: PeriodMultiSelec
 					aria-label={`Периоды на графике: выбрано ${count} из ${total}`}
 					className="flex h-9 w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
 				>
-					<span className="flex min-w-0 items-center gap-2.5">
+					<span className="flex min-w-0 items-center gap-2">
 						{count === 0 ? (
 							<span className="text-muted-foreground">Не выбрано</span>
 						) : (
 							<>
-								<span className="flex items-center gap-[3px]" aria-hidden="true">
-									{oldestFirst.map((p) => (
-										<span
-											key={p.id}
-											className={cn(
-												'h-[18px] w-[7px] max-w-[10px] flex-1 rounded-[2px]',
-												selectedSet.has(p.id) ? 'bg-foreground' : 'bg-input',
-											)}
-										/>
-									))}
+								<span className="shrink-0 font-medium tabular-nums">
+									{count} из {total}
 								</span>
+								<span className="text-border">·</span>
 								<span className="truncate tabular-nums text-muted-foreground">
-									{onlySelected ? formatPeriodLabel(onlySelected) : `${count} из ${total}`}
+									{spanLabel}
 								</span>
 							</>
 						)}

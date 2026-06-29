@@ -54,34 +54,31 @@ Replaces the native `<select>`. A Popover dropdown with a checkbox per period,
 following the existing `AssigneeMultiSelect` pattern (Radix Popover + a
 foreground-filled checkbox square with a `Check` icon, `hover:bg-muted` rows).
 
-### Trigger (closed) — the "period ribbon"
+### Trigger (closed) — "N из M · диапазон"
 
-The field shows a compact **segmented ribbon**: one slim segment per period in
-chronological order (oldest on the left), plus a `N из M` count.
+The field shows the count of selected periods plus the date span of the
+selection:
 
-- Included segment: solid ink — `var(--foreground)` (`#0f172a`).
-- Excluded segment: pale — `var(--input)` / `#e2e8f0`.
-- Count: `N из M` in `var(--muted-foreground)` to the right of the ribbon.
+- `N из M` — count in `var(--foreground)`, `font-medium`. Honestly signals when
+  a subset is selected (e.g. `5 из 7`).
+- A `·` separator in `var(--border)`.
+- The span — `DD.MM.YYYY – DD.MM.YYYY` from the **earliest selected start** to
+  the **latest selected end**, in `var(--muted-foreground)`, truncating if long.
 - A trailing chevron, consistent with other selects.
 
 States:
-- All selected → full solid ribbon + `7 из 7`.
-- Subset → mixed ribbon (gaps visible) + `5 из 7`.
-- One selected → ribbon with a single solid segment + that period's label
-  (`22.06.2026 – 28.06.2026`) instead of a count.
+- All selected → `15 из 15 · 01.01.2026 – 05.07.2026`.
+- Subset → `5 из 7 · 04.05.2026 – 21.06.2026` (count makes the subset explicit;
+  the span shows the outer bounds).
+- One selected → `1 из 15 · 22.06.2026 – 28.06.2026` (the span is that period).
 - None selected → muted placeholder `Не выбрано`.
 
-The ribbon shows the *shape* of the selection (contiguous vs. gappy, and where
-the gaps sit) — the thing you can actually act on. Exact dates live one click
-away in the open panel.
+Note: with a gappy selection the span reads as the outer bounds, not a
+continuous range — the `N из M` count is what signals "not all of them." The
+exact per-period picture lives one click away in the open panel.
 
-**Scaling:** segments flex to fit the field width (shrink as the period count
-grows, with a small min width and gap). With very many periods the ribbon reads
-as a density pattern; the `N из M` count is always the reliable readout.
-
-Chosen over (A) "range + count" and (B) "N из M + range": those must trade off
-compactness against honesty about gaps. The ribbon does both, and echoes the
-app's existing stability-ribbon motif.
+(An earlier draft used a segmented "period ribbon" here; replaced with this
+text treatment per review — the ribbon read as visual noise in the field.)
 
 ### Open panel
 
