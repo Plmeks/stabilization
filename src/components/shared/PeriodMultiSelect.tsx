@@ -14,6 +14,12 @@ interface PeriodMultiSelectProps {
 	/** id выбранных периодов. */
 	value: string[];
 	onChange: (ids: string[]) => void;
+	/**
+	 * Рендерить попап через Portal (по умолчанию). Внутри модалки (Radix Dialog)
+	 * передавайте false — иначе портал выносит список наружу из remove-scroll и
+	 * колесо мыши перестаёт его прокручивать.
+	 */
+	portalled?: boolean;
 }
 
 /**
@@ -22,7 +28,7 @@ interface PeriodMultiSelectProps {
  * снят, рядом счётчик «N из M». Список в раскрытом виде — от новых к старым, с
  * переключателем «Выбрать всё / Снять всё». Перекликается с лентой стабильности.
  */
-export function PeriodMultiSelect({ periods, value, onChange }: PeriodMultiSelectProps) {
+export function PeriodMultiSelect({ periods, value, onChange, portalled = true }: PeriodMultiSelectProps) {
 	const selectedSet = React.useMemo(() => new Set(value), [value]);
 
 	// Лента — старые слева; список — новые сверху.
@@ -106,6 +112,7 @@ export function PeriodMultiSelect({ periods, value, onChange }: PeriodMultiSelec
 			<PopoverContent
 				align="start"
 				sideOffset={6}
+				portalled={portalled}
 				className="w-(--radix-popover-trigger-width) min-w-64 overflow-hidden"
 				style={{ padding: 0, gap: 0 }}
 			>

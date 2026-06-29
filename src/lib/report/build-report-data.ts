@@ -6,23 +6,32 @@ import type { Period, PeriodStatistics, Task } from '@/types';
 import type { ReportData, ReportMetrics } from './types';
 
 /**
- * Собирает данные отчёта за выбранный период.
+ * Собирает данные отчёта по выбранным периодам.
  *
- * Числа берутся за выбранный период: зафиксированная статистика, если есть,
- * иначе динамический расчёт — ровно как в StatsPeriodCard (metrics = statistics ?? dynamicMetrics).
- * Данные графиков кумулятивны от самого старого периода до выбранного включительно —
- * как в ChartsSection (срез по индексу выбранного периода в хронологическом порядке).
+ * Период-«шапка» (числа отчёта) — самый свежий из выбранных: зафиксированная
+ * статистика, если есть, иначе динамический расчёт — ровно как в StatsPeriodCard
+ * (metrics = statistics ?? dynamicMetrics).
+ *
+ * Данные графиков — только выбранные точки в хронологическом порядке (как в
+ * ChartsSection: фильтр по набору выбранных периодов). Кумулятивные значения
+ * каждой точки самодостаточны, поэтому фильтр-вид не искажает числа.
  */
 export function buildReportData(
-	selectedPeriodId: string,
+	selectedPeriodIds: string[],
 	periods: Period[],
 	tasks: Task[],
 	periodStatistics: PeriodStatistics[],
 ): ReportData | null {
-	const period = periods.find((p) => p.id === selectedPeriodId);
-	if (!period) {
+	const selectedSet = new Set(selectedPeriodIds);
+	const selected = periods.filter((p) => selectedSet.has(p.id));
+	if (selected.length === 0) {
 		return null;
 	}
+
+	// Шапка отчёта — самый свежий из выбранных периодов.
+	const period = [...selected].sort((a, b) =>
+		dayjs(b.start_date).diff(dayjs(a.start_date)),
+	)[0];
 
 	const statistics = periodStatistics.find((s) => s.period_id === period.id) ?? null;
 	const dynamicMetrics = calculateDynamicMetrics(period, periods, tasks, periodStatistics);
@@ -46,12 +55,8 @@ export function buildReportData(
 		uncompleted_non_critical: source.uncompleted_non_critical,
 	};
 
-	const sortedPeriods = [...periods].sort((a, b) =>
-		dayjs(a.start_date).diff(dayjs(b.start_date)),
-	);
-	const selectedIndex = sortedPeriods.findIndex((p) => p.id === period.id);
 	const allChartData = calculateChartData(periods, tasks, periodStatistics);
-	const chartData = allChartData.slice(0, (selectedIndex === -1 ? 0 : selectedIndex) + 1);
+	const chartData = allChartData.filter((pt) => selectedSet.has(pt.periodId));
 
 	return {
 		period,

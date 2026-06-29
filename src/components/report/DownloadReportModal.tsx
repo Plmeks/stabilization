@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import dayjs from 'dayjs';
 import { useAtomValue } from 'jotai';
 import { FileText, FileSpreadsheet, Image as ImageIcon, Download, Loader2 } from 'lucide-react';
 
@@ -9,6 +8,7 @@ import { periodsAtom } from '@/atoms/periodsAtom';
 import { tasksAtom } from '@/atoms/tasksAtom';
 import { periodStatisticsAtom } from '@/atoms/statsAtom';
 import { ModalWrapper } from '@/components/shared/ModalWrapper';
+import { PeriodMultiSelect } from '@/components/shared/PeriodMultiSelect';
 import { Button } from '@/components/ui/button';
 import { buildReportData } from '@/lib/report/build-report-data';
 import { generateReportCsv } from '@/lib/report/generate-csv';
@@ -35,26 +35,17 @@ export function DownloadReportModal({ open, onClose }: DownloadReportModalProps)
 	const tasks = useAtomValue(tasksAtom);
 	const periodStatistics = useAtomValue(periodStatisticsAtom);
 
-	const sortedPeriods = React.useMemo(
-		() => [...periods].sort((a, b) => dayjs(b.start_date).diff(dayjs(a.start_date))),
-		[periods],
-	);
-
-	const [selectedPeriodId, setSelectedPeriodId] = React.useState('');
+	// null = пользователь ещё не трогал выбор → по умолчанию все периоды.
+	const [selectedIds, setSelectedIds] = React.useState<string[] | null>(null);
 	const [format, setFormat] = React.useState<ReportFormat>('pdf');
 	const [generating, setGenerating] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);
 
+	const effectiveIds = selectedIds ?? periods.map((p) => p.id);
+
 	// Капчур-данные для оффскрин-рендера (только PDF/PNG).
 	const [capture, setCapture] = React.useState<{ data: ReportData; format: 'pdf' | 'png' } | null>(null);
 	const docRef = React.useRef<HTMLDivElement>(null);
-
-	// Если период не выбран (или больше не существует) — берём самый свежий.
-	// Выводим при рендере, без эффекта: периоды могут подгрузиться асинхронно.
-	const effectivePeriodId =
-		selectedPeriodId && sortedPeriods.some((p) => p.id === selectedPeriodId)
-			? selectedPeriodId
-			: (sortedPeriods[0]?.id ?? '');
 
 	// onClose через ref: эффект захвата не должен пересоздаваться (и отменять
 	// генерацию на полпути) из-за смены идентичности пропа onClose.
@@ -113,9 +104,13 @@ export function DownloadReportModal({ open, onClose }: DownloadReportModalProps)
 
 	const handleDownload = async () => {
 		setError(null);
-		const data = buildReportData(effectivePeriodId, periods, tasks, periodStatistics);
+		if (effectiveIds.length < 2) {
+			setError('Для отчёта нужно выбрать минимум два периода.');
+			return;
+		}
+		const data = buildReportData(effectiveIds, periods, tasks, periodStatistics);
 		if (!data) {
-			setError('Выберите период.');
+			setError('Выберите хотя бы один период.');
 			return;
 		}
 
@@ -148,7 +143,7 @@ export function DownloadReportModal({ open, onClose }: DownloadReportModalProps)
 					<Button variant="outline" onClick={handleClose} disabled={generating}>
 						Отмена
 					</Button>
-					<Button onClick={handleDownload} disabled={generating || !effectivePeriodId}>
+					<Button onClick={handleDownload} disabled={generating || effectiveIds.length < 2}>
 						{generating ? (
 							<>
 								<Loader2 className="h-4 w-4 animate-spin" />
@@ -166,25 +161,21 @@ export function DownloadReportModal({ open, onClose }: DownloadReportModalProps)
 		>
 			<div className="space-y-5">
 				<div className="space-y-2">
-					<label htmlFor="report-period" className="text-sm font-medium">
-						Период
-					</label>
-					<select
-						id="report-period"
-						value={effectivePeriodId}
-						onChange={(e) => {
-							setSelectedPeriodId(e.target.value);
+					<span className="text-sm font-medium">Периоды</span>
+					<PeriodMultiSelect
+						periods={periods}
+						value={effectiveIds}
+						onChange={(ids) => {
+							setSelectedIds(ids);
 							setError(null);
 						}}
-						disabled={generating}
-						className="w-full rounded-md border bg-background px-3 py-2 text-sm"
-					>
-						{sortedPeriods.map((period) => (
-							<option key={period.id} value={period.id}>
-								{dayjs(period.start_date).format('DD.MM.YYYY')} – {dayjs(period.end_date).format('DD.MM.YYYY')}
-							</option>
-						))}
-					</select>
+						portalled={false}
+					/>
+					{effectiveIds.length < 2 && (
+						<p className="text-xs text-muted-foreground">
+							Для отчёта нужно выбрать минимум два периода.
+						</p>
+					)}
 				</div>
 
 				<div className="space-y-2">
