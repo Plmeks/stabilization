@@ -63,12 +63,12 @@ export default function StatsPage() {
 					eyebrow="Статистика в цифрах"
 					title="Отчет за период"
 					actions={
-						<>
+						<div className="flex w-full items-center gap-2 sm:w-auto">
 							<DownloadReportButton />
-							<Button variant="outline" size="sm" onClick={toggleAll} className='md:w-[8rem] w-fit'>
+							<Button variant="outline" size="sm" onClick={toggleAll} className="w-fit shrink-0 sm:w-[8rem]">
 								{isAllExpanded ? 'Свернуть все' : 'Развернуть все'}
 							</Button>
-						</>
+						</div>
 					}
 				/>
 			)}

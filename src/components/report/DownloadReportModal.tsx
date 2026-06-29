@@ -22,6 +22,12 @@ import { FormatCard } from './FormatCard';
 interface DownloadReportModalProps {
 	open: boolean;
 	onClose: () => void;
+	/**
+	 * Начальный выбор периодов (Графики): модалка стартует с этого набора, но
+	 * дальше правит свой локальный выбор — обратно на страницу ничего не пишется
+	 * (связь односторонняя). Без него (Статистика) — свой выбор, все по умолчанию.
+	 */
+	initialValue?: string[];
 }
 
 const FORMATS: { id: ReportFormat; icon: typeof FileText; title: string; hint: string }[] = [
@@ -30,13 +36,16 @@ const FORMATS: { id: ReportFormat; icon: typeof FileText; title: string; hint: s
 	{ id: 'csv', icon: FileSpreadsheet, title: 'CSV', hint: 'только цифры' },
 ];
 
-export function DownloadReportModal({ open, onClose }: DownloadReportModalProps) {
+export function DownloadReportModal({ open, onClose, initialValue }: DownloadReportModalProps) {
 	const periods = useAtomValue(periodsAtom);
 	const tasks = useAtomValue(tasksAtom);
 	const periodStatistics = useAtomValue(periodStatisticsAtom);
 
-	// null = пользователь ещё не трогал выбор → по умолчанию все периоды.
-	const [selectedIds, setSelectedIds] = React.useState<string[] | null>(null);
+	// Локальный выбор модалки. Стартовое значение — initialValue (Графики, выбор
+	// страницы) либо null (Статистика → по умолчанию все). Правки остаются здесь
+	// и наружу не уходят. На Графиках модалка ремоунтится на каждое открытие
+	// (см. DownloadReportButton), поэтому стартовое значение всегда актуально.
+	const [selectedIds, setSelectedIds] = React.useState<string[] | null>(initialValue ?? null);
 	const [format, setFormat] = React.useState<ReportFormat>('pdf');
 	const [generating, setGenerating] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);

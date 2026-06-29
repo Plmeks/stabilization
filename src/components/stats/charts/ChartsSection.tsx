@@ -13,33 +13,18 @@ import { PeriodMultiSelect } from '@/components/shared/PeriodMultiSelect';
 import { CFDChart } from './CFDChart';
 import { BacklogChart } from './BacklogChart';
 
-export function ChartsSection() {
+interface ChartsSectionProps {
+	/** Выбранные периоды — общее состояние со страницей (и с кнопкой «Скачать отчёт»). */
+	selectedIds: string[];
+	onSelectionChange: (ids: string[]) => void;
+}
+
+export function ChartsSection({ selectedIds, onSelectionChange }: ChartsSectionProps) {
 	const periods = useAtomValue(periodsAtom);
 	const tasks = useAtomValue(tasksAtom);
 	const periodStatistics = useAtomValue(periodStatisticsAtom);
 
-	// Выбор хранится как { known, selected } относительно набора периодов на момент
-	// последнего действия пользователя. null = пользователь ещё не трогал фильтр →
-	// по умолчанию выбраны все. Согласование делаем в рендере (без эффекта): новые
-	// периоды добавляются в выбор сами, удалённые отпадают, снятые галочки остаются
-	// снятыми.
-	const [selection, setSelection] = useState<{ known: string[]; selected: string[] } | null>(null);
 	const [zoomToRange, setZoomToRange] = useState(false);
-
-	const currentIds = useMemo(() => periods.map((p) => p.id), [periods]);
-
-	const selectedIds = useMemo(() => {
-		if (selection === null) return currentIds;
-		const currentSet = new Set(currentIds);
-		const knownSet = new Set(selection.known);
-		const kept = selection.selected.filter((id) => currentSet.has(id));
-		const newlyAdded = currentIds.filter((id) => !knownSet.has(id));
-		return newlyAdded.length > 0 ? [...kept, ...newlyAdded] : kept;
-	}, [selection, currentIds]);
-
-	const handleSelectionChange = (ids: string[]) => {
-		setSelection({ known: currentIds, selected: ids });
-	};
 
 	const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
 
@@ -66,7 +51,7 @@ export function ChartsSection() {
 		<div className="space-y-6 mb-6">
 			<div className="flex flex-col gap-1.5 sm:max-w-md">
 				<label className="text-sm font-medium">Периоды на графике</label>
-				<PeriodMultiSelect periods={periods} value={selectedIds} onChange={handleSelectionChange} />
+				<PeriodMultiSelect periods={periods} value={selectedIds} onChange={onSelectionChange} />
 			</div>
 			{chartData.length < 2 ? (
 				<p className="py-12 text-center text-sm text-muted-foreground">
