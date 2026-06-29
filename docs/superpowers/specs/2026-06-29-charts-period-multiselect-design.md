@@ -54,31 +54,41 @@ Replaces the native `<select>`. A Popover dropdown with a checkbox per period,
 following the existing `AssigneeMultiSelect` pattern (Radix Popover + a
 foreground-filled checkbox square with a `Check` icon, `hover:bg-muted` rows).
 
-### Trigger (closed) — "N из M · диапазон"
+### Trigger (closed) — two-line "N из M · с … по …"
 
-The field shows the count of selected periods plus the date span of the
-selection:
+A two-line field (`min-h` ≈ 2 lines). The count stands apart on the left; the
+selected range is written newest → oldest as two full period labels:
 
-- `N из M` — count in `var(--foreground)`, `font-medium`. Honestly signals when
-  a subset is selected (e.g. `5 из 7`).
-- A `·` separator in `var(--border)`.
-- The span — `DD.MM.YYYY – DD.MM.YYYY` from the **earliest selected start** to
-  the **latest selected end**, in `var(--muted-foreground)`, truncating if long.
-- A trailing chevron, consistent with other selects.
+```
+12 из 15   с  29.06.2026 - 05.07.2026
+           по 01.01.2026 - 08.01.2026
+```
+
+- `N из M` — count in `var(--foreground)`, `font-medium`, sits alone on the
+  left (only on the first line).
+- `с <newest selected period>` on line 1, `по <oldest selected period>` on
+  line 2, both in `var(--muted-foreground)`. Each endpoint is the period's
+  **full label** (`DD.MM.YYYY - DD.MM.YYYY`), newest first.
+- Layout: count is a flex item; the `с/по` block is a 2-column grid
+  (`[preposition] [dates]`) to the right of it. The grid puts `с` directly above
+  `по` and aligns the two date labels; because the count occupies the space to
+  the left of line 1, line 2 (`по …`) is naturally indented under `с`.
+- A trailing chevron, vertically centered.
 
 States:
-- All selected → `15 из 15 · 01.01.2026 – 05.07.2026`.
-- Subset → `5 из 7 · 04.05.2026 – 21.06.2026` (count makes the subset explicit;
-  the span shows the outer bounds).
-- One selected → `1 из 15 · 22.06.2026 – 28.06.2026` (the span is that period).
+- All selected → `15 из 15` · `с 29.06.2026 - 05.07.2026` / `по 01.01.2026 - 08.01.2026`.
+- Subset → `12 из 15` with the newest/oldest still-selected periods as the two
+  endpoints (recomputed as you toggle).
+- One selected → single line `1 из 15  22.06.2026 - 28.06.2026` (no `с/по`).
 - None selected → muted placeholder `Не выбрано`.
 
-Note: with a gappy selection the span reads as the outer bounds, not a
+Note: with a gappy selection the two endpoints are the outer bounds, not a
 continuous range — the `N из M` count is what signals "not all of them." The
 exact per-period picture lives one click away in the open panel.
 
-(An earlier draft used a segmented "period ribbon" here; replaced with this
-text treatment per review — the ribbon read as visual noise in the field.)
+(Earlier drafts used a segmented "period ribbon", then a single-line
+"N из M · range"; replaced per review with this two-line newest→oldest
+treatment.)
 
 ### Open panel
 

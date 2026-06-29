@@ -47,42 +47,55 @@ export function PeriodMultiSelect({ periods, value, onChange }: PeriodMultiSelec
 		onChange(count > 0 ? [] : periods.map((p) => p.id));
 	};
 
-	// В свёрнутом поле: «N из M» + диапазон выбранного (от старта самого раннего
-	// до конца самого позднего выбранного периода). 0 — заглушка.
+	// В свёрнутом поле: «N из M», затем диапазон выбранного от более нового
+	// периода к более старому — «с <новый> по <старый>». 0 — заглушка;
+	// 1 — один период без «с/по».
 	const selectedOldestFirst = React.useMemo(
 		() => oldestFirst.filter((p) => selectedSet.has(p.id)),
 		[oldestFirst, selectedSet],
 	);
-	const spanLabel =
-		selectedOldestFirst.length > 0
-			? `${dayjs(selectedOldestFirst[0].start_date).format('DD.MM.YYYY')} – ${dayjs(
-					selectedOldestFirst[selectedOldestFirst.length - 1].end_date,
-				).format('DD.MM.YYYY')}`
-			: '';
+	const newestLabel =
+		count > 0 ? formatPeriodLabel(selectedOldestFirst[selectedOldestFirst.length - 1]) : '';
+	const oldestLabel = count > 0 ? formatPeriodLabel(selectedOldestFirst[0]) : '';
 
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
 				<button
 					type="button"
-					aria-label={`Периоды на графике: выбрано ${count} из ${total}`}
-					className="flex h-9 w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent px-2.5 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
+					aria-label={
+						count === 0
+							? 'Периоды на графике: не выбрано'
+							: count === 1
+								? `Периоды на графике: выбран период ${newestLabel}`
+								: `Периоды на графике: выбрано ${count} из ${total}, с ${newestLabel} по ${oldestLabel}`
+					}
+					className="flex min-h-[3.25rem] w-full items-center justify-between gap-2 rounded-lg border border-input bg-transparent px-2.5 py-2 text-sm outline-none transition-colors focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
 				>
-					<span className="flex min-w-0 items-center gap-2">
-						{count === 0 ? (
-							<span className="text-muted-foreground">Не выбрано</span>
-						) : (
-							<>
-								<span className="shrink-0 font-medium tabular-nums">
-									{count} из {total}
-								</span>
-								<span className="text-border">·</span>
-								<span className="truncate tabular-nums text-muted-foreground">
-									{spanLabel}
-								</span>
-							</>
-						)}
-					</span>
+					{count === 0 ? (
+						<span className="text-muted-foreground">Не выбрано</span>
+					) : count === 1 ? (
+						<span className="flex min-w-0 items-center gap-2.5">
+							<span className="shrink-0 font-medium tabular-nums">
+								{count} из {total}
+							</span>
+							<span className="truncate tabular-nums text-muted-foreground">{newestLabel}</span>
+						</span>
+					) : (
+						<span className="flex min-w-0 items-start gap-2.5 leading-5">
+							{/* «N из M» стоит особняком слева; вторая строка из-за него с отступом,
+							   поэтому «по» оказывается ровно под «с». */}
+							<span className="shrink-0 pt-px font-medium tabular-nums">
+								{count} из {total}
+							</span>
+							<span className="grid min-w-0 grid-cols-[auto_minmax(0,1fr)] gap-x-1.5 gap-y-0.5 text-muted-foreground">
+								<span>с</span>
+								<span className="truncate tabular-nums">{newestLabel}</span>
+								<span>по</span>
+								<span className="truncate tabular-nums">{oldestLabel}</span>
+							</span>
+						</span>
+					)}
 					<ChevronDown className="size-4 shrink-0 text-muted-foreground" />
 				</button>
 			</PopoverTrigger>
