@@ -1,15 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
-import dayjs from 'dayjs';
 
 import { periodsAtom } from '@/atoms/periodsAtom';
 import { tasksAtom } from '@/atoms/tasksAtom';
 import { periodStatisticsAtom } from '@/atoms/statsAtom';
 import { calculateChartData } from '@/lib/chart-utils';
 import { Label } from '@/components/ui/label';
+import { PeriodMultiSelect } from '@/components/shared/PeriodMultiSelect';
 import { CFDChart } from './CFDChart';
 import { BacklogChart } from './BacklogChart';
 
@@ -18,36 +18,42 @@ export function ChartsSection() {
 	const tasks = useAtomValue(tasksAtom);
 	const periodStatistics = useAtomValue(periodStatisticsAtom);
 
-	const [selectedPeriodId, setSelectedPeriodId] = useState<string>('');
+	// Выбор хранится как { known, selected } относительно набора периодов на момент
+	// последнего действия пользователя. null = пользователь ещё не трогал фильтр →
+	// по умолчанию выбраны все. Согласование делаем в рендере (без эффекта): новые
+	// периоды добавляются в выбор сами, удалённые отпадают, снятые галочки остаются
+	// снятыми.
+	const [selection, setSelection] = useState<{ known: string[]; selected: string[] } | null>(null);
 	const [zoomToRange, setZoomToRange] = useState(false);
 
-	useEffect(() => {
-		if (periods.length === 0) return;
+	const currentIds = useMemo(() => periods.map((p) => p.id), [periods]);
 
-		const selectedExists = periods.some((p) => p.id === selectedPeriodId);
-		if (!selectedPeriodId || !selectedExists) {
-			setSelectedPeriodId(periods[0].id);
-		}
-	}, [periods, selectedPeriodId]);
+	const selectedIds = useMemo(() => {
+		if (selection === null) return currentIds;
+		const currentSet = new Set(currentIds);
+		const knownSet = new Set(selection.known);
+		const kept = selection.selected.filter((id) => currentSet.has(id));
+		const newlyAdded = currentIds.filter((id) => !knownSet.has(id));
+		return newlyAdded.length > 0 ? [...kept, ...newlyAdded] : kept;
+	}, [selection, currentIds]);
 
-	const sortedPeriods = useMemo(
-		() => [...periods].sort((a, b) => dayjs(a.start_date).diff(dayjs(b.start_date))),
-		[periods],
-	);
+	const handleSelectionChange = (ids: string[]) => {
+		setSelection({ known: currentIds, selected: ids });
+	};
 
-	const selectedSortedIndex = useMemo(() => {
-		const idx = sortedPeriods.findIndex((p) => p.id === selectedPeriodId);
-		return idx === -1 ? 0 : idx;
-	}, [sortedPeriods, selectedPeriodId]);
+	const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
 
 	const allChartData = useMemo(
 		() => calculateChartData(periods, tasks, periodStatistics),
 		[periods, tasks, periodStatistics],
 	);
 
+	// Фильтр-вид: показываем только выбранные точки в хронологическом порядке
+	// (allChartData уже отсортирован от старых к новым). Кумулятивные значения
+	// каждой точки самодостаточны, поэтому пересчёт не нужен.
 	const chartData = useMemo(
-		() => allChartData.slice(0, selectedSortedIndex + 1),
-		[allChartData, selectedSortedIndex],
+		() => allChartData.filter((p) => selectedSet.has(p.periodId)),
+		[allChartData, selectedSet],
 	);
 
 	const backlogData = chartData;
@@ -58,23 +64,16 @@ export function ChartsSection() {
 
 	return (
 		<div className="space-y-6 mb-6">
-			<div className="flex items-center gap-4">
-				<label htmlFor="period-filter" className="text-sm font-medium">
-					Период:
-				</label>
-				<select
-					id="period-filter"
-					value={selectedPeriodId}
-					onChange={(e) => setSelectedPeriodId(e.target.value)}
-					className="px-3 py-2 border rounded-md text-sm bg-background"
-				>
-					{periods.map((period) => (
-						<option key={period.id} value={period.id}>
-							{dayjs(period.start_date).format('DD.MM.YYYY')} – {dayjs(period.end_date).format('DD.MM.YYYY')}
-						</option>
-					))}
-				</select>
+			<div className="flex flex-col gap-1.5 sm:max-w-md">
+				<label className="text-sm font-medium">Периоды на графике</label>
+				<PeriodMultiSelect periods={periods} value={selectedIds} onChange={handleSelectionChange} />
 			</div>
+			{chartData.length === 0 ? (
+				<p className="py-12 text-center text-sm text-muted-foreground">
+					Выберите хотя бы один период
+				</p>
+			) : (
+			<>
 			<CFDChart data={chartData} />
 			<div>
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -106,6 +105,8 @@ export function ChartsSection() {
 					</Label>
 				</div>
 			</div>
+			</>
+			)}
 		</div>
 	);
 }

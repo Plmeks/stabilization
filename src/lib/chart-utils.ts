@@ -3,6 +3,7 @@ import type { Period, PeriodStatistics, Task } from '@/types';
 import { calculateDynamicMetrics } from '@/lib/stats-utils';
 
 export type ChartDataPoint = {
+	periodId: string;
 	label: string;
 	periodLabel: string;
 	completed_cumulative: number;
@@ -30,6 +31,7 @@ export function calculateChartData(
 
 		if (fixedStats) {
 			return {
+				periodId: period.id,
 				label: dayjs(period.end_date).format('DD.MM'),
 				periodLabel: `${dayjs(period.start_date).format('DD.MM')}-${dayjs(period.end_date).format('DD.MM')}.${dayjs(period.end_date).format('YY')}`,
 				completed_cumulative: fixedStats.completed_cumulative,
@@ -43,6 +45,7 @@ export function calculateChartData(
 		const dynamic = calculateDynamicMetrics(period, periods, tasks, periodStatistics);
 
 		return {
+			periodId: period.id,
 			label: dayjs(period.end_date).format('DD.MM'),
 			periodLabel: `${dayjs(period.start_date).format('DD.MM')}-${dayjs(period.end_date).format('DD.MM')}.${dayjs(period.end_date).format('YY')}`,
 			completed_cumulative: dynamic.completed_cumulative,
